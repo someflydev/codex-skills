@@ -1,25 +1,36 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import sys
 from pathlib import Path
 
+from _skills_common import TEMPLATES_ROOT, ensure_kebab_case, render_template_text
+
+
+TEMPLATE_FILES = {
+    "SKILL.md": "SKILL.md.tmpl",
+    "EXAMPLES.md": "EXAMPLES.md.tmpl",
+    "CHECKLIST.md": "CHECKLIST.md.tmpl",
+}
+
 
 def build_parser() -> argparse.ArgumentParser:
-    prog = Path(__file__).name
     parser = argparse.ArgumentParser(
-        prog=prog,
-        description=f"Stub CLI for {prog} (PROMPT_01 scaffold).",
+        prog=Path(__file__).name,
+        description="Create a new skill folder from templates.",
     )
-    parser.add_argument(
-        "extra",
-        nargs="*",
-        help="Placeholder positional arguments for future implementation.",
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"{prog} 0.1.0-stub",
-    )
+    parser.add_argument("--category", required=True, help="Skill category under skills/ (e.g. workflow)")
+    parser.add_argument("--skill-id", required=True, help="Stable kebab-case skill id")
+    parser.add_argument("--name", required=True, help="Human-readable skill name")
+    parser.add_argument("--description", default="Describe the skill purpose here.")
+    parser.add_argument("--version", default="0.1.0")
+    parser.add_argument("--tag", action="append", default=[], dest="tags")
+    parser.add_argument("--expected-tool", action="append", default=[], dest="expected_tools")
+    parser.add_argument("--skills-root", type=Path, default=Path(__file__).resolve().parents[1] / "skills")
+    parser.add_argument("--force", action="store_true", help="Overwrite existing files if present")
+    parser.add_argument("--dry-run", action="store_true", help="Print planned actions without writing files")
+    parser.add_argument("--version-info", action="version", version="skills-new 0.2.0")
     return parser
 
 
@@ -28,13 +39,57 @@ def main() -> int:
     if len(sys.argv) == 1:
         parser.print_help()
         print("\nNext steps:")
-        print(f"  - Implement real behavior for {Path(__file__).name} in later prompts.")
-        print("  - Run with --help to inspect options while the interface evolves.")
+        print("  - Provide --category, --skill-id, and --name to generate a skill skeleton.")
+        print("  - Example: skills-new --category workflow --skill-id sample-skill --name 'Sample Skill'")
         return 0
 
     args = parser.parse_args()
-    print(f"{Path(__file__).name}: stub command invoked with args={args.extra}")
-    print("Implementation is pending a later prompt.")
+    if not ensure_kebab_case(args.skill_id):
+        print(f"ERROR: --skill-id must be kebab-case: {args.skill_id}", file=sys.stderr)
+        return 2
+
+    if not TEMPLATES_ROOT.exists():
+        print(f"ERROR: Template directory not found: {TEMPLATES_ROOT}", file=sys.stderr)
+        return 2
+
+    skill_dir = args.skills_root / args.category / args.skill_id
+    planned = []
+    for dest_name, template_name in TEMPLATE_FILES.items():
+        template_path = TEMPLATES_ROOT / template_name
+        if not template_path.exists():
+            print(f"ERROR: Missing template file: {template_path}", file=sys.stderr)
+            return 2
+        planned.append((template_path, skill_dir / dest_name))
+
+    print(f"Skill directory: {skill_dir}")
+    for _, dest in planned:
+        action = "overwrite" if dest.exists() else "create"
+        print(f"- would {action}: {dest}" if args.dry_run else f"- {action}: {dest}")
+
+    if args.dry_run:
+        return 0
+
+    skill_dir.mkdir(parents=True, exist_ok=True)
+    tags = args.tags or [args.category, "draft"]
+    expected_tools = args.expected_tools or ["git", "rg"]
+    replacements = {
+        "skill_id": args.skill_id,
+        "skill_name": args.name,
+        "skill_description": args.description,
+        "skill_version": args.version,
+        "category": args.category,
+        "tags_inline": ", ".join(tags),
+        "expected_tools_inline": ", ".join(expected_tools),
+    }
+
+    for template_path, dest in planned:
+        if dest.exists() and not args.force:
+            print(f"ERROR: Refusing to overwrite existing file without --force: {dest}", file=sys.stderr)
+            return 2
+        content = render_template_text(template_path.read_text(encoding="utf-8"), replacements)
+        dest.write_text(content, encoding="utf-8")
+
+    print("Created skill skeleton successfully.")
     return 0
 
 
