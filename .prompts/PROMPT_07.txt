@@ -1,0 +1,27 @@
+Wire everything together into a cohesive end-to-end operator experience, and prove it works.
+
+Deliverables:
+1) Update docs/OPERATOR_MANUAL.md to include:
+   - “install skills-foundry”
+   - “author or update skills”
+   - “validate + lint”
+   - “sync to ~/.codex/skills”
+   - “use skills on a new repo”
+   - “prompt-first repo lifecycle” walkthrough:
+       stage-1 preflight -> stage-1 run -> stage-1 postflight
+       stage-2 plan -> stage-2 preflight -> stage-2 run -> stage-2 postflight
+2) Ensure all bin scripts are runnable and have sane defaults.
+3) Add a sample “demo repo” folder under skills-foundry/demo-repo/ with:
+   - a tiny .prompts set (5–7 prompts, simple)
+   - instructions to run the workflow on it
+4) Run (or at least make it easy to run) the full pipeline:
+   - skills-new (for one skill)
+   - skills-validate
+   - skills-lint
+   - skills-sync --dry-run
+5) Ensure the skills catalog and index are generated.
+
+Finally, add a short “Design Notes” section explaining:
+- how to keep skills narrowly scoped but composable
+- how to avoid overengineering in skills themselves
+- how to evolve skill packs over time without breaking IDs

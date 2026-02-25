@@ -1,0 +1,42 @@
+Build the “skill file” template system and validators/linters.
+
+Deliverables:
+1) templates/skill/SKILL.md.tmpl
+2) templates/skill/EXAMPLES.md.tmpl
+3) templates/skill/CHECKLIST.md.tmpl
+4) bin/skills-new:
+   - creates a new skill folder at skills/<category>/<skill-id>/
+   - fills in templates with provided metadata flags
+   - creates SKILL.md, EXAMPLES.md, CHECKLIST.md
+   - enforces stable kebab-case skill-id
+5) bin/skills-validate:
+   - finds all skills under skills/**/SKILL.md
+   - validates YAML front matter schema
+   - validates required sections exist
+   - validates links/paths referenced in outputs (best effort)
+   - returns non-zero if failures
+6) bin/skills-lint:
+   - scores each skill against docs/SKILL_RUBRIC.md
+   - emits:
+       skills-foundry/reports/skills-lint.json
+       skills-foundry/reports/skills-lint.md
+   - includes per-skill:
+       completeness_score_100
+       excellence_score_10
+       top_issues (ordered)
+       suggested_fixes (concrete edits)
+7) tests:
+   - test that validate fails for missing YAML fields
+   - test that lint scoring works on a sample skill
+
+Rubric requirements (must be encoded and enforced):
+- has all required sections
+- procedure steps are numbered and explicit
+- inputs are typed + examples
+- mentions expected_tools and safety confirmations
+- has realistic examples
+- has failure modes and recovery
+- avoids being too broad (flag “scope too wide”)
+- avoids being too vague (flag “steps not executable”)
+
+Do not sync to ~/.codex/skills yet (that’s PROMPT_03).

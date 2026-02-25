@@ -1,0 +1,15 @@
+Write a reusable prompt file that, when given:
+- a new project pattern you repeat (e.g. “API client scaffolding”, “release checklist”, “Docker hardening”)
+will generate:
+- 5–12 new skills
+- each with SKILL.md and _ALT
+- plus any needed updates to templates/rubric
+- plus a plan for where they fit in categories
+
+This generator prompt should:
+- force narrow scope
+- force concrete procedures
+- force safety defaults
+- force realistic examples
+- force meaningful _ALT divergence
+- run validate/lint and iterate until scores are high

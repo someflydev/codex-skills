@@ -1,0 +1,30 @@
+Implement the repo-local “skills-foundry/” project scaffold.
+
+Requirements:
+- Create the directory structure described in PROMPT_00_s.txt.
+- Write docs:
+  - docs/SKILLS_OVERVIEW.md: what this is, how skills are organized, how sync works
+  - docs/SKILL_AUTHORING_GUIDE.md: how to write great skills, common patterns, anti-patterns
+  - docs/SKILL_RUBRIC.md: a checklist/scoring rubric used by the linter (0-100 + 0-10 excellence)
+  - docs/OPERATOR_MANUAL.md: end-to-end usage for real repos with .prompts
+- Create bin scripts (stubs first, but runnable with --help):
+  - bin/skills-new
+  - bin/skills-validate
+  - bin/skills-lint
+  - bin/skills-sync
+  - bin/repo-preflight
+  - bin/repo-stage1-run
+  - bin/repo-postflight
+  - bin/repo-stage2-plan
+  - bin/repo-stage2-run
+- Each bin script:
+  - is a small CLI with argparse
+  - supports --help and exits 0
+  - prints clear next steps if called without required args
+
+Implementation notes:
+- Prefer a single Python entrypoint module (e.g. skills_foundry/cli.py) with console scripts,
+  OR keep it ultra-simple with python scripts in bin/.
+- Include at least minimal tests scaffolding in tests/ with pytest.
+
+Do not generate the actual skill library yet (that’s PROMPT_02+).

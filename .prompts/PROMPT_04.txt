@@ -1,0 +1,75 @@
+Generate the “Prompt-First Repo Workflow” core skill pack (the real meat).
+
+Create these skills (each with a corresponding _ALT variant):
+Category: workflow/
+
+1) prompt-preflight-inspector
+   - reads .prompts directory
+   - checks ordering, missing dependencies, unclear instructions, overengineering risks
+   - produces:
+       .prompts/improvements-before-initial-run.txt
+       skills-foundry/reports/preflight.md (when run from foundry tooling)
+   - suggests fixes in severity tiers:
+       BLOCKER / HIGH / MEDIUM / LOW / NIT
+   - includes optional “apply fixes” mode:
+       --apply
+       --apply-level <=MEDIUM (default)
+       --write-patches (creates .patch files)
+   - if apply is used:
+       - generates a commit plan, grouped by theme
+       - recommends `git add -p` patch groupings
+       - commits with:
+           [PRE-FLIGHT] <message>
+
+2) prompt-stage1-runner
+   - verifies tool availability (git, language runtimes, docker if needed, etc.)
+   - refuses to run if prerequisites missing
+   - provides install guidance (macOS Homebrew + common Linux package managers)
+   - runs PROMPT_00_s then PROMPT_01..N (or selected range)
+   - after each prompt completes:
+       - summarizes changes
+       - proposes commit groups + messages:
+           [PROMPT_XX] <imperative summary>
+       - recommends `git add -p`
+       - optionally commits automatically if user confirms
+
+3) prompt-postflight-analyzer
+   - loads repo filesystem + .prompts
+   - produces STAGE-1-POST-FLIGHT.md
+   - includes:
+       - completeness score /100 (rubric)
+       - excellence score /10
+       - top missing artifacts
+       - risk register (overengineering, unclear docs, fragile setup)
+       - recommended stage-2 investments
+
+4) stage2-plan-generator
+   - reads STAGE-1-POST-FLIGHT.md + repo + .prompts
+   - proposes 3–6 new PROMPT_XX.txt files
+   - each new prompt:
+       - has explicit deliverables and acceptance criteria
+       - avoids duplicate work
+       - “max out” completeness/excellence scoring
+
+5) stage2-preflight-inspector
+   - same behavior as stage-1 preflight, but focused only on new stage-2 prompts
+   - applies fixes + commits with [PRE-FLIGHT]
+
+6) stage2-runner
+   - runs new prompts in order
+   - commits after each prompt with [PROMPT_XX]
+   - includes rollback guidance
+
+7) stage2-postflight-analyzer
+   - produces STAGE-2-POST-FLIGHT.md
+   - highlights delta from stage-1 scores
+   - identifies remaining gaps and “not worth it” items
+
+For each skill:
+- write SKILL.md with full metadata and all required sections
+- ensure procedures are executable and tool-aware
+- include examples for:
+  - a small repo (10 prompts)
+  - a larger repo (25 prompts)
+- ensure _ALT differs meaningfully:
+  - e.g. different scoring rubric emphasis, different fix strategy, different commit grouping philosophy

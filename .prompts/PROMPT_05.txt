@@ -1,0 +1,32 @@
+Generate the “Polyglot Backend Options Advisor” skill pack.
+
+Create these skills (with _ALT variants):
+Category: polyglot/
+
+1) backend-language-shortlister
+   - given a problem domain description + constraints (perf, hiring, portability, simplicity)
+   - proposes 15 languages
+   - for each language:
+       - 2–3 web server frameworks (or stdlib option)
+       - core strengths (constructs/paradigms)
+       - risks/costs
+       - fit for HTMX + Tailwind + Plotly-style rendering
+       - dev workflow notes (testing, packaging, env mgmt)
+   - outputs:
+       docs/BACKEND_OPTIONS.md (or skills-foundry/reports/BACKEND_OPTIONS.md)
+   - ends with a clear “choose one” interaction:
+       - present a selection menu and what the user needs to answer
+
+2) backend-choice-to-prompts
+   - takes the chosen language/framework combo
+   - generates additional super-excellent ordered PROMPT_XX.txt files (written into .prompts/)
+     that implement the backend with the chosen stack and project constraints.
+   - emphasizes:
+       - minimal frontend JS
+       - HTMX-first
+       - sensible templates
+       - clear data layer boundaries
+
+Make the _ALT versions meaningfully different:
+- one favors “boring + stable + easy hiring”
+- one favors “learning value + unique paradigms”

@@ -1,0 +1,37 @@
+Implement skill installation / sync to ~/.codex/skills with safety, backup, and diffing.
+
+Deliverables:
+1) bin/skills-sync:
+   - supports:
+       --from skills/ (default)
+       --to ~/.codex/skills (default)
+       --dry-run
+       --backup-dir ~/.codex/skills-backups/<timestamp> (default)
+       --strategy {copy,symlink}
+       --only <skill-id> (repeatable)
+       --prune (remove skills in target not present in source; requires confirmation)
+   - behavior:
+       - runs skills-validate and skills-lint first; refuses sync if validate fails
+       - prints a concise plan:
+           create / update / unchanged / would-prune
+       - dry-run prints plan only
+       - real run:
+           - creates backup of any overwritten SKILL.md
+           - copies or symlinks skill folder into ~/.codex/skills/<skill-id>/
+           - writes ~/.codex/skills/INDEX.md with a categorized list + short descriptions
+2) skills-render (optional but recommended):
+   - renders a “skills catalog” markdown page:
+       skills-foundry/reports/SKILLS_CATALOG.md
+   - includes tags, inputs, expected_tools
+3) docs updates:
+   - explain copy vs symlink tradeoffs
+   - explain how to version skills
+4) tests:
+   - use tmp dirs to validate sync creates expected structure
+   - test dry-run does not write
+
+Now that sync exists, create a small “starter pack” of 3 trivial skills to prove the pipeline works:
+- hello-skill
+- repo-tree-summarizer
+- changelog-drafter
+Include _ALT variants for at least one of them.

@@ -1,0 +1,39 @@
+Generate the “Storage Zoo + Synthetic Data Lab” skill pack.
+
+Create these skills (with _ALT variants):
+Category: storage-labs/
+
+1) storage-zoo-planner
+   - goal: propose a menu of storage paradigms to experiment with for realistic synthetic data:
+       - relational (Postgres, SQLite)
+       - document (MongoDB)
+       - key-value (Redis/KeyDB)
+       - columnar analytics (DuckDB)
+       - graph (Neo4j)
+       - search (Elasticsearch or Meilisearch)
+       - streaming/log (Kafka or Redpanda)
+   - backend-language-agnostic:
+       - interface contracts (HTTP/JSON, CLI, import/export formats)
+       - dataset shapes/sizes across industries
+       - realistic workflows (ingest, query, report, archive, replay)
+   - outputs:
+       docs/STORAGE_ZOO_PLAN.md
+       docs/DATASETS_CATALOG.md
+       data/ (seed generators spec files, not necessarily full generators yet)
+   - includes Docker Compose recommendations and “small machine” profiles
+
+2) synthetic-data-spec-author
+   - given an industry + workflow, outputs:
+       data/specs/<industry>/<dataset>.yaml
+   - spec format:
+       entities, relationships, cardinalities
+       fields with distributions
+       time-series behavior
+       referential integrity rules
+       PII-safe rules + redaction policy
+   - includes examples:
+       ecommerce, healthcare scheduling, fintech ledger, SaaS billing, logistics, education
+
+_ALT differences:
+- one emphasizes “few datasets, very deep realism”
+- one emphasizes “many datasets, broad coverage, lighter realism”
