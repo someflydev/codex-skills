@@ -39,6 +39,7 @@ Create a repo-local “skills foundry” project (inside the current repo) that 
       SKILL_AUTHORING_GUIDE.md
       SKILL_RUBRIC.md
       OPERATOR_MANUAL.md
+    reports/
     bin/
       skills-sync
       skills-validate

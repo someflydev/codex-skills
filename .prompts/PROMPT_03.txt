@@ -19,7 +19,7 @@ Deliverables:
            - creates backup of any overwritten SKILL.md
            - copies or symlinks skill folder into ~/.codex/skills/<skill-id>/
            - writes ~/.codex/skills/INDEX.md with a categorized list + short descriptions
-2) skills-render (optional but recommended):
+2) bin/skills-render:
    - renders a “skills catalog” markdown page:
        skills-foundry/reports/SKILLS_CATALOG.md
    - includes tags, inputs, expected_tools

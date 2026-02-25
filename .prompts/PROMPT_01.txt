@@ -12,6 +12,7 @@ Requirements:
   - bin/skills-validate
   - bin/skills-lint
   - bin/skills-sync
+  - bin/skills-render
   - bin/repo-preflight
   - bin/repo-stage1-run
   - bin/repo-postflight
@@ -25,6 +26,8 @@ Requirements:
 Implementation notes:
 - Prefer a single Python entrypoint module (e.g. skills_foundry/cli.py) with console scripts,
   OR keep it ultra-simple with python scripts in bin/.
+- If you choose the console-scripts approach, create the `skills_foundry/` package directory in the
+  scaffold now so later prompts have a concrete entrypoint location.
 - Include at least minimal tests scaffolding in tests/ with pytest.
 
 Do not generate the actual skill library yet (that’s PROMPT_02+).
