@@ -1,0 +1,86 @@
+# Skill Pack Generator Prompt Template
+
+Use this template to generate a new skill pack for a repeated project pattern.
+
+## Fill In These Inputs
+
+- `pack_name`: `<kebab-pack-name>`
+- `category_root`: `skills/<category>/`
+- `project_pattern`: `<what repeats, e.g. API client scaffolding>`
+- `target_skill_count`: `<5-12>`
+- `pack_goal`: `<what operator outcome this pack enables>`
+- `repo_constraints`: `<language/tooling/safety constraints>`
+- `fit_plan`: `<where this pack fits in the broader category layout>`
+- `alt_strategy_a`: `<meaningful divergence #1>`
+- `alt_strategy_b`: `<meaningful divergence #2>`
+
+## Prompt (Reusable)
+
+Generate the `{{pack_name}}` skill pack for the repeated project pattern: `{{project_pattern}}`.
+
+Create **{{target_skill_count}} base skills** in `{{category_root}}` and **an `_ALT` variant for each skill**.
+
+Outputs must be repo-root-relative by default and should fit this pack into the category layout:
+- Category fit plan: `{{fit_plan}}`
+
+Each generated skill must include:
+- `SKILL.md`
+- `EXAMPLES.md`
+- `CHECKLIST.md`
+
+The pack should enable this operator outcome:
+- `{{pack_goal}}`
+
+Repository / implementation constraints:
+- `{{repo_constraints}}`
+
+## Required Behavior (Do Not Skip)
+
+1. Force narrow scope per skill.
+   - Each skill has one clear job and explicit inputs/outputs.
+   - Avoid giant orchestrator skills that mix planning, execution, review, and marketing.
+
+2. Force concrete procedures.
+   - Every `SKILL.md` must include numbered, executable steps.
+   - Name exact artifacts, commands, and verification checks where applicable.
+
+3. Force safety defaults.
+   - Prefer dry-run / preview behavior when relevant.
+   - Require confirmation before destructive or irreversible actions.
+   - Document failure modes and recovery steps.
+
+4. Force realistic examples.
+   - Include examples that reflect real repo constraints, not toy placeholders only.
+   - Provide at least one smaller-scope example and one larger-scope example.
+
+5. Force meaningful `_ALT` divergence.
+   - `_ALT` skills must be materially different in strategy, risk posture, or optimization goal.
+   - Do not create cosmetic rewrites.
+   - Use these divergence directions (or compatible equivalents):
+     - `{{alt_strategy_a}}`
+     - `{{alt_strategy_b}}`
+
+6. Force pack-level coherence.
+   - Explain how the skills fit together and where they belong in categories.
+   - Update templates/rubric only if needed, and keep changes minimal and intent-preserving.
+   - If templates/rubric are updated, state exactly why each change is required by this pack.
+
+7. Force validation/lint iteration.
+   - Run `skills-validate` and `skills-lint` after generating the pack.
+   - Fix BLOCKER and HIGH issues before proceeding.
+   - Iterate until scores are high and the pack is reviewable.
+
+## Deliverables
+
+- New skills under `{{category_root}}...`
+- `_ALT` variants for each new skill
+- Any minimal template/rubric updates required by the pack
+- A short category fit plan (where these skills belong and how they compose)
+- Validation/lint results summary (including what was fixed during iteration)
+
+## Anti-Goals
+
+- Do not create a new numbered `.prompts/PROMPT_XX.txt` file from this template.
+- Do not expand project scope beyond `{{project_pattern}}`.
+- Do not introduce new subsystems unless they are directly required by the pack.
+
