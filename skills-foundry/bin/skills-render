@@ -1,40 +1,32 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
-import sys
 from pathlib import Path
+
+from _skills_common import FOUNDRY_ROOT, SKILLS_ROOT, REPORTS_ROOT
+from _skills_sync_render import collect_skill_entries, render_skills_catalog
 
 
 def build_parser() -> argparse.ArgumentParser:
-    prog = Path(__file__).name
     parser = argparse.ArgumentParser(
-        prog=prog,
-        description=f"Stub CLI for {prog} (PROMPT_01 scaffold).",
+        prog=Path(__file__).name,
+        description="Render a markdown skills catalog from skills/**/SKILL.md.",
     )
-    parser.add_argument(
-        "extra",
-        nargs="*",
-        help="Placeholder positional arguments for future implementation.",
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"{prog} 0.1.0-stub",
-    )
+    parser.add_argument("--skills-root", type=Path, default=SKILLS_ROOT)
+    parser.add_argument("--output", type=Path, default=REPORTS_ROOT / "SKILLS_CATALOG.md")
+    parser.add_argument("--repo-root", type=Path, default=FOUNDRY_ROOT.parent)
     return parser
 
 
 def main() -> int:
     parser = build_parser()
-    if len(sys.argv) == 1:
-        parser.print_help()
-        print("\nNext steps:")
-        print(f"  - Implement real behavior for {Path(__file__).name} in later prompts.")
-        print("  - Run with --help to inspect options while the interface evolves.")
-        return 0
-
     args = parser.parse_args()
-    print(f"{Path(__file__).name}: stub command invoked with args={args.extra}")
-    print("Implementation is pending a later prompt.")
+
+    entries = collect_skill_entries(args.skills_root)
+    output_path = render_skills_catalog(entries, args.output)
+    print(f"Rendered skills catalog for {len(entries)} skills")
+    print(f"- Output: {output_path}")
     return 0
 
 
