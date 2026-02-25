@@ -134,4 +134,16 @@ Also create *_ALT variants that are meaningfully different (not cosmetic):
 - Never silently modify user code without a clear “what will change” report.
 - Always provide a dry-run mode where destructive changes could happen.
 
+## Path convention
+- Treat all paths in these prompts as repo-root-relative unless explicitly stated otherwise
+  (for example `~/.codex/skills/...` for home-directory install paths).
+- If a skill supports configurable output paths, define a clear default path and name any override
+  path explicitly as an option, not as an ambiguous alternative.
+
+## Artifact ownership map (short)
+- `.prompts/`: prompt inputs, prompt plans, and preflight fix logs for a target repo.
+- `skills-foundry/docs/`: operator-facing documentation and durable reference docs.
+- `skills-foundry/reports/`: generated reports/catalog outputs from validate/lint/preflight/render runs.
+- `skills-foundry/templates/`: reusable authoring templates and prompt-template artifacts.
+
 You will now follow subsequent PROMPT_XX.txt files exactly and produce the full implementation.

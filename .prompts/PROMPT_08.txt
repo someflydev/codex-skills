@@ -1,10 +1,16 @@
-Write a reusable prompt file that, when given:
+Write/update `skills-foundry/templates/packs/pack.md.tmpl` as a reusable prompt template file that,
+when given:
 - a new project pattern you repeat (e.g. “API client scaffolding”, “release checklist”, “Docker hardening”)
 will generate:
 - 5–12 new skills
 - each with SKILL.md and _ALT
 - plus any needed updates to templates/rubric
 - plus a plan for where they fit in categories
+
+Constraints for this prompt-template artifact:
+- Treat the path above as the canonical output for this step (do not create a new numbered
+  `.prompts/PROMPT_XX.txt` file here).
+- Keep it compatible with the path convention in PROMPT_00_s.txt (repo-root-relative paths by default).
 
 This generator prompt should:
 - force narrow scope

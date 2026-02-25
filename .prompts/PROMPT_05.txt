@@ -13,7 +13,8 @@ Category: polyglot/
        - fit for HTMX + Tailwind + Plotly-style rendering
        - dev workflow notes (testing, packaging, env mgmt)
    - outputs:
-       docs/BACKEND_OPTIONS.md (or skills-foundry/reports/BACKEND_OPTIONS.md)
+       default: docs/BACKEND_OPTIONS.md
+       optional override when run from foundry tooling: skills-foundry/reports/BACKEND_OPTIONS.md
    - ends with a clear “choose one” interaction:
        - present a selection menu and what the user needs to answer
 
