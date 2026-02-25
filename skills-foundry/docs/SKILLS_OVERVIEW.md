@@ -16,4 +16,17 @@ installed into `~/.codex/skills/<skill-id>/SKILL.md`.
 ## Sync Model
 
 Skills are authored locally, validated/linted, then synchronized into `~/.codex/skills` using
-`bin/skills-sync` (implemented in later prompts).
+`bin/skills-sync`.
+
+## Sync Strategies
+
+- `copy`: stable snapshot in the target directory; safest for portability and sharing.
+- `symlink`: faster local iteration while authoring, but target behavior depends on the source repo
+  still existing at the same path.
+
+## Versioning Guidance
+
+- Keep `id` stable once a skill is published.
+- Bump `version` for meaningful changes in procedure, safety, or outputs.
+- Prefer new `-alt` skill ids for materially different variants instead of rewriting existing skill
+  behavior under the same id.
