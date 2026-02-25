@@ -1,0 +1,45 @@
+---
+Round: 1
+Timestamp: 2026-02-25T21:02:26Z
+Summary: Applied SAFE-AUTO preflight fixes to reduce sequencing risk and improve execution clarity.
+Summary: Added validation/lint gates after major skill packs and tightened PROMPT_07 to require a real smoke run.
+Changes Applied:
+- .prompts/PROMPT_00_s.txt :: Added `skills-foundry/reports/` to scaffold tree :: align declared structure with repeated later report outputs :: PF-006
+- .prompts/PROMPT_01.txt :: Added note to create `skills_foundry/` package dir when console-scripts approach is chosen :: avoid incomplete scaffold spec for package entrypoint path :: PF-007
+- .prompts/PROMPT_04.txt :: Replaced ambiguous `--apply-level <=MEDIUM` wording with explicit `--max-fix-severity MEDIUM` flag semantics :: remove CLI parsing ambiguity :: PF-009
+- .prompts/PROMPT_04.txt :: Added verification gate (`skills-validate` + `skills-lint`, fix BLOCKER/HIGH) after workflow pack generation :: catch quality issues before proceeding :: PF-004
+- .prompts/PROMPT_05.txt :: Added verification gate (`skills-validate` + `skills-lint`, fix BLOCKER/HIGH) after polyglot pack generation :: catch quality issues before proceeding :: PF-004
+- .prompts/PROMPT_06.txt :: Added verification gate (`skills-validate` + `skills-lint`, fix BLOCKER/HIGH) after storage-labs pack generation :: catch quality issues before proceeding :: PF-004
+- .prompts/PROMPT_07.txt :: Tightened “prove it works” requirement to mandate actual smoke-run commands while allowing full pipeline completion to remain documented if heavy :: reduce risk of skipped runtime proof :: PF-008
+Notes / Followups:
+- User explicitly chose to keep the large-scope sequence across PROMPT_04..PROMPT_06; treat PF-001 as accepted with verification gates added.
+- Remaining path convention and `skills-render` consistency issues require confirmation before edits.
+- CLI wording subtlety fixed in PROMPT_04: `--apply-level <=MEDIUM` -> `--max-fix-severity MEDIUM (default; one of BLOCKER,HIGH,MEDIUM,LOW,NIT)`.
+---
+---
+Round: 2
+Timestamp: 2026-02-25T21:06:23Z
+Summary: Applied confirmation-level consistency fixes for paths, skills-render ownership, and PROMPT_08 output location.
+Summary: Established a repo-root-relative path convention and tied the pack generator prompt to the existing template path.
+Changes Applied:
+- .prompts/PROMPT_00_s.txt :: Added explicit path convention section (repo-root-relative defaults, explicit override paths) :: eliminate output-root ambiguity across prompts :: PF-002
+- .prompts/PROMPT_01.txt :: Added `bin/skills-render` to the required stub script list :: align scaffold prompt with declared tree and later catalog generation needs :: PF-003
+- .prompts/PROMPT_03.txt :: Changed `skills-render` from “optional but recommended” to required `bin/skills-render` deliverable :: resolve responsibility ambiguity for skills catalog generation :: PF-003
+- .prompts/PROMPT_05.txt :: Replaced ambiguous output “or” wording with a default path plus explicit optional override path :: preserve flexibility without path ambiguity :: PF-002
+- .prompts/PROMPT_07.txt :: Clarified that skills catalog generation should be via `skills-render` :: align end-to-end proof expectations with script ownership :: PF-003
+- .prompts/PROMPT_08.txt :: Specified canonical output path `skills-foundry/templates/packs/pack.md.tmpl` and prohibited creating a new numbered `.prompts` file in this step :: resolve missing artifact location and prevent ordering side effects :: PF-005, PF-010
+Notes / Followups:
+- Path convention chosen: repo-root-relative by default, with explicit overrides where needed.
+- `templates/packs/pack.md.tmpl` is now an active artifact used by PROMPT_08 (not deferred).
+---
+---
+Round: 3
+Timestamp: 2026-02-25T21:14:55Z
+Summary: Applied two optional polish wins requested after Round 3 preflight green status.
+Summary: Added a canonical smoke-command example block and a short artifact ownership map.
+Changes Applied:
+- .prompts/PROMPT_07.txt :: Added a single canonical smoke-run command example block (repo root -> `cd skills-foundry`, then `skills-new`/`validate`/`lint`/`sync --dry-run`/`render`) :: reduce execution ambiguity in PROMPT_07 proof step :: polish
+- .prompts/PROMPT_00_s.txt :: Added short artifact ownership map for `.prompts/`, `skills-foundry/docs/`, `skills-foundry/reports/`, and `skills-foundry/templates/` :: improve cross-prompt clarity on where artifacts belong :: polish
+Notes / Followups:
+- `bin/skills-new` example flags are canonical examples; PROMPT_07 already allows adapting flags to the implemented CLI if names differ.
+---
