@@ -1,0 +1,8 @@
+[project]
+name = "skills-foundry"
+version = "0.1.0"
+description = "Repo-local toolkit for building and curating Codex skills"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
