@@ -13,7 +13,7 @@ Category: workflow/
        BLOCKER / HIGH / MEDIUM / LOW / NIT
    - includes optional “apply fixes” mode:
        --apply
-       --apply-level <=MEDIUM (default)
+       --max-fix-severity MEDIUM (default; one of BLOCKER,HIGH,MEDIUM,LOW,NIT)
        --write-patches (creates .patch files)
    - if apply is used:
        - generates a commit plan, grouped by theme

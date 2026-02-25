@@ -14,12 +14,24 @@ Deliverables:
 3) Add a sample “demo repo” folder under skills-foundry/demo-repo/ with:
    - a tiny .prompts set (5–7 prompts, simple)
    - instructions to run the workflow on it
-4) Run (or at least make it easy to run) the full pipeline:
+4) Prove the pipeline works with a real smoke run, and make the rest easy to run:
+   - actually run these smoke commands and capture the key outputs/artifacts in the docs or notes:
    - skills-new (for one skill)
    - skills-validate
    - skills-lint
    - skills-sync --dry-run
-5) Ensure the skills catalog and index are generated.
+   - canonical command examples (from repo root; adapt flags to the implemented CLI if names differ):
+     ```bash
+     cd skills-foundry
+     bin/skills-new --category core --skill-id smoke-check --name "Smoke Check"
+     bin/skills-validate
+     bin/skills-lint
+     bin/skills-sync --dry-run
+     bin/skills-render
+     ```
+   - if the full end-to-end workflow is too heavy to run in one pass, document the exact commands and
+     prerequisites to finish it, but the smoke commands above must be executed
+5) Ensure the skills catalog (via `skills-render`) and index are generated.
 
 Finally, add a short “Design Notes” section explaining:
 - how to keep skills narrowly scoped but composable
