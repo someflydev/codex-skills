@@ -1,40 +1,42 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
-import sys
 from pathlib import Path
+
+from _skills_common import DOCS_ROOT, FOUNDRY_ROOT, REPORTS_ROOT, SKILLS_ROOT, lint_skills, write_lint_reports
 
 
 def build_parser() -> argparse.ArgumentParser:
-    prog = Path(__file__).name
     parser = argparse.ArgumentParser(
-        prog=prog,
-        description=f"Stub CLI for {prog} (PROMPT_01 scaffold).",
+        prog=Path(__file__).name,
+        description="Lint skills for rubric completeness/excellence scoring and write reports.",
     )
-    parser.add_argument(
-        "extra",
-        nargs="*",
-        help="Placeholder positional arguments for future implementation.",
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"{prog} 0.1.0-stub",
-    )
+    parser.add_argument("--skills-root", type=Path, default=SKILLS_ROOT)
+    parser.add_argument("--repo-root", type=Path, default=FOUNDRY_ROOT.parent)
+    parser.add_argument("--rubric", type=Path, default=DOCS_ROOT / "SKILL_RUBRIC.md")
+    parser.add_argument("--reports-dir", type=Path, default=REPORTS_ROOT)
     return parser
 
 
 def main() -> int:
     parser = build_parser()
-    if len(sys.argv) == 1:
-        parser.print_help()
-        print("\nNext steps:")
-        print(f"  - Implement real behavior for {Path(__file__).name} in later prompts.")
-        print("  - Run with --help to inspect options while the interface evolves.")
-        return 0
-
     args = parser.parse_args()
-    print(f"{Path(__file__).name}: stub command invoked with args={args.extra}")
-    print("Implementation is pending a later prompt.")
+
+    if not args.rubric.exists():
+        print(f"ERROR: Rubric file not found: {args.rubric}")
+        return 2
+
+    results = lint_skills(args.skills_root, args.repo_root)
+    json_path, md_path = write_lint_reports(results, args.reports_dir)
+
+    print(f"Linted {len(results)} skills")
+    print(f"- JSON report: {json_path}")
+    print(f"- Markdown report: {md_path}")
+    for item in results:
+        print(
+            f"- {item['skill_id']}: completeness={item['completeness_score_100']} excellence={item['excellence_score_10']}"
+        )
     return 0
 
 

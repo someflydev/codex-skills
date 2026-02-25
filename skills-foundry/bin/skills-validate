@@ -1,41 +1,50 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
-import sys
+import json
 from pathlib import Path
+
+from _skills_common import FOUNDRY_ROOT, SKILLS_ROOT, format_validate_summary, validate_skills, validation_failed
 
 
 def build_parser() -> argparse.ArgumentParser:
-    prog = Path(__file__).name
     parser = argparse.ArgumentParser(
-        prog=prog,
-        description=f"Stub CLI for {prog} (PROMPT_01 scaffold).",
+        prog=Path(__file__).name,
+        description="Validate skills under skills/**/SKILL.md for front matter and required sections.",
     )
-    parser.add_argument(
-        "extra",
-        nargs="*",
-        help="Placeholder positional arguments for future implementation.",
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"{prog} 0.1.0-stub",
-    )
+    parser.add_argument("--skills-root", type=Path, default=SKILLS_ROOT)
+    parser.add_argument("--repo-root", type=Path, default=FOUNDRY_ROOT.parent)
+    parser.add_argument("--json", dest="json_out", type=Path, help="Optional path to write validation details JSON")
     return parser
 
 
 def main() -> int:
     parser = build_parser()
-    if len(sys.argv) == 1:
-        parser.print_help()
-        print("\nNext steps:")
-        print(f"  - Implement real behavior for {Path(__file__).name} in later prompts.")
-        print("  - Run with --help to inspect options while the interface evolves.")
-        return 0
-
     args = parser.parse_args()
-    print(f"{Path(__file__).name}: stub command invoked with args={args.extra}")
-    print("Implementation is pending a later prompt.")
-    return 0
+
+    docs = validate_skills(args.skills_root, args.repo_root)
+    if not docs:
+        print(f"Validated 0 skills: no SKILL.md files found under {args.skills_root}")
+    else:
+        print(format_validate_summary(docs))
+
+    if args.json_out:
+        args.json_out.parent.mkdir(parents=True, exist_ok=True)
+        payload = []
+        for doc in docs:
+            payload.append(
+                {
+                    "skill_id": doc.skill_id,
+                    "path": str(doc.path),
+                    "messages": [
+                        {"level": m.level, "code": m.code, "message": m.message} for m in doc.messages
+                    ],
+                }
+            )
+        args.json_out.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+    return 1 if validation_failed(docs) else 0
 
 
 if __name__ == "__main__":
