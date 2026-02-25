@@ -31,3 +31,7 @@ Category: polyglot/
 Make the _ALT versions meaningfully different:
 - one favors “boring + stable + easy hiring”
 - one favors “learning value + unique paradigms”
+
+Verification gate before proceeding to the next prompt:
+- Run `skills-validate` and `skills-lint` after generating this pack.
+- Fix BLOCKER and HIGH issues found in the generated polyglot skills before continuing.

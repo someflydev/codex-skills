@@ -73,3 +73,7 @@ For each skill:
   - a larger repo (25 prompts)
 - ensure _ALT differs meaningfully:
   - e.g. different scoring rubric emphasis, different fix strategy, different commit grouping philosophy
+
+Verification gate before proceeding to the next prompt:
+- Run `skills-validate` and `skills-lint` after generating this pack.
+- Fix BLOCKER and HIGH issues found in the generated workflow skills before continuing.

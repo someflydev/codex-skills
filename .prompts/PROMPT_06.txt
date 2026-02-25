@@ -37,3 +37,7 @@ Category: storage-labs/
 _ALT differences:
 - one emphasizes “few datasets, very deep realism”
 - one emphasizes “many datasets, broad coverage, lighter realism”
+
+Verification gate before proceeding to the next prompt:
+- Run `skills-validate` and `skills-lint` after generating this pack.
+- Fix BLOCKER and HIGH issues found in the generated storage-labs skills before continuing.
