@@ -1,0 +1,8 @@
+Improve operator usability without changing scope.
+
+Add:
+- README usage examples
+- one small sample session transcript
+- basic error handling for missing command or missing note text
+
+Do not add new storage backends or web UI code.

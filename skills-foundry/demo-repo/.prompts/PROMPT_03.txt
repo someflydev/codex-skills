@@ -1,0 +1,8 @@
+Add tests for the tiny CLI behavior.
+
+Cover:
+- help output or usage
+- adding one note
+- listing notes after add
+
+Use pytest and keep the tests fast.

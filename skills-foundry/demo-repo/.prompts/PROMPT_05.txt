@@ -1,0 +1,9 @@
+Run a tiny postflight pass.
+
+Check:
+- files created match prompt scope
+- tests run and pass
+- docs reflect actual commands
+- commit messages are prompt-prefixed
+
+Write a short summary of what shipped and what would be a stage-2 improvement.

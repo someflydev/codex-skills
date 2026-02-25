@@ -1,0 +1,9 @@
+Scaffold a tiny Python project for a CLI notes app.
+
+Create:
+- README.md
+- app.py
+- notes.json (empty array)
+- tests/test_smoke.py
+
+The app does not need full features yet. Just print a short help message when run.

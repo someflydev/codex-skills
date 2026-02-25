@@ -1,0 +1,6 @@
+Implement basic commands in `app.py`:
+- `list`
+- `add <text>`
+
+Use `notes.json` for simple storage.
+Keep behavior deterministic and easy to test.
