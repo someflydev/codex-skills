@@ -234,6 +234,27 @@ def _build_stage_run_parser(prog: str, stage_label: str, *, allow_execute: bool 
             type=Path,
             help="Path (repo-root-relative by default) for a markdown execution log written when --execute is enabled.",
         )
+        parser.add_argument(
+            "--max-prompts",
+            type=int,
+            default=10,
+            help="Execution guardrail: maximum prompts allowed when --execute is enabled (default: 10).",
+        )
+        parser.add_argument(
+            "--no-max-prompts",
+            action="store_true",
+            help="Disable the --max-prompts guardrail for execution mode (advanced users only).",
+        )
+        parser.add_argument(
+            "--runner-timeout-seconds",
+            type=float,
+            help="Optional per-prompt timeout for execution mode (seconds).",
+        )
+        parser.add_argument(
+            "--allow-outside-repo-artifacts",
+            action="store_true",
+            help="Allow --run-log and similar execution artifacts outside --repo-root.",
+        )
     return parser
 
 
@@ -298,19 +319,45 @@ def _write_stage_execution_log(
     _write_text(out_path, "\n".join(lines))
 
 
+def _is_path_within(child: Path, parent: Path) -> bool:
+    try:
+        child.relative_to(parent)
+        return True
+    except ValueError:
+        return False
+
+
+def _resolve_execution_artifact_path(
+    repo_root: Path,
+    artifact_path_arg: Path,
+    *,
+    allow_outside_repo_artifacts: bool,
+) -> Path:
+    resolved = artifact_path_arg if artifact_path_arg.is_absolute() else (repo_root / artifact_path_arg)
+    resolved = resolved.resolve()
+    if not allow_outside_repo_artifacts and not _is_path_within(resolved, repo_root):
+        raise ValueError(
+            "Execution artifact path must stay under repo root unless "
+            f"--allow-outside-repo-artifacts is set: {resolved}"
+        )
+    return resolved
+
+
 def _execute_stage_plan(
     *,
     stage_label: str,
     repo_root: Path,
     selected: list[PromptFile],
     runner_shell_template: str,
-    run_log_arg: Path,
+    run_log_path: Path,
+    runner_timeout_seconds: float | None,
 ) -> int:
-    run_log_path = run_log_arg if run_log_arg.is_absolute() else repo_root / run_log_arg
     entries: list[dict[str, object]] = []
     print(f"{stage_label} execution mode enabled (opt-in)")
     print(f"- runner shell template: {runner_shell_template}")
     print(f"- run log: {run_log_path}")
+    if runner_timeout_seconds is not None:
+        print(f"- runner timeout seconds: {runner_timeout_seconds}")
 
     for prompt in selected:
         started_at = _now_iso_utc()
@@ -341,7 +388,40 @@ def _execute_stage_plan(
             )
             return 2
 
-        proc = subprocess.run(command, shell=True, cwd=repo_root, capture_output=True, text=True)
+        try:
+            proc = subprocess.run(
+                command,
+                shell=True,
+                cwd=repo_root,
+                capture_output=True,
+                text=True,
+                timeout=runner_timeout_seconds,
+            )
+        except subprocess.TimeoutExpired as exc:
+            finished_at = _now_iso_utc()
+            entries.append(
+                {
+                    "prompt_name": prompt.path.name,
+                    "status": "timed_out",
+                    "returncode": 124,
+                    "started_at": started_at,
+                    "finished_at": finished_at,
+                    "command": command,
+                    "stdout": (exc.stdout or ""),
+                    "stderr": (exc.stderr or "") + f"\nTimed out after {runner_timeout_seconds} second(s)",
+                }
+            )
+            print(f"- executed {prompt.path.name}: timed_out (rc=124)")
+            _write_stage_execution_log(
+                out_path=run_log_path,
+                stage_label=stage_label,
+                repo_root=repo_root,
+                selected=selected,
+                runner_shell_template=runner_shell_template,
+                entries=entries,
+            )
+            print(f"Wrote run log: {run_log_path}")
+            return 124
         finished_at = _now_iso_utc()
         status = "success" if proc.returncode == 0 else "failed"
         entries.append(
@@ -383,6 +463,9 @@ def _execute_stage_plan(
 
 def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
     repo_root = _resolve_repo_root(args.repo_root)
+    if not repo_root.exists() or not repo_root.is_dir():
+        print(f"ERROR: repo root does not exist or is not a directory: {repo_root}")
+        return 2
     prompts_dir = _resolve_prompts_dir(repo_root, args.prompts_dir)
     prompts, unparseable = discover_prompts(prompts_dir)
     if not prompts_dir.exists():
@@ -435,12 +518,34 @@ def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
         if not getattr(args, "run_log", None):
             print("ERROR: --execute requires --run-log")
             return 2
+        if getattr(args, "runner_timeout_seconds", None) is not None and args.runner_timeout_seconds <= 0:
+            print("ERROR: --runner-timeout-seconds must be > 0")
+            return 2
+        if not getattr(args, "no_max_prompts", False):
+            max_prompts = getattr(args, "max_prompts", None)
+            if max_prompts is not None and max_prompts >= 0 and len(selected) > max_prompts:
+                print(
+                    "ERROR: Refusing execution because selected prompt count "
+                    f"({len(selected)}) exceeds --max-prompts {max_prompts}. "
+                    "Use --no-max-prompts to override."
+                )
+                return 2
+        try:
+            run_log_path = _resolve_execution_artifact_path(
+                repo_root,
+                args.run_log,
+                allow_outside_repo_artifacts=getattr(args, "allow_outside_repo_artifacts", False),
+            )
+        except ValueError as exc:
+            print(f"ERROR: {exc}")
+            return 2
         execute_rc = _execute_stage_plan(
             stage_label=stage_label,
             repo_root=repo_root,
             selected=selected,
             runner_shell_template=args.runner_shell_template,
-            run_log_arg=args.run_log,
+            run_log_path=run_log_path,
+            runner_timeout_seconds=getattr(args, "runner_timeout_seconds", None),
         )
         if execute_rc != 0:
             return execute_rc
