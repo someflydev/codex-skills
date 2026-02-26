@@ -21,13 +21,15 @@ Use this checklist before tagging a version or sharing the foundry more broadly.
 - CI workflow file exists and is current (`.github/workflows/ci.yml`)
 - Root `README.md` still points to the correct entrypoints
 - Version in `skills-foundry/pyproject.toml` is intentional for this release
-- Decide whether a license file is required for the intended audience/distribution
+- `LICENSE` exists at the repo root and matches the intended distribution terms
+- `skills-foundry/docs/DEPRECATIONS.md` reflects current deprecated aliases and canonical replacements
 
 ## 4. Tag/Release Prep (Optional)
 
 - Update `skills-foundry/CHANGELOG.md` (or capture equivalent release notes if intentionally not using the changelog file)
 - Record notable behavior changes (CLI flags, defaults, output formats)
 - Document known limitations (especially `repo-helper-*` helper-only scope and deprecated `repo-*` aliases)
+- If alias removals are planned, add/update a deprecation-policy note and target in `skills-foundry/docs/DEPRECATIONS.md`
 
 ## 4a. Changelog / Release Notes Convention (Lightweight)
 

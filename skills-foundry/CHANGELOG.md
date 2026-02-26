@@ -24,3 +24,4 @@ behavior, docs changes that affect usage).
 ### Notes
 
 - `repo-*` commands are MVP workflow helpers (planning/snapshots), not full prompt execution automation.
+- Alias deprecation policy and removal targets are tracked in `docs/DEPRECATIONS.md`.
