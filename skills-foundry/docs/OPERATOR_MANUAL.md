@@ -40,6 +40,10 @@ bin/skills-lint
 ```
 
 - `skills-validate` checks front matter and required sections.
+- `skills-validate` supports warning triage helpers for noisy output-path checks:
+  - `--warning-code-summary` to print grouped warning counts by code.
+  - `--suppress-expected-output-warnings` to hide install-target-relative and future-artifact path warnings from the detailed output.
+  - `--suppress-warning-code <code>` for targeted suppression (repeatable).
 - `skills-lint` writes reports to `skills-foundry/reports/skills-lint.json` and `skills-foundry/reports/skills-lint.md`.
 
 ## Sync To `~/.codex/skills`
@@ -114,6 +118,8 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
 
 The following smoke commands were actually run in this repo on February 25, 2026.
 
+For a repeatable local smoke run, use `bin/smoke-check-foundry` (added after the initial smoke proof). It runs the same core command sequence and supports a custom sync target.
+
 Canonical command examples (repo root -> foundry root):
 
 ```bash
@@ -130,12 +136,14 @@ bin/skills-render
 - `skills-new`
   - Created `skills-foundry/skills/core/smoke-check/{SKILL.md,EXAMPLES.md,CHECKLIST.md}`.
 - `skills-validate`
-  - `Validated 27 skills: 0 error(s), 60 warning(s)`
-  - Warnings were best-effort missing output paths (expected for many skill-declared outputs that are created only when the skills run).
+  - `Validated 27 skills: 0 error(s), 52 warning(s)`
+  - Warnings were mostly best-effort missing output paths for install targets or future-generated artifacts.
+  - Newer versions can group/suppress those warning categories for easier operator triage (`--warning-code-summary`, `--suppress-expected-output-warnings`).
 - `skills-lint`
   - `Linted 27 skills`
   - Reports generated: `skills-foundry/reports/skills-lint.json`, `skills-foundry/reports/skills-lint.md`
-  - `smoke-check` and existing skills scored `completeness=100 excellence=10`
+  - Most generated pack skills scored `completeness=100 excellence=10`
+  - `smoke-check` scored lower after placeholder-template detection was added to the linter (`completeness=72 excellence=3`)
 - `skills-sync --dry-run --to /tmp/skills-sync-smoke`
   - Pre-sync validation/lint ran automatically.
   - Sync plan: `create=27, update=0, unchanged=0, would-prune=0`
@@ -160,6 +168,20 @@ Result:
 ### Bin script sanity check
 
 All operator-facing scripts in `skills-foundry/bin/` were checked with `--help` and passed (`10/10` executable, `10/10` exit code `0`).
+
+## Scripted Smoke Target (Repeatable)
+
+Run the packaged smoke script:
+
+```bash
+cd skills-foundry
+bin/smoke-check-foundry --dry-run-only
+```
+
+Useful options:
+
+- `--sync-target /tmp/skills-sync-smoke` to override the dry-run sync target.
+- `--with-real-sync` to also run a real sync to the target and generate `INDEX.md`.
 
 ## Sync Notes (Copy vs Symlink)
 
