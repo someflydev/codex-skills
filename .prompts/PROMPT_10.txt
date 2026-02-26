@@ -1,0 +1,84 @@
+Stage-2 Prompt 2/5
+Title: Behavior-Level Tests + CI Gates for Helper Execution and Smoke Path
+
+Objective
+Lock in the Stage-2 execution MVP and current operator workflow with behavior-level tests and CI checks. The goal is to prevent drift in canonical helper names, smoke-script behavior, and the new Stage-1 execution mode without increasing CI complexity or runtime significantly.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_09.txt`
+- Runnable independently: yes (if Stage-1 execution mode is absent, gate this prompt to test existing behavior and skip execution-mode assertions with a clear TODO note in the prompt run summary)
+
+Artifacts To Create / Modify (exact paths)
+- `.github/workflows/ci.yml`
+- `skills-foundry/tests/test_repo_workflow_clis.py`
+- `skills-foundry/tests/test_smoke_check_foundry.py` (new)
+- `skills-foundry/bin/smoke-check-foundry` (only if needed for deterministic testability/help output semantics)
+- `skills-foundry/docs/OPERATOR_MANUAL.md` (only if CI/smoke commands in docs become stale)
+
+Required Scope
+1) Extend repo-helper behavior tests to cover the new Stage-1 execution mode from `PROMPT_09`:
+   - success path with deterministic runner
+   - stop-on-failure path
+   - run-log output presence/shape checks
+2) Add a focused smoke-script test file:
+   - `--help` exits `0`
+   - invalid flag exits non-zero
+   - optional: dry-run command construction is testable without performing a real sync
+3) Update CI to use canonical helper commands (`repo-helper-*`) as the primary smoke path.
+4) Add one CI step that runs the scripted smoke target in dry-run mode:
+   - `bin/smoke-check-foundry --dry-run-only`
+
+Acceptance Criteria (commands + expected checks)
+1) Repo-helper tests pass:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q tests/test_repo_workflow_clis.py
+```
+Expected: exit `0`
+
+2) Smoke-script tests pass:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q tests/test_smoke_check_foundry.py
+```
+Expected: exit `0`
+
+3) Full local test suite still passes:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q
+```
+Expected: exit `0`
+
+4) CI file verifiably uses canonical helpers and scripted smoke:
+```bash
+rg -n "repo-helper-(preflight|stage1-plan|postflight|stage2-theme-plan|stage2-run-plan)" .github/workflows/ci.yml
+rg -n "smoke-check-foundry --dry-run-only" .github/workflows/ci.yml
+```
+Expected:
+- both commands return matches
+
+Anti-Scope (do NOT do)
+- Do NOT add multi-version Python matrices
+- Do NOT add coverage upload services / badges tooling
+- Do NOT add network-dependent integration tests
+- Do NOT make CI execute real syncs to user home directories
+
+Overengineering Guardrails
+- Keep CI to a single job unless runtime forces a split
+- Prefer subprocess-based local tests over mocks only where behavior matters
+- Reuse existing smoke script instead of creating a second CI-only smoke harness
+- Keep smoke CI dry-run-only by default
+
+Risks & Mitigations
+- Risk: CI runtime grows too much
+  - Mitigation: keep tests focused; no matrix builds
+- Risk: shell-script tests become brittle across platforms
+  - Mitigation: limit assertions to help/error behavior and deterministic dry-run patterns
+- Risk: docs and CI diverge again
+  - Mitigation: update docs in same prompt if command names change
+
+Evidence To Include In Diff
+- CI diff snippet showing canonical `repo-helper-*` commands and smoke script invocation
+- New `test_smoke_check_foundry.py` coverage snippet
+- Test output summary (`pytest -q`) count after additions

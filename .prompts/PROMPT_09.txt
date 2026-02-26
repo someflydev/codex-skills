@@ -1,0 +1,102 @@
+Stage-2 Prompt 1/5
+Title: Narrow Stage-1 Execution Mode (Opt-In) + Deterministic Run Artifacts
+
+Objective
+Add one narrow, opt-in execution path on top of the existing Stage-1 planning helper so the repo can execute a single safe stage deterministically without pretending to be a full workflow engine. The implementation must remain helper-first: dry-run/planning stays the default, execution is explicit, serial, and auditable.
+
+Dependencies / Sequencing
+- Designed order: first Stage-2 prompt (highest leverage improvement from `POST_FLIGHT_REPORT.md`)
+- Depends on current helpers in `skills-foundry/bin/_repo_workflow.py`
+- Runnable independently: yes (if later Stage-2 prompts are absent, this prompt still lands a safe execution MVP + docs note)
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/bin/_repo_workflow.py`
+- `skills-foundry/bin/repo-helper-stage1-plan`
+- `skills-foundry/tests/test_repo_workflow_clis.py` (add/extend execution-mode coverage)
+- `skills-foundry/docs/OPERATOR_MANUAL.md` (document safe execution mode and examples)
+- `skills-foundry/demo-repo/.prompts/` (read-only for acceptance runs; no permanent prompt edits required)
+
+Required Scope
+1) Add a narrow opt-in execution mode for Stage-1 helper planning (do NOT expand to stage2 or generic orchestration):
+   - Example shape (exact names may differ, but behavior must be equivalent):
+     - `repo-helper-stage1-plan --execute`
+     - `--runner-cmd-template "<template with placeholders>"`
+     - `--run-log <path>` (markdown or text log)
+   - Default behavior remains planning-only.
+2) Execution mode must:
+   - run selected prompts serially in prompt order
+   - stop on first non-zero runner exit
+   - write a run log artifact with prompt-by-prompt results and timestamps/status
+   - preserve the existing planning output behavior (or write it alongside execution logging)
+3) Support a deterministic acceptance/demo execution using a harmless command template (for example a Python one-liner or `printf`) so tests do not require Codex network/interactive execution.
+
+Acceptance Criteria (commands + expected checks)
+Run from repo root unless noted.
+
+1) Helper still plans by default (no execution):
+```bash
+cd skills-foundry
+bin/repo-helper-stage1-plan --repo-root demo-repo --prompts-dir .prompts --start 1 --end 2 --write-plan demo-repo/STAGE1-PLAN.md
+```
+Expected:
+- exit code `0`
+- `skills-foundry/demo-repo/STAGE1-PLAN.md` exists
+- plan text still states helper/planning behavior (no silent execution)
+
+2) Safe simulated execution mode works and logs prompt results:
+```bash
+cd skills-foundry
+bin/repo-helper-stage1-plan \
+  --repo-root demo-repo \
+  --prompts-dir .prompts \
+  --start 1 --end 2 \
+  --execute \
+  --runner-cmd-template "python3 -c 'import sys; print(\"RUN\", sys.argv[1])' {prompt_path}" \
+  --run-log demo-repo/STAGE1-RUN-LOG.md
+```
+Expected:
+- exit code `0`
+- `skills-foundry/demo-repo/STAGE1-RUN-LOG.md` exists
+- run log contains `PROMPT_01.txt` and `PROMPT_02.txt`
+- run log records success status per prompt
+
+3) Stop-on-failure behavior is verifiable (test or command):
+- Add a test in `skills-foundry/tests/test_repo_workflow_clis.py` (preferred) that simulates a failing prompt runner and asserts:
+  - non-zero exit
+  - log shows last successful prompt and failing prompt
+  - later prompts are not executed
+
+4) Test suite stays green:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q tests/test_repo_workflow_clis.py
+```
+Expected:
+- exit code `0`
+
+Anti-Scope (do NOT do)
+- Do NOT build a generic prompt execution framework for all stages
+- Do NOT add parallel execution, retries, queueing, or scheduling
+- Do NOT hardcode Codex/ChatGPT API integration
+- Do NOT change Stage-2 helper commands yet
+- Do NOT introduce new runtime dependencies beyond stdlib/Python already used
+
+Overengineering Guardrails
+- One stage only (`Stage 1`) and one explicit execution flag
+- Default remains planning-only (no behavioral surprise)
+- Require a user-supplied runner template; do not invent tool-specific execution protocols
+- Keep logging as flat text/markdown (no database, no telemetry service)
+- Reuse `_repo_workflow.py` instead of creating a new orchestration module tree
+
+Risks & Mitigations
+- Risk: command-template handling becomes injection-prone
+  - Mitigation: placeholder substitution should be explicit and documented; avoid implicit shell unless explicitly enabled
+- Risk: behavior becomes flaky in CI
+  - Mitigation: acceptance/tests use deterministic local one-liners only
+- Risk: feature creep into stage2 automation
+  - Mitigation: reject stage2 execution in this prompt; keep API/CLI naming stage1-specific
+
+Evidence To Include In Diff
+- CLI help output snippet showing execution flag(s)
+- Example run log (`STAGE1-RUN-LOG.md`) snippet with prompt-by-prompt status
+- Test additions demonstrating success and stop-on-failure execution behavior
