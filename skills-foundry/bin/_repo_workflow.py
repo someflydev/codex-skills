@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import shlex
 import re
 import shutil
 import subprocess
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -202,7 +204,7 @@ def main_repo_preflight() -> int:
     return 1 if missing else 0
 
 
-def _build_stage_run_parser(prog: str, stage_label: str) -> argparse.ArgumentParser:
+def _build_stage_run_parser(prog: str, stage_label: str, *, allow_execute: bool = False) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=prog,
         description=f"MVP {stage_label} run helper: verify prerequisites and print an execution/checkpoint plan.",
@@ -214,7 +216,169 @@ def _build_stage_run_parser(prog: str, stage_label: str) -> argparse.ArgumentPar
     parser.add_argument("--include-system", action="store_true", help="Include PROMPT_*_s.txt files in the plan")
     parser.add_argument("--write-plan", type=Path, help="Optional markdown path for the generated run plan")
     parser.add_argument("--require-tools", nargs="*", default=["git", "python3"])
+    if allow_execute:
+        parser.add_argument(
+            "--execute",
+            action="store_true",
+            help="Opt-in Stage 1 execution mode: run selected prompts serially using an explicit runner template.",
+        )
+        parser.add_argument(
+            "--runner-shell-template",
+            help=(
+                "Explicit shell command template used for each prompt when --execute is enabled. "
+                "Supported placeholders: {prompt_path}, {prompt_name}, {prompt_number}, {repo_root}."
+            ),
+        )
+        parser.add_argument(
+            "--run-log",
+            type=Path,
+            help="Path (repo-root-relative by default) for a markdown execution log written when --execute is enabled.",
+        )
     return parser
+
+
+def _now_iso_utc() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _render_runner_shell_command(template: str, prompt: PromptFile, repo_root: Path) -> str:
+    values = {
+        "prompt_path": shlex.quote(str(prompt.path)),
+        "prompt_name": shlex.quote(prompt.path.name),
+        "prompt_number": prompt.number,
+        "repo_root": shlex.quote(str(repo_root)),
+    }
+    try:
+        return template.format(**values)
+    except KeyError as exc:
+        raise ValueError(f"Unknown runner template placeholder: {exc}") from exc
+
+
+def _write_stage_execution_log(
+    *,
+    out_path: Path,
+    stage_label: str,
+    repo_root: Path,
+    selected: list[PromptFile],
+    runner_shell_template: str,
+    entries: list[dict[str, object]],
+) -> None:
+    lines = [f"# {stage_label} Execution Log", ""]
+    lines.append(f"- repo_root: `{repo_root}`")
+    lines.append(f"- prompts_selected: {len(selected)}")
+    lines.append(f"- started_at_utc: {entries[0]['started_at'] if entries else _now_iso_utc()}")
+    lines.append(f"- finished_at_utc: {entries[-1]['finished_at'] if entries else _now_iso_utc()}")
+    lines.append(f"- runner_shell_template: `{runner_shell_template}`")
+    lines.append("")
+    lines.append("## Prompt Results")
+    lines.append("")
+    for entry in entries:
+        prompt_name = entry["prompt_name"]
+        status = entry["status"]
+        returncode = entry["returncode"]
+        lines.append(f"### {prompt_name}")
+        lines.append(f"- status: `{status}`")
+        lines.append(f"- returncode: `{returncode}`")
+        lines.append(f"- started_at_utc: `{entry['started_at']}`")
+        lines.append(f"- finished_at_utc: `{entry['finished_at']}`")
+        lines.append(f"- command: `{entry['command']}`")
+        stdout_text = str(entry.get("stdout", "")).strip()
+        stderr_text = str(entry.get("stderr", "")).strip()
+        if stdout_text:
+            lines.append("- stdout:")
+            lines.append("```text")
+            lines.append(stdout_text)
+            lines.append("```")
+        if stderr_text:
+            lines.append("- stderr:")
+            lines.append("```text")
+            lines.append(stderr_text)
+            lines.append("```")
+        lines.append("")
+    _write_text(out_path, "\n".join(lines))
+
+
+def _execute_stage_plan(
+    *,
+    stage_label: str,
+    repo_root: Path,
+    selected: list[PromptFile],
+    runner_shell_template: str,
+    run_log_arg: Path,
+) -> int:
+    run_log_path = run_log_arg if run_log_arg.is_absolute() else repo_root / run_log_arg
+    entries: list[dict[str, object]] = []
+    print(f"{stage_label} execution mode enabled (opt-in)")
+    print(f"- runner shell template: {runner_shell_template}")
+    print(f"- run log: {run_log_path}")
+
+    for prompt in selected:
+        started_at = _now_iso_utc()
+        try:
+            command = _render_runner_shell_command(runner_shell_template, prompt, repo_root)
+        except ValueError as exc:
+            print(f"ERROR: {exc}")
+            finished_at = _now_iso_utc()
+            entries.append(
+                {
+                    "prompt_name": prompt.path.name,
+                    "status": "template_error",
+                    "returncode": 2,
+                    "started_at": started_at,
+                    "finished_at": finished_at,
+                    "command": "<template render failed>",
+                    "stdout": "",
+                    "stderr": str(exc),
+                }
+            )
+            _write_stage_execution_log(
+                out_path=run_log_path,
+                stage_label=stage_label,
+                repo_root=repo_root,
+                selected=selected,
+                runner_shell_template=runner_shell_template,
+                entries=entries,
+            )
+            return 2
+
+        proc = subprocess.run(command, shell=True, cwd=repo_root, capture_output=True, text=True)
+        finished_at = _now_iso_utc()
+        status = "success" if proc.returncode == 0 else "failed"
+        entries.append(
+            {
+                "prompt_name": prompt.path.name,
+                "status": status,
+                "returncode": proc.returncode,
+                "started_at": started_at,
+                "finished_at": finished_at,
+                "command": command,
+                "stdout": proc.stdout,
+                "stderr": proc.stderr,
+            }
+        )
+        print(f"- executed {prompt.path.name}: {status} (rc={proc.returncode})")
+        if proc.returncode != 0:
+            _write_stage_execution_log(
+                out_path=run_log_path,
+                stage_label=stage_label,
+                repo_root=repo_root,
+                selected=selected,
+                runner_shell_template=runner_shell_template,
+                entries=entries,
+            )
+            print(f"Wrote run log: {run_log_path}")
+            return proc.returncode
+
+    _write_stage_execution_log(
+        out_path=run_log_path,
+        stage_label=stage_label,
+        repo_root=repo_root,
+        selected=selected,
+        runner_shell_template=runner_shell_template,
+        entries=entries,
+    )
+    print(f"Wrote run log: {run_log_path}")
+    return 0
 
 
 def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
@@ -261,11 +425,31 @@ def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
         _write_text(out_path, plan_md)
         print(f"Wrote plan: {out_path}")
 
+    if getattr(args, "execute", False):
+        if stage_label != "Stage 1":
+            print("ERROR: Execution mode is only supported for Stage 1 in this helper MVP")
+            return 2
+        if not getattr(args, "runner_shell_template", None):
+            print("ERROR: --execute requires --runner-shell-template")
+            return 2
+        if not getattr(args, "run_log", None):
+            print("ERROR: --execute requires --run-log")
+            return 2
+        execute_rc = _execute_stage_plan(
+            stage_label=stage_label,
+            repo_root=repo_root,
+            selected=selected,
+            runner_shell_template=args.runner_shell_template,
+            run_log_arg=args.run_log,
+        )
+        if execute_rc != 0:
+            return execute_rc
+
     return 1 if missing else 0
 
 
 def main_repo_stage1_run() -> int:
-    parser = _build_stage_run_parser(Path(__file__).name, "Stage 1")
+    parser = _build_stage_run_parser(Path(__file__).name, "Stage 1", allow_execute=True)
     parser.set_defaults(include_system=True)
     args = parser.parse_args()
     return _run_stage_plan("Stage 1", args)
