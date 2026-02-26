@@ -57,7 +57,9 @@ Then read:
 - `skills-foundry/docs/OPERATOR_MANUAL.md` for the prompt-first workflow and smoke-run examples
 - `skills-foundry/docs/examples/` for tracked proof snippets (sync plan, lint summary, catalog excerpt)
 - `skills-foundry/docs/RELEASE_CHECKLIST.md` for a lightweight release readiness checklist
+- `skills-foundry/docs/DEPRECATIONS.md` for workflow helper alias deprecation policy/timeline
 - `skills-foundry/CHANGELOG.md` for lightweight changelog/release-notes conventions
+- `LICENSE` for repo licensing terms (MIT)
 
 ## Prompt Lineage / Audit Artifacts
 
@@ -68,3 +70,4 @@ Then read:
 
 - `skills-foundry/bin/skills-*` commands are functional and tested.
 - `skills-foundry/bin/repo-helper-*` commands are the canonical **MVP workflow helpers** (preflight inventory, run planning, postflight snapshots, stage-2 planning). Deprecated `repo-*` aliases remain for compatibility and print a migration warning.
+- Licensing and deprecation policy references live at `LICENSE` and `skills-foundry/docs/DEPRECATIONS.md`.

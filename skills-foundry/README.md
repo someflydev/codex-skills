@@ -27,7 +27,9 @@ bin/skills-render
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.
 For release readiness checks, see `docs/RELEASE_CHECKLIST.md`.
+For helper alias migration policy, see `docs/DEPRECATIONS.md`.
 For release notes/changelog conventions, see `CHANGELOG.md`.
+Repository license terms are in the repo root `../LICENSE` (MIT).
 
 ## Project Layout
 
@@ -44,8 +46,9 @@ For release notes/changelog conventions, see `CHANGELOG.md`.
 
 - `repo-helper-*` workflow commands are planning/snapshot helpers today; they do not execute prompts automatically.
 - Deprecated `repo-*` aliases are still shipped for compatibility and print a migration warning to stderr.
+- Alias removal timing is documented in `docs/DEPRECATIONS.md` and may shift until a stable release cadence exists.
 - Lint/validate heuristics are practical but still evolving.
-- CI is set up, but release packaging is still incomplete (for example: no license yet).
+- CI is set up, but release packaging is still evolving (for example: release process remains manual).
 
 ## Curated Proof Artifacts
 
