@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "notes": "Curated docs/examples refresh manifest. Commands must be local-only and deterministic enough for packaging refreshes.",
+  "entries": [
+    {
+      "id": "skills-lint-json-snippet",
+      "type": "json-slice",
+      "command": ["bin/skills-lint"],
+      "cwd": ".",
+      "source": "reports/skills-lint.json",
+      "target": "docs/examples/skills-lint-json-snippet.json",
+      "max_items": 2,
+      "fields": [
+        "skill_id",
+        "path",
+        "completeness_score_100",
+        "excellence_score_10",
+        "top_issue_rule_ids",
+        "top_issues"
+      ]
+    },
+    {
+      "id": "skills-sync-dry-run",
+      "type": "command-text",
+      "command": ["bin/skills-sync", "--dry-run", "--to", "/tmp/skills-sync-smoke-examples"],
+      "cwd": ".",
+      "target": "docs/examples/skills-sync-dry-run.txt",
+      "include_substrings": [
+        "Running skills-validate and skills-lint before sync...",
+        "Sync plan:",
+        "create=",
+        "update=",
+        "unchanged=",
+        "would-prune=",
+        "Dry-run: no files were written"
+      ],
+      "max_lines": 16
+    },
+    {
+      "id": "skills-sync-prune-dry-run",
+      "type": "command-text",
+      "command": ["bin/skills-sync", "--dry-run", "--prune", "--yes", "--to", "/tmp/skills-sync-smoke-examples"],
+      "cwd": ".",
+      "target": "docs/examples/skills-sync-prune-dry-run.txt",
+      "include_substrings": [
+        "Running skills-validate and skills-lint before sync...",
+        "Sync plan:",
+        "create=",
+        "update=",
+        "unchanged=",
+        "would-prune=",
+        "Dry-run: no files were written"
+      ],
+      "max_lines": 16
+    },
+    {
+      "id": "skills-lint-summary",
+      "type": "file-head",
+      "command": ["bin/skills-lint"],
+      "cwd": ".",
+      "source": "reports/skills-lint.md",
+      "target": "docs/examples/skills-lint-summary.md",
+      "max_lines": 22
+    },
+    {
+      "id": "skills-catalog-snippet",
+      "type": "file-head",
+      "command": ["bin/skills-render"],
+      "cwd": ".",
+      "source": "reports/SKILLS_CATALOG.md",
+      "target": "docs/examples/skills-catalog-snippet.md",
+      "max_lines": 24
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+from pathlib import Path
+from typing import Any
+
+
+def _default_foundry_root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog=Path(__file__).name,
+        description="Refresh curated docs/examples snippets from local CLI outputs and report files.",
+    )
+    parser.add_argument("--root", type=Path, default=_default_foundry_root(), help="Foundry root (default: script parent)")
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=Path("docs/examples/manifest.json"),
+        help="Manifest path (foundry-root-relative by default)",
+    )
+    parser.add_argument("--dry-run", action="store_true", help="List planned refresh/check actions without writing files")
+    return parser
+
+
+def _resolve_under_root(root: Path, path_arg: str | Path) -> Path:
+    path = Path(path_arg)
+    return path if path.is_absolute() else (root / path)
+
+
+def _load_manifest(manifest_path: Path) -> dict[str, Any]:
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or "entries" not in data or not isinstance(data["entries"], list):
+        raise ValueError("Manifest must be a JSON object with an entries[] list")
+    return data
+
+
+def _run_command(entry: dict[str, Any], *, root: Path, dry_run: bool) -> tuple[str, str]:
+    command = entry.get("command")
+    if not command:
+        return "", ""
+    if not isinstance(command, list) or not all(isinstance(part, str) for part in command):
+        raise ValueError(f"Entry {entry.get('id')} command must be a list of strings")
+    cwd = _resolve_under_root(root, entry.get("cwd", "."))
+    if dry_run:
+        print(f"[dry-run] would run ({cwd}): {' '.join(command)}")
+        return "", ""
+    proc = subprocess.run(command, cwd=cwd, capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"Entry {entry.get('id')} command failed with exit {proc.returncode}: {' '.join(command)}\n"
+            f"stdout:\n{proc.stdout}\n\nstderr:\n{proc.stderr}"
+        )
+    return proc.stdout, proc.stderr
+
+
+def _render_command_text(entry: dict[str, Any], *, stdout_text: str, stderr_text: str) -> str:
+    stream = str(entry.get("stream", "stdout"))
+    if stream == "stdout":
+        text = stdout_text
+    elif stream == "stderr":
+        text = stderr_text
+    elif stream == "both":
+        text = (stdout_text or "") + ("\n" if stdout_text and stderr_text else "") + (stderr_text or "")
+    else:
+        raise ValueError(f"Unsupported stream for entry {entry.get('id')}: {stream}")
+
+    lines = text.splitlines()
+    include_substrings = entry.get("include_substrings") or []
+    if include_substrings:
+        lines = [line for line in lines if any(token in line for token in include_substrings)]
+    exclude_substrings = entry.get("exclude_substrings") or []
+    if exclude_substrings:
+        lines = [line for line in lines if not any(token in line for token in exclude_substrings)]
+    max_lines = entry.get("max_lines")
+    if isinstance(max_lines, int) and max_lines >= 0:
+        lines = lines[:max_lines]
+
+    prelude = entry.get("prelude_lines") or []
+    if prelude:
+        lines = [str(x) for x in prelude] + lines
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _render_file_head(entry: dict[str, Any], *, root: Path) -> str:
+    source = _resolve_under_root(root, entry["source"])
+    text = source.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    max_lines = entry.get("max_lines")
+    if isinstance(max_lines, int) and max_lines >= 0:
+        lines = lines[:max_lines]
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _render_json_slice(entry: dict[str, Any], *, root: Path) -> str:
+    source = _resolve_under_root(root, entry["source"])
+    data = json.loads(source.read_text(encoding="utf-8"))
+    if not isinstance(data, list):
+        raise ValueError(f"Entry {entry.get('id')} expected JSON array source")
+    max_items = int(entry.get("max_items", 1))
+    fields = entry.get("fields")
+    items = data[:max_items]
+    if fields:
+        filtered: list[dict[str, Any]] = []
+        for item in items:
+            if not isinstance(item, dict):
+                filtered.append({"value": item})
+                continue
+            filtered.append({key: item.get(key) for key in fields})
+        items = filtered
+    return json.dumps(items, indent=2) + "\n"
+
+
+def _render_entry(entry: dict[str, Any], *, root: Path, dry_run: bool) -> tuple[Path, str | None]:
+    entry_type = str(entry.get("type"))
+    target = _resolve_under_root(root, entry["target"])
+    stdout_text, stderr_text = _run_command(entry, root=root, dry_run=dry_run)
+    if dry_run:
+        return target, None
+
+    if entry_type == "command-text":
+        content = _render_command_text(entry, stdout_text=stdout_text, stderr_text=stderr_text)
+    elif entry_type == "file-head":
+        content = _render_file_head(entry, root=root)
+    elif entry_type == "json-slice":
+        content = _render_json_slice(entry, root=root)
+    else:
+        raise ValueError(f"Unsupported entry type for {entry.get('id')}: {entry_type}")
+    return target, content
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+    root = args.root.resolve()
+    manifest_path = _resolve_under_root(root, args.manifest).resolve()
+
+    if not manifest_path.exists():
+        print(f"ERROR: manifest not found: {manifest_path}")
+        return 2
+
+    try:
+        manifest = _load_manifest(manifest_path)
+    except Exception as exc:
+        print(f"ERROR: failed to load manifest: {exc}")
+        return 2
+
+    entries = manifest["entries"]
+    print(f"docs example refresh root: {root}")
+    print(f"manifest: {manifest_path}")
+    print(f"entries: {len(entries)}")
+    if args.dry_run:
+        print("mode: dry-run")
+    else:
+        print("mode: write")
+
+    for entry in entries:
+        entry_id = entry.get("id", "<unnamed>")
+        try:
+            target, content = _render_entry(entry, root=root, dry_run=args.dry_run)
+        except Exception as exc:
+            print(f"ERROR: entry {entry_id}: {exc}")
+            return 1
+
+        if args.dry_run:
+            print(f"[dry-run] would refresh/check: {target}")
+            continue
+
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content or "", encoding="utf-8")
+        print(f"[write] refreshed: {target}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
