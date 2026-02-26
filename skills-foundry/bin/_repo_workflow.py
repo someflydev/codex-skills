@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shlex
 import re
 import shutil
@@ -230,6 +231,15 @@ def _build_stage_run_parser(prog: str, stage_label: str, *, allow_execute: bool 
             ),
         )
         parser.add_argument(
+            "--runner-argv-template",
+            help=(
+                "Explicit non-shell argv template used for each prompt when --execute is enabled. "
+                "Provide a JSON array of argument strings, for example "
+                '\'["python3","-c","import sys; print(sys.argv[1])","{prompt_path}"]\'. '
+                "Supported placeholders: {prompt_path}, {prompt_name}, {prompt_number}, {repo_root}."
+            ),
+        )
+        parser.add_argument(
             "--run-log",
             type=Path,
             help="Path (repo-root-relative by default) for a markdown execution log written when --execute is enabled.",
@@ -275,13 +285,39 @@ def _render_runner_shell_command(template: str, prompt: PromptFile, repo_root: P
         raise ValueError(f"Unknown runner template placeholder: {exc}") from exc
 
 
+def _render_runner_argv_command(template_json: str, prompt: PromptFile, repo_root: Path) -> list[str]:
+    try:
+        raw_template = json.loads(template_json)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON for --runner-argv-template: {exc}") from exc
+    if not isinstance(raw_template, list) or not raw_template:
+        raise ValueError("--runner-argv-template must be a non-empty JSON array of argument strings")
+    if not all(isinstance(part, str) for part in raw_template):
+        raise ValueError("--runner-argv-template JSON array must contain only strings")
+
+    values = {
+        "prompt_path": str(prompt.path),
+        "prompt_name": prompt.path.name,
+        "prompt_number": prompt.number,
+        "repo_root": str(repo_root),
+    }
+    rendered: list[str] = []
+    for part in raw_template:
+        try:
+            rendered.append(part.format(**values))
+        except KeyError as exc:
+            raise ValueError(f"Unknown runner template placeholder: {exc}") from exc
+    return rendered
+
+
 def _write_stage_execution_log(
     *,
     out_path: Path,
     stage_label: str,
     repo_root: Path,
     selected: list[PromptFile],
-    runner_shell_template: str,
+    runner_mode: str,
+    runner_template_display: str,
     entries: list[dict[str, object]],
 ) -> None:
     lines = [f"# {stage_label} Execution Log", ""]
@@ -289,7 +325,8 @@ def _write_stage_execution_log(
     lines.append(f"- prompts_selected: {len(selected)}")
     lines.append(f"- started_at_utc: {entries[0]['started_at'] if entries else _now_iso_utc()}")
     lines.append(f"- finished_at_utc: {entries[-1]['finished_at'] if entries else _now_iso_utc()}")
-    lines.append(f"- runner_shell_template: `{runner_shell_template}`")
+    lines.append(f"- runner_mode: `{runner_mode}`")
+    lines.append(f"- runner_template: `{runner_template_display}`")
     lines.append("")
     lines.append("## Prompt Results")
     lines.append("")
@@ -348,13 +385,17 @@ def _execute_stage_plan(
     stage_label: str,
     repo_root: Path,
     selected: list[PromptFile],
-    runner_shell_template: str,
+    runner_shell_template: str | None,
+    runner_argv_template: str | None,
     run_log_path: Path,
     runner_timeout_seconds: float | None,
 ) -> int:
     entries: list[dict[str, object]] = []
+    runner_mode = "argv" if runner_argv_template else "shell"
+    runner_template_display = runner_argv_template if runner_argv_template is not None else (runner_shell_template or "")
     print(f"{stage_label} execution mode enabled (opt-in)")
-    print(f"- runner shell template: {runner_shell_template}")
+    print(f"- runner mode: {runner_mode}")
+    print(f"- runner template: {runner_template_display}")
     print(f"- run log: {run_log_path}")
     if runner_timeout_seconds is not None:
         print(f"- runner timeout seconds: {runner_timeout_seconds}")
@@ -362,7 +403,12 @@ def _execute_stage_plan(
     for prompt in selected:
         started_at = _now_iso_utc()
         try:
-            command = _render_runner_shell_command(runner_shell_template, prompt, repo_root)
+            if runner_argv_template is not None:
+                command_argv = _render_runner_argv_command(runner_argv_template, prompt, repo_root)
+                command_display = " ".join(shlex.quote(part) for part in command_argv)
+            else:
+                command_display = _render_runner_shell_command(runner_shell_template or "", prompt, repo_root)
+                command_argv = None
         except ValueError as exc:
             print(f"ERROR: {exc}")
             finished_at = _now_iso_utc()
@@ -383,20 +429,31 @@ def _execute_stage_plan(
                 stage_label=stage_label,
                 repo_root=repo_root,
                 selected=selected,
-                runner_shell_template=runner_shell_template,
+                runner_mode=runner_mode,
+                runner_template_display=runner_template_display,
                 entries=entries,
             )
             return 2
 
         try:
-            proc = subprocess.run(
-                command,
-                shell=True,
-                cwd=repo_root,
-                capture_output=True,
-                text=True,
-                timeout=runner_timeout_seconds,
-            )
+            if command_argv is not None:
+                proc = subprocess.run(
+                    command_argv,
+                    shell=False,
+                    cwd=repo_root,
+                    capture_output=True,
+                    text=True,
+                    timeout=runner_timeout_seconds,
+                )
+            else:
+                proc = subprocess.run(
+                    command_display,
+                    shell=True,
+                    cwd=repo_root,
+                    capture_output=True,
+                    text=True,
+                    timeout=runner_timeout_seconds,
+                )
         except subprocess.TimeoutExpired as exc:
             finished_at = _now_iso_utc()
             entries.append(
@@ -406,7 +463,7 @@ def _execute_stage_plan(
                     "returncode": 124,
                     "started_at": started_at,
                     "finished_at": finished_at,
-                    "command": command,
+                    "command": command_display,
                     "stdout": (exc.stdout or ""),
                     "stderr": (exc.stderr or "") + f"\nTimed out after {runner_timeout_seconds} second(s)",
                 }
@@ -417,7 +474,8 @@ def _execute_stage_plan(
                 stage_label=stage_label,
                 repo_root=repo_root,
                 selected=selected,
-                runner_shell_template=runner_shell_template,
+                runner_mode=runner_mode,
+                runner_template_display=runner_template_display,
                 entries=entries,
             )
             print(f"Wrote run log: {run_log_path}")
@@ -431,7 +489,7 @@ def _execute_stage_plan(
                 "returncode": proc.returncode,
                 "started_at": started_at,
                 "finished_at": finished_at,
-                "command": command,
+                "command": command_display,
                 "stdout": proc.stdout,
                 "stderr": proc.stderr,
             }
@@ -443,7 +501,8 @@ def _execute_stage_plan(
                 stage_label=stage_label,
                 repo_root=repo_root,
                 selected=selected,
-                runner_shell_template=runner_shell_template,
+                runner_mode=runner_mode,
+                runner_template_display=runner_template_display,
                 entries=entries,
             )
             print(f"Wrote run log: {run_log_path}")
@@ -454,7 +513,8 @@ def _execute_stage_plan(
         stage_label=stage_label,
         repo_root=repo_root,
         selected=selected,
-        runner_shell_template=runner_shell_template,
+        runner_mode=runner_mode,
+        runner_template_display=runner_template_display,
         entries=entries,
     )
     print(f"Wrote run log: {run_log_path}")
@@ -512,8 +572,10 @@ def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
         if stage_label != "Stage 1":
             print("ERROR: Execution mode is only supported for Stage 1 in this helper MVP")
             return 2
-        if not getattr(args, "runner_shell_template", None):
-            print("ERROR: --execute requires --runner-shell-template")
+        runner_shell_template = getattr(args, "runner_shell_template", None)
+        runner_argv_template = getattr(args, "runner_argv_template", None)
+        if bool(runner_shell_template) == bool(runner_argv_template):
+            print("ERROR: --execute requires exactly one of --runner-shell-template or --runner-argv-template")
             return 2
         if not getattr(args, "run_log", None):
             print("ERROR: --execute requires --run-log")
@@ -543,7 +605,8 @@ def _run_stage_plan(stage_label: str, args: argparse.Namespace) -> int:
             stage_label=stage_label,
             repo_root=repo_root,
             selected=selected,
-            runner_shell_template=args.runner_shell_template,
+            runner_shell_template=runner_shell_template,
+            runner_argv_template=runner_argv_template,
             run_log_path=run_log_path,
             runner_timeout_seconds=getattr(args, "runner_timeout_seconds", None),
         )
