@@ -1,0 +1,12 @@
+Running skills-validate and skills-lint before sync...
+Sync plan:
+- create: 0
+- update: 0
+- unchanged: 27
+  - changelog-drafter
+  - hello-skill
+  - repo-tree-summarizer
+  - prompt-preflight-inspector
+  - stage2-runner
+- would-prune: 0
+Dry-run: no files were written
