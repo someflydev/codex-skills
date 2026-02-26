@@ -8,6 +8,7 @@ REPO_HELPER_STAGE1_PLAN = ROOT / "bin" / "repo-helper-stage1-plan"
 REPO_HELPER_POSTFLIGHT = ROOT / "bin" / "repo-helper-postflight"
 REPO_HELPER_STAGE2_THEME_PLAN = ROOT / "bin" / "repo-helper-stage2-theme-plan"
 REPO_HELPER_STAGE2_RUN_PLAN = ROOT / "bin" / "repo-helper-stage2-run-plan"
+DEMO_REPO_RESET = ROOT / "bin" / "demo-repo-reset"
 
 DEPRECATED_REPO_PREFLIGHT = ROOT / "bin" / "repo-preflight"
 DEPRECATED_REPO_STAGE1_RUN = ROOT / "bin" / "repo-stage1-run"
@@ -39,6 +40,7 @@ def test_repo_workflow_helpers_help_runs() -> None:
         REPO_HELPER_POSTFLIGHT,
         REPO_HELPER_STAGE2_THEME_PLAN,
         REPO_HELPER_STAGE2_RUN_PLAN,
+        DEMO_REPO_RESET,
     ]:
         result = _run([str(cli), "--help"])
         assert result.returncode == 0, f"{cli.name}\n{result.stdout}\n{result.stderr}"
@@ -237,3 +239,91 @@ def test_repo_helper_stage1_plan_execute_stops_on_first_failure_and_logs_it(tmp_
     assert "PROMPT_03.txt" not in log_text
     assert "- status: `failed`" in log_text
     assert "- returncode: `7`" in log_text
+
+
+def test_repo_helper_stage1_plan_execute_enforces_guardrails(tmp_path: Path) -> None:
+    repo_root = _make_prompt_repo(tmp_path)
+
+    too_many = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "1",
+            "--execute",
+            "--max-prompts",
+            "1",
+            "--runner-shell-template",
+            "python3 -c 'print(\"ok\")' {prompt_path}",
+            "--run-log",
+            "STAGE1-RUN-LOG.md",
+            "--require-tools",
+            "python3",
+        ]
+    )
+    assert too_many.returncode == 2
+    assert "--max-prompts" in too_many.stdout
+
+    outside_log = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "1",
+            "--execute",
+            "--runner-shell-template",
+            "python3 -c 'print(\"ok\")' {prompt_path}",
+            "--run-log",
+            "../outside-log.md",
+            "--no-max-prompts",
+            "--require-tools",
+            "python3",
+        ]
+    )
+    assert outside_log.returncode == 2
+    assert "--allow-outside-repo-artifacts" in outside_log.stdout
+
+
+def test_repo_helper_stage1_plan_execute_timeout_writes_run_log(tmp_path: Path) -> None:
+    repo_root = _make_prompt_repo(tmp_path)
+    run_log = repo_root / "STAGE1-TIMEOUT-LOG.md"
+
+    result = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "1",
+            "--execute",
+            "--runner-shell-template",
+            "python3 -c 'import time; time.sleep(0.2)' {prompt_path}",
+            "--runner-timeout-seconds",
+            "0.05",
+            "--run-log",
+            "STAGE1-TIMEOUT-LOG.md",
+            "--no-max-prompts",
+            "--require-tools",
+            "python3",
+        ]
+    )
+
+    assert result.returncode == 124, result.stdout + "\n" + result.stderr
+    assert run_log.exists()
+    log_text = run_log.read_text(encoding="utf-8")
+    assert "timed_out" in log_text
+    assert "Timed out after 0.05 second(s)" in log_text
