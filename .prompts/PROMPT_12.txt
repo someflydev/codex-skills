@@ -1,0 +1,78 @@
+Stage-2 Prompt 4/5
+Title: Packaging + Release Hygiene Baseline (License Decision + Deprecation Policy)
+
+Objective
+Close the remaining packaging/release gap by adding a real license (with explicit human choice), documenting alias deprecation timing, and tightening release-readiness docs so the repo is clearer to reuse externally. This prompt is intentionally packaging-focused and must not expand into deployment/distribution automation.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_10.txt` and `PROMPT_11.txt`
+- Runnable independently: partially (requires a human license choice)
+- If no explicit license choice is provided at run time, STOP and report the blocker before making legal-text changes
+
+Human Decision Required (must ask before applying legal text)
+- Choose one license for this repo (examples: `MIT`, `Apache-2.0`, `BSD-3-Clause`, or another explicitly requested by the user)
+- Do not invent/customize legal license text without explicit instruction
+
+Artifacts To Create / Modify (exact paths)
+- `LICENSE` (repo root) — conditional on explicit license choice
+- `README.md`
+- `skills-foundry/README.md`
+- `skills-foundry/docs/RELEASE_CHECKLIST.md`
+- `skills-foundry/CHANGELOG.md`
+- `skills-foundry/docs/DEPRECATIONS.md` (new; document `repo-*` alias deprecation window and removal target)
+
+Required Scope
+1) Add a standard license file at repo root after explicit user choice.
+2) Document deprecation policy/timeline for deprecated `repo-*` aliases:
+   - what is deprecated
+   - canonical replacement (`repo-helper-*`)
+   - target removal milestone/date/version placeholder
+3) Tighten release docs:
+   - `RELEASE_CHECKLIST.md` references `LICENSE` and `DEPRECATIONS.md`
+   - `CHANGELOG.md` includes a note for the deprecation policy entry
+4) Update READMEs to reference:
+   - chosen license
+   - deprecation policy doc
+   - current helper-only execution scope (if wording drifts)
+
+Acceptance Criteria (commands + expected checks)
+Two-path acceptance:
+
+A) If license choice is provided (success path)
+```bash
+test -f LICENSE
+rg -n "repo-helper-\\*|DEPRECATIONS\\.md|License" README.md skills-foundry/README.md skills-foundry/docs/RELEASE_CHECKLIST.md
+test -f skills-foundry/docs/DEPRECATIONS.md
+```
+Expected:
+- all commands succeed
+- deprecation policy file exists and mentions deprecated `repo-*` aliases + canonical replacements
+
+B) If license choice is NOT provided (blocked path)
+- Prompt must stop and report: "License choice required"
+- Must not add a fabricated/custom license text
+
+Anti-Scope (do NOT do)
+- Do NOT publish to PyPI / package indexes
+- Do NOT add release automation pipelines, signing, SBOM, or provenance tooling
+- Do NOT add legal review commentary beyond standard template insertion + docs references
+- Do NOT create a custom license
+
+Overengineering Guardrails
+- One license file, one deprecations doc, and small README/checklist updates
+- Keep deprecation policy simple and human-readable (no policy engine, no config registry)
+- No release tooling automation in this prompt
+
+Risks & Mitigations
+- Risk: wrong license text or wrong scope
+  - Mitigation: require explicit user license choice before writing `LICENSE`
+- Risk: deprecation timing promises too much
+  - Mitigation: document a realistic placeholder milestone and "subject to change" language if no versioning cadence exists yet
+- Risk: docs drift across root and nested README
+  - Mitigation: update both in the same prompt and verify with `rg`
+
+Evidence To Include In Diff
+- `LICENSE` header and identifier (if chosen)
+- `skills-foundry/docs/DEPRECATIONS.md` deprecation table/timeline snippet
+- README/release-checklist references to license + deprecations policy
+

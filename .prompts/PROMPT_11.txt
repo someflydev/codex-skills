@@ -1,0 +1,92 @@
+Stage-2 Prompt 3/5
+Title: Safety Guardrails + Idempotent Cleanup for Helper Execution and Validator UX
+
+Objective
+Harden operator safety and repeatability around the new helper execution mode and existing smoke workflow. This prompt adds guardrails (host/path checks, bounded execution controls, explicit cleanup paths) and a small validator UX improvement to reduce warning-fatigue when users forget `--compact`.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_09.txt` and `PROMPT_10.txt`
+- Runnable independently: yes (if execution mode from `PROMPT_09` is absent, implement the validator UX and cleanup/script guardrails only, and document the skipped execution-specific guardrails in the run summary)
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/bin/_repo_workflow.py`
+- `skills-foundry/bin/smoke-check-foundry`
+- `skills-foundry/bin/demo-repo-reset` (new)
+- `skills-foundry/bin/skills-validate`
+- `skills-foundry/tests/test_repo_workflow_clis.py`
+- `skills-foundry/tests/test_skills_validate.py`
+- `skills-foundry/docs/OPERATOR_MANUAL.md`
+- `skills-foundry/demo-repo/README.md` (if reset workflow is documented there)
+
+Required Scope
+1) Add safety guardrails to helper execution mode (from `PROMPT_09`):
+   - bounded prompt count (e.g. `--max-prompts`)
+   - explicit repo-root/path checks for logs and execution cwd
+   - optional timeout for each runner invocation (simple, serial)
+2) Add deterministic cleanup/reset support for local demos:
+   - `bin/demo-repo-reset` script to clean known generated artifacts in `skills-foundry/demo-repo/`
+   - optional smoke script flag to reset the sync target safely before/after runs (no destructive defaults)
+3) Add a validator UX nudge:
+   - when warning volume is high and user is not using `--compact`, print a short hint recommending `--compact` (without changing exit codes)
+
+Acceptance Criteria (commands + expected checks)
+1) Demo reset script is safe and idempotent:
+```bash
+cd skills-foundry
+bin/demo-repo-reset --help
+bin/demo-repo-reset --dry-run
+bin/demo-repo-reset --dry-run
+```
+Expected:
+- help exits `0`
+- dry-run exits `0` both times
+- output clearly lists what would be removed without deleting by default
+
+2) Smoke script supports deterministic reset option (if added):
+```bash
+cd skills-foundry
+bin/smoke-check-foundry --dry-run-only --sync-target /tmp/skills-sync-smoke-stage2
+```
+Expected: exit `0`
+
+3) Validator hint is present on verbose runs and absent/less relevant on compact runs:
+```bash
+cd skills-foundry
+bin/skills-validate | rg -- '--compact'
+bin/skills-validate --compact | rg -n 'Validated .* warning\\(s\\)'
+```
+Expected:
+- first command finds a compact hint when warnings are high
+- second command still behaves normally and exits `0`
+
+4) Tests remain green:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q tests/test_repo_workflow_clis.py tests/test_skills_validate.py
+```
+Expected: exit `0`
+
+Anti-Scope (do NOT do)
+- Do NOT add sandboxing/containers for command execution
+- Do NOT implement background workers or persistent state
+- Do NOT change validator scoring/rubric logic in this prompt
+- Do NOT add destructive cleanup defaults
+
+Overengineering Guardrails
+- Simple local scripts and argparse flags only
+- Dry-run first for cleanup paths
+- Guardrails should be parameter checks and bounded execution controls, not a policy engine
+- Validator hint is a small UX message, not a new logging framework
+
+Risks & Mitigations
+- Risk: cleanup script deletes too broadly
+  - Mitigation: restrict to known generated artifacts and require explicit flags for non-dry-run deletion
+- Risk: execution guardrails block legitimate local runs
+  - Mitigation: include explicit opt-out flags for advanced users, documented in help text
+- Risk: validator hint becomes noisy
+  - Mitigation: emit only when warning count exceeds a threshold and `--compact` is not used
+
+Evidence To Include In Diff
+- `demo-repo-reset` help and dry-run output snippet
+- `skills-validate` verbose-run hint snippet recommending `--compact`
+- Tests showing guardrail and validator-hint behavior
