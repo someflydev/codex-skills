@@ -107,6 +107,21 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
 2. `stage-1 run`
    - Execute prompts in order.
    - Group diffs into prompt-sized commits.
+   - Optional helper-only local execution simulation for Stage 1 (post-Stage-2 hardening):
+     ```bash
+     cd skills-foundry
+     bin/repo-helper-stage1-plan \
+       --repo-root demo-repo \
+       --prompts-dir .prompts \
+       --start 1 --end 2 \
+       --write-plan STAGE1-PLAN.md \
+       --execute \
+       --runner-shell-template "python3 -c 'import sys; print(\"RUN\", sys.argv[1])' {prompt_path}" \
+       --run-log STAGE1-RUN-LOG.md
+     ```
+     Notes:
+     - Execution mode is opt-in and helper-first (planning remains the default behavior).
+     - The helper writes a run log under the selected `--repo-root` (for example `demo-repo/STAGE1-RUN-LOG.md`).
 3. `stage-1 postflight`
    - Review what shipped, what drifted, and what broke.
    - Produce a risk register and stage-2 inputs.
