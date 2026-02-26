@@ -25,7 +25,18 @@ jobs:
       - name: Core CLI smoke (--help)
         working-directory: skills-foundry
         run: |
-          for cmd in skills-new skills-validate skills-lint skills-sync skills-render repo-preflight repo-stage1-run repo-postflight repo-stage2-plan repo-stage2-run; do
+          for cmd in \
+            skills-new \
+            skills-validate \
+            skills-lint \
+            skills-sync \
+            skills-render \
+            repo-helper-preflight \
+            repo-helper-stage1-plan \
+            repo-helper-postflight \
+            repo-helper-stage2-theme-plan \
+            repo-helper-stage2-run-plan
+          do
             bin/$cmd --help >/dev/null
           done
 
@@ -34,3 +45,7 @@ jobs:
         run: |
           bin/skills-validate >/dev/null
           bin/skills-lint >/dev/null
+
+      - name: Scripted foundry smoke (dry-run only)
+        working-directory: skills-foundry
+        run: bin/smoke-check-foundry --dry-run-only
