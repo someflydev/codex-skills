@@ -12,6 +12,7 @@ installed into `~/.codex/skills/<skill-id>/SKILL.md`.
 - `bin/` stores operator CLIs.
 - `reports/` stores generated validation/lint/preflight/catalog outputs.
 - `docs/` stores durable operator and authoring documentation.
+- `skills/docs-tools/` currently exists as an intentionally empty placeholder category for future documentation-oriented utility skills.
 
 ## Sync Model
 

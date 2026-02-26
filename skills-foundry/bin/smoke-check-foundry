@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: smoke-check-foundry [--sync-target PATH] [--with-real-sync] [--dry-run-only]
+
+Runs a repeatable local smoke check for skills-foundry:
+  1) skills-new (with --force on smoke-check)
+  2) skills-validate
+  3) skills-lint
+  4) skills-sync --dry-run
+  5) skills-render
+Optional:
+  6) skills-sync (real) to generate INDEX.md in the sync target
+
+Options:
+  --sync-target PATH  Dry-run/real sync target (default: /tmp/skills-sync-smoke)
+  --with-real-sync    Run a real sync after dry-run to generate INDEX.md
+  --dry-run-only      Explicitly skip the real sync step (default)
+  --help              Show this help
+USAGE
+}
+
+SYNC_TARGET="/tmp/skills-sync-smoke"
+WITH_REAL_SYNC=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --sync-target)
+      [[ $# -ge 2 ]] || { echo "ERROR: --sync-target requires a path" >&2; exit 2; }
+      SYNC_TARGET="$2"
+      shift 2
+      ;;
+    --with-real-sync)
+      WITH_REAL_SYNC=1
+      shift
+      ;;
+    --dry-run-only)
+      WITH_REAL_SYNC=0
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FOUNDRY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+cd "$FOUNDRY_ROOT"
+
+echo "[smoke] skills-new (smoke-check)"
+bin/skills-new --category core --skill-id smoke-check --name "Smoke Check" --force
+
+echo "[smoke] skills-validate"
+bin/skills-validate
+
+echo "[smoke] skills-lint"
+bin/skills-lint
+
+echo "[smoke] skills-sync --dry-run -> $SYNC_TARGET"
+bin/skills-sync --dry-run --to "$SYNC_TARGET"
+
+echo "[smoke] skills-render"
+bin/skills-render
+
+if [[ "$WITH_REAL_SYNC" -eq 1 ]]; then
+  echo "[smoke] skills-sync (real) -> $SYNC_TARGET"
+  bin/skills-sync --to "$SYNC_TARGET"
+  echo "[smoke] real sync complete; index (if generated): $SYNC_TARGET/INDEX.md"
+else
+  echo "[smoke] skipping real sync (use --with-real-sync to generate target INDEX.md)"
+fi
+
+echo "[smoke] done"

@@ -458,14 +458,39 @@ def lint_skills(skills_root: Path, repo_root: Path) -> list[dict[str, Any]]:
     return [lint_skill(doc) for doc in docs]
 
 
-def write_lint_reports(results: list[dict[str, Any]], reports_dir: Path) -> tuple[Path, Path]:
+def _display_path(path_text: str, repo_root: Path | None, absolute_paths: bool) -> str:
+    if absolute_paths:
+        return path_text
+    if repo_root is None:
+        return path_text
+    try:
+        path = Path(path_text)
+        if not path.is_absolute():
+            return path_text
+        return str(path.resolve().relative_to(repo_root.resolve()))
+    except Exception:
+        return path_text
+
+
+def write_lint_reports(
+    results: list[dict[str, Any]],
+    reports_dir: Path,
+    repo_root: Path | None = None,
+    absolute_paths: bool = False,
+) -> tuple[Path, Path]:
     reports_dir.mkdir(parents=True, exist_ok=True)
     json_path = reports_dir / "skills-lint.json"
     md_path = reports_dir / "skills-lint.md"
-    json_path.write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
-
-    lines = ["# Skills Lint Report", "", f"Total skills: {len(results)}", ""]
+    rendered_results: list[dict[str, Any]] = []
     for item in results:
+        rendered = dict(item)
+        rendered["path"] = _display_path(str(item.get("path", "")), repo_root=repo_root, absolute_paths=absolute_paths)
+        rendered_results.append(rendered)
+
+    json_path.write_text(json.dumps(rendered_results, indent=2) + "\n", encoding="utf-8")
+
+    lines = ["# Skills Lint Report", "", f"Total skills: {len(rendered_results)}", ""]
+    for item in rendered_results:
         lines.append(f"## {item['skill_id']}")
         lines.append(f"- Path: `{item['path']}`")
         lines.append(f"- completeness_score_100: {item['completeness_score_100']}")

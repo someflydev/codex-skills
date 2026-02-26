@@ -241,7 +241,7 @@ def run_validate_and_lint_for_sync(skills_root: Path, repo_root: Path, reports_d
     if validation_failed(docs):
         raise RuntimeError("Validation failed; refusing to sync")
     lint_results = lint_skills(skills_root, repo_root)
-    write_lint_reports(lint_results, reports_dir)
+    write_lint_reports(lint_results, reports_dir, repo_root=repo_root)
     entries = collect_skill_entries(skills_root)
     return entries, lint_results
 
