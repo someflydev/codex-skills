@@ -272,3 +272,40 @@ Verification evidence:
 - `cd skills-foundry && ../.venv/bin/pytest -q` -> `20 passed`
 - `cd skills-foundry && bin/repo-stage1-run --help` -> exit `0` and emits `DEPRECATED alias` migration warning to stderr
 - `cd skills-foundry && ../.venv/bin/pytest -q tests/test_repo_workflow_clis.py` -> `3 passed`
+
+---
+Timestamp (local): 2026-02-26 07:11:17 CST
+Summary:
+- Ran a Stage-2 post-flight audit after executing `PROMPT_09` through `PROMPT_13`, re-verifying the Stage-2 DoD against current repo files and commands.
+- Verified deterministic Stage-1 helper bring-up/check/teardown behavior, CI canonical helper/smoke gates, new guardrails/idempotent cleanup, MIT license + deprecation policy docs, and docs/example drift-control tooling.
+- Wrote `POST_FLIGHT_REPORT_STAGE2.md` with updated scorecard, DoD-S2 verification table, Stage-1 P0/P1 closure status, and remaining P3-only issues.
+Top 10 issues found:
+- P3: CI does not yet run a deterministic `repo-helper-stage1-plan --execute` smoke path.
+- P3: Helper execution mode is explicit-shell-template only (`--runner-shell-template`) and lacks a structured argv-template mode.
+- P3: Curated prune dry-run example currently has low signal when the sync target is empty (`would-prune: 0`).
+- P3: `skills-validate` default output remains verbose (compact path is a hint/preset, not the default).
+- P3: CI does not validate `bin/refresh-doc-examples` manifest consistency.
+- P3: Curated example snippets can still drift if the manifest is not kept current with CLI output format changes.
+- P3: Helper execution defaults include system prompts in Stage-1 planning/execution unless explicitly disabled (works, but can surprise operators).
+- P3: Release packaging remains manual/local-first (no automated release workflow or package publishing).
+- P3: Deprecated `repo-*` alias wrappers remain temporary command-surface duplication until removal timing is enforced.
+- P3: Lint rule IDs are derived from issue text (stable enough now, but mappings require maintenance when wording changes).
+P0/P1 closures (Stage-1 -> Stage-2):
+- No open P0/P1 issues were listed in the final Stage-1 baseline (`POST_FLIGHT_REPORT.md` Section 6 states no P0/P1/P2 open); Stage-2 focused on high-leverage completeness/excellence and P3 closure work.
+- Packaging baseline gap around missing license is now closed via `LICENSE` (MIT), `skills-foundry/docs/DEPRECATIONS.md`, and linked release/README docs.
+- Deterministic end-to-end helper execution proof is now present for Stage-1 via `skills-foundry/bin/_repo_workflow.py` execution mode and `skills-foundry/tests/test_repo_workflow_clis.py`.
+New risks introduced (if any):
+- The new helper execution mode increases surface area in `_repo_workflow.py`; mitigations are in place (serial only, opt-in, max-prompts, timeout, repo-root artifact path checks, tests).
+- Curated example refresh automation can fail when CLI output formats change; mitigated by a manifest-driven local refresh tool with dry-run mode and tests.
+Fixes applied during this run:
+- Audit-only run (no repo fixes applied)
+- Added `POST_FLIGHT_REPORT_STAGE2.md` with fresh Stage-2 verification and scoring evidence
+Updated scores:
+- Stage-1 baseline (`POST_FLIGHT_REPORT.md`): completeness `91/100`, excellence `8/10`
+- Stage-2 audit (`POST_FLIGHT_REPORT_STAGE2.md`): completeness `97/100`, excellence `8/10`
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q tests/test_repo_workflow_clis.py` -> `7 passed`
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `29 passed`
+- `cd skills-foundry && bin/repo-helper-stage1-plan ... --execute ... --run-log STAGE1-RUN-LOG.md` -> created deterministic Stage-1 plan + run log, then cleaned via `bin/demo-repo-reset --yes`
+- `cd skills-foundry && bin/skills-validate | rg -- '--compact'` -> compact hint present on noisy verbose run
+- `cd skills-foundry && bin/refresh-doc-examples --dry-run` -> manifest-driven curated example refresh preview succeeded
