@@ -153,6 +153,69 @@ def parse_front_matter_minimal(front_matter: str) -> tuple[dict[str, Any], list[
     return metadata, msgs
 
 
+def extract_list_items_from_front_matter_block(front_matter: str, key: str) -> list[str]:
+    lines = front_matter.splitlines()
+    items: list[str] = []
+    in_block = False
+    block_indent = 0
+
+    inline_match = re.search(rf"(?m)^{re.escape(key)}:\s*(\[[^\n]*\])\s*$", front_matter)
+    if inline_match:
+        parsed = _parse_scalar(inline_match.group(1))
+        if isinstance(parsed, list):
+            return [str(x) for x in parsed]
+
+    for line in lines:
+        if not in_block:
+            if re.match(rf"^{re.escape(key)}:\s*$", line):
+                in_block = True
+            continue
+
+        if not line.strip():
+            continue
+        current_indent = len(line) - len(line.lstrip(" "))
+        if current_indent == 0:
+            break
+        if block_indent == 0:
+            block_indent = current_indent
+        if current_indent < block_indent:
+            break
+        stripped = line.strip()
+        if stripped.startswith("- "):
+            items.append(stripped[2:].strip())
+    return items
+
+
+def classify_missing_output_path_warning(token: str) -> ValidationMessage:
+    normalized = token.replace("\\", "/").lstrip("./")
+    if normalized.startswith("skills/"):
+        return ValidationMessage(
+            "WARN",
+            "missing_output_path_install_target_relative",
+            f"Referenced output path does not exist in repo root (likely install-target-relative): {token}",
+        )
+    if normalized.startswith(
+        (
+            "skills-foundry/reports/",
+            "reports/",
+            "docs/",
+            "data/",
+            "schemas/",
+            "manifests/",
+        )
+    ):
+        return ValidationMessage(
+            "WARN",
+            "missing_output_path_expected_future",
+            f"Referenced output path does not exist yet (likely future-generated artifact): {token}",
+        )
+    return ValidationMessage(
+        "WARN",
+        "missing_output_path",
+        f"Referenced output path does not exist yet (best effort): {token}",
+    )
+
+
 def extract_sections(body_text: str) -> dict[str, str]:
     matches = list(HEADING_RE.finditer(body_text))
     sections: dict[str, str] = {}
@@ -220,12 +283,7 @@ def validate_skill_document(doc: SkillDocument, repo_root: Path) -> SkillDocumen
                 msgs.append(ValidationMessage("ERROR", "missing_input_shape", f"inputs must include field token {token}"))
 
     if "outputs" in doc.metadata:
-        output_refs = []
-        for line in fm_text.splitlines():
-            stripped = line.strip()
-            if stripped.startswith("- ") and any(ch in stripped for ch in ["/", ".md", ".json", ".txt"]):
-                output_refs.append(stripped[2:].strip())
-        for ref in output_refs:
+        for ref in extract_list_items_from_front_matter_block(fm_text, "outputs"):
             token = ref.split()[0].strip("`,'\"")
             if token.startswith("http://") or token.startswith("https://"):
                 continue
@@ -233,7 +291,7 @@ def validate_skill_document(doc: SkillDocument, repo_root: Path) -> SkillDocumen
                 continue
             path = (repo_root / token).resolve() if not Path(token).is_absolute() else Path(token)
             if not path.exists():
-                msgs.append(ValidationMessage("WARN", "missing_output_path", f"Referenced output path does not exist yet (best effort): {token}"))
+                msgs.append(classify_missing_output_path_warning(token))
 
     doc.messages = msgs
     return doc
