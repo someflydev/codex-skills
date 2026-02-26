@@ -33,6 +33,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print a grouped warning summary by code after the detailed output.",
     )
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="Convenience preset for day-to-day runs: suppress expected output-path warnings and print a warning code summary.",
+    )
     return parser
 
 
@@ -71,6 +76,9 @@ def _warning_code_counts(docs) -> Counter[str]:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    if args.compact:
+        args.suppress_expected_output_warnings = True
+        args.warning_code_summary = True
 
     docs = validate_skills(args.skills_root, args.repo_root)
     suppressed_warning_codes = _normalize_suppressed_warning_codes(args)

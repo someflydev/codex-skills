@@ -39,8 +39,16 @@ bin/skills-validate
 bin/skills-lint
 ```
 
+Day-to-day compact validation view:
+
+```bash
+cd skills-foundry
+bin/skills-validate --compact
+```
+
 - `skills-validate` checks front matter and required sections.
 - `skills-validate` supports warning triage helpers for noisy output-path checks:
+  - `--compact` to suppress common expected output-path warnings and print a warning summary.
   - `--warning-code-summary` to print grouped warning counts by code.
   - `--suppress-expected-output-warnings` to hide install-target-relative and future-artifact path warnings from the detailed output.
   - `--suppress-warning-code <code>` for targeted suppression (repeatable).
