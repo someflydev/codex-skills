@@ -26,6 +26,7 @@ bin/skills-render
 ```
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.
+For release readiness checks, see `docs/RELEASE_CHECKLIST.md`.
 
 ## Project Layout
 
