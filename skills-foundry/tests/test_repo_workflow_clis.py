@@ -3,11 +3,17 @@ import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REPO_PREFLIGHT = ROOT / "bin" / "repo-preflight"
-REPO_STAGE1_RUN = ROOT / "bin" / "repo-stage1-run"
-REPO_POSTFLIGHT = ROOT / "bin" / "repo-postflight"
-REPO_STAGE2_PLAN = ROOT / "bin" / "repo-stage2-plan"
-REPO_STAGE2_RUN = ROOT / "bin" / "repo-stage2-run"
+REPO_HELPER_PREFLIGHT = ROOT / "bin" / "repo-helper-preflight"
+REPO_HELPER_STAGE1_PLAN = ROOT / "bin" / "repo-helper-stage1-plan"
+REPO_HELPER_POSTFLIGHT = ROOT / "bin" / "repo-helper-postflight"
+REPO_HELPER_STAGE2_THEME_PLAN = ROOT / "bin" / "repo-helper-stage2-theme-plan"
+REPO_HELPER_STAGE2_RUN_PLAN = ROOT / "bin" / "repo-helper-stage2-run-plan"
+
+DEPRECATED_REPO_PREFLIGHT = ROOT / "bin" / "repo-preflight"
+DEPRECATED_REPO_STAGE1_RUN = ROOT / "bin" / "repo-stage1-run"
+DEPRECATED_REPO_POSTFLIGHT = ROOT / "bin" / "repo-postflight"
+DEPRECATED_REPO_STAGE2_PLAN = ROOT / "bin" / "repo-stage2-plan"
+DEPRECATED_REPO_STAGE2_RUN = ROOT / "bin" / "repo-stage2-run"
 
 
 def _make_prompt_repo(tmp_path: Path) -> Path:
@@ -26,9 +32,30 @@ def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
 
 
 def test_repo_workflow_helpers_help_runs() -> None:
-    for cli in [REPO_PREFLIGHT, REPO_STAGE1_RUN, REPO_POSTFLIGHT, REPO_STAGE2_PLAN, REPO_STAGE2_RUN]:
+    for cli in [
+        REPO_HELPER_PREFLIGHT,
+        REPO_HELPER_STAGE1_PLAN,
+        REPO_HELPER_POSTFLIGHT,
+        REPO_HELPER_STAGE2_THEME_PLAN,
+        REPO_HELPER_STAGE2_RUN_PLAN,
+    ]:
         result = _run([str(cli), "--help"])
         assert result.returncode == 0, f"{cli.name}\n{result.stdout}\n{result.stderr}"
+
+
+def test_repo_workflow_deprecated_aliases_still_work_and_warn() -> None:
+    alias_map = {
+        DEPRECATED_REPO_PREFLIGHT: "repo-helper-preflight",
+        DEPRECATED_REPO_STAGE1_RUN: "repo-helper-stage1-plan",
+        DEPRECATED_REPO_POSTFLIGHT: "repo-helper-postflight",
+        DEPRECATED_REPO_STAGE2_PLAN: "repo-helper-stage2-theme-plan",
+        DEPRECATED_REPO_STAGE2_RUN: "repo-helper-stage2-run-plan",
+    }
+    for alias_cli, canonical_name in alias_map.items():
+        result = _run([str(alias_cli), "--help"])
+        assert result.returncode == 0, f"{alias_cli.name}\n{result.stdout}\n{result.stderr}"
+        assert "DEPRECATED alias" in result.stderr
+        assert canonical_name in result.stderr
 
 
 def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> None:
@@ -42,7 +69,7 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
 
     preflight = _run(
         [
-            str(REPO_PREFLIGHT),
+            str(REPO_HELPER_PREFLIGHT),
             "--repo-root",
             str(repo_root),
             "--write-report",
@@ -58,7 +85,7 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
 
     stage1 = _run(
         [
-            str(REPO_STAGE1_RUN),
+            str(REPO_HELPER_STAGE1_PLAN),
             "--repo-root",
             str(repo_root),
             "--prompts-dir",
@@ -83,7 +110,7 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
 
     postflight = _run(
         [
-            str(REPO_POSTFLIGHT),
+            str(REPO_HELPER_POSTFLIGHT),
             "--repo-root",
             str(repo_root),
             "--stage",
@@ -98,7 +125,7 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
 
     stage2plan = _run(
         [
-            str(REPO_STAGE2_PLAN),
+            str(REPO_HELPER_STAGE2_THEME_PLAN),
             "--repo-root",
             str(repo_root),
             "--input",
@@ -113,7 +140,7 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
 
     stage2run = _run(
         [
-            str(REPO_STAGE2_RUN),
+            str(REPO_HELPER_STAGE2_RUN_PLAN),
             "--repo-root",
             str(repo_root),
             "--prompts-dir",
