@@ -1,0 +1,94 @@
+Stage-2 Prompt 5/5
+Title: Light Specs + Drift-Control Hooks (Examples Refresh + Lint Rule Mapping)
+
+Objective
+Add lightweight, local automation hooks and specs that reduce drift in proof artifacts and lint/rubric documentation without introducing a configuration framework. This prompt should improve excellence by making maintenance easier and behavior/docs more explicit, while staying stdlib-first.
+
+Dependencies / Sequencing
+- Designed order: final Stage-2 prompt (after packaging/docs stabilization)
+- Runnable independently: yes (can add refresh hooks/specs without prior Stage-2 prompts, but should adapt docs references to current filenames)
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/bin/refresh-doc-examples` (new local script)
+- `skills-foundry/docs/examples/manifest.json` (new refresh manifest/spec)
+- `skills-foundry/docs/examples/skills-lint-json-snippet.json` (new curated snippet)
+- `skills-foundry/docs/examples/skills-sync-prune-dry-run.txt` (new curated snippet)
+- `skills-foundry/docs/examples/README.md`
+- `skills-foundry/docs/SKILL_RUBRIC.md`
+- `skills-foundry/docs/SKILL_RUBRIC_RULES.md` (new, lightweight rule-ID mapping doc)
+- `skills-foundry/bin/_skills_common.py` (only if adding stable lint rule IDs to outputs)
+- `skills-foundry/bin/skills-lint` (only if needed for rule-ID/report changes)
+- `skills-foundry/tests/test_skills_lint.py`
+- `skills-foundry/tests/test_refresh_doc_examples.py` (new)
+
+Required Scope
+1) Add a local refresh script + manifest for curated examples:
+   - script reads `docs/examples/manifest.json`
+   - supports `--dry-run` and write mode
+   - refreshes/validates tracked snippets from local CLI outputs only
+2) Add at least two more proof snippets:
+   - one lint JSON snippet
+   - one sync prune dry-run example
+3) Make lint/rubric maintenance more explicit with minimal complexity:
+   - add a lightweight rule-ID mapping doc (`SKILL_RUBRIC_RULES.md`)
+   - update `SKILL_RUBRIC.md` to reference it
+   - if practical without broad refactor, add stable lint rule IDs to JSON/MD outputs and test them
+
+Acceptance Criteria (commands + expected checks)
+1) Refresh script help and dry-run:
+```bash
+cd skills-foundry
+bin/refresh-doc-examples --help
+bin/refresh-doc-examples --dry-run
+```
+Expected:
+- help exits `0`
+- dry-run exits `0` and lists files it would refresh/check
+
+2) Example artifacts exist after prompt completion:
+```bash
+test -f skills-foundry/docs/examples/manifest.json
+test -f skills-foundry/docs/examples/skills-lint-json-snippet.json
+test -f skills-foundry/docs/examples/skills-sync-prune-dry-run.txt
+```
+Expected: all files exist
+
+3) Lint/rubric docs cross-reference is explicit:
+```bash
+test -f skills-foundry/docs/SKILL_RUBRIC_RULES.md
+rg -n "SKILL_RUBRIC_RULES\\.md|rule id" skills-foundry/docs/SKILL_RUBRIC.md skills-foundry/docs/SKILL_RUBRIC_RULES.md
+```
+Expected: matches found
+
+4) Tests stay green:
+```bash
+cd skills-foundry
+../.venv/bin/pytest -q tests/test_skills_lint.py tests/test_refresh_doc_examples.py
+```
+Expected: exit `0`
+
+Anti-Scope (do NOT do)
+- Do NOT build a generic docs site generator
+- Do NOT add external schema/validation dependencies unless unavoidable
+- Do NOT convert lint heuristics into a full config-driven engine in this prompt
+- Do NOT add frontend/web UI work
+
+Overengineering Guardrails
+- Local script + JSON manifest only (no service, no daemon)
+- Keep rule mapping docs lightweight and human-readable
+- Prefer incremental lint output changes (if any) over broad schema redesign
+- Reuse existing CLI commands to generate examples; do not duplicate logic
+
+Risks & Mitigations
+- Risk: refresh script becomes brittle to output formatting changes
+  - Mitigation: manifest should target stable snippets/anchors and fail clearly in dry-run
+- Risk: rule-ID mapping drifts from code
+  - Mitigation: add tests for any emitted rule IDs or at minimum cross-reference checks
+- Risk: prompt scope creeps into frontend packaging
+  - Mitigation: keep artifacts limited to `docs/examples`, `docs/`, `bin/`, and tests only
+
+Evidence To Include In Diff
+- `docs/examples/manifest.json` snippet
+- `refresh-doc-examples --dry-run` output snippet
+- New curated example files (`skills-lint-json-snippet.json`, `skills-sync-prune-dry-run.txt`)
+- Rubric rules mapping doc snippet and tests
