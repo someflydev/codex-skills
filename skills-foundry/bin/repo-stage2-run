@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
+import sys
+
 from _repo_workflow import main_repo_stage2_run
 
 
 if __name__ == "__main__":
+    print(
+        "DEPRECATED alias: use `repo-helper-stage2-run-plan` (planning helper; does not execute prompts).",
+        file=sys.stderr,
+    )
     raise SystemExit(main_repo_stage2_run())

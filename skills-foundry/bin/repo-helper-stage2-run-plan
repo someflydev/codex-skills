@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+from _repo_workflow import main_repo_stage2_run
+
+
+if __name__ == "__main__":
+    raise SystemExit(main_repo_stage2_run())
