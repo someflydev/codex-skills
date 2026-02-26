@@ -173,3 +173,33 @@ Verification evidence:
 - `cd skills-foundry && ../.venv/bin/pytest -q` -> `15 passed`
 - `cd skills-foundry && bin/smoke-check-foundry --help` -> usage output displayed successfully
 - `cd skills-foundry && bin/skills-lint` -> `reports/skills-lint.*` now show repo-relative paths by default (e.g., `skills-foundry/skills/.../SKILL.md`)
+
+---
+Timestamp (local): 2026-02-25 20:55:45 CST
+Summary:
+- Applied a higher-leverage P3 batch focused on operator ergonomics and packaging polish: added `skills-validate --compact`, a root README repo map + first-5-minutes flow, and a lightweight foundry release checklist.
+- Added validation regression coverage for the compact preset and updated operator/onboarding docs to use the lower-noise validation path.
+- Refreshed `POST_FLIGHT_REPORT.md` and `FRONT_FACING_IDEAS.md` to reflect the new P3 improvements, updated test count, and narrowed remaining polish gaps.
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs remain helper-only and may be interpreted as stronger automation than implemented.
+- P3: Validation output is still verbose by default unless operators use `--compact` (or other triage flags).
+- P3: Rubric scoring logic remains code-defined; docs are authoritative-by-reference but not config-backed.
+- P3: Packaging/release signals improved, but license and changelog/release-notes guidance are still missing.
+- P3: Nested-project layout still adds context switching despite improved onboarding docs.
+- P3: Validator/linter parser edge cases need broader tests as heuristics evolve.
+- P3: Curated examples should be refreshed when report/output formats change.
+- P3: Smoke script and smoke docs/examples can drift without a refresh workflow.
+- P3: Front-facing proof would benefit from a full lint JSON sample and a sync prune example.
+- P3: Long-term `repo-*` scope naming should be clarified before broader packaging claims.
+Fixes applied during this run:
+- `skills-foundry/bin/skills-validate` :: + `--compact` preset (bundles expected-output suppression + warning summary) :: lowers operator friction for routine validation runs
+- `skills-foundry/tests/test_skills_validate.py` :: + compact-preset regression test :: verifies suppression + summary behavior remains correct
+- `skills-foundry/docs/OPERATOR_MANUAL.md` :: ~ documented `bin/skills-validate --compact` and warning-triage shortcut usage :: improves operator guidance
+- `README.md` :: + repo map diagram + "First 5 Minutes" onboarding flow + release checklist link :: improves root-level orientation and packaging
+- `skills-foundry/docs/RELEASE_CHECKLIST.md` :: + lightweight release-readiness checklist :: improves packaging/release readiness signals without expanding scope
+- `skills-foundry/README.md` :: ~ linked `docs/RELEASE_CHECKLIST.md` :: improves discoverability of release guidance
+- `POST_FLIGHT_REPORT.md` :: ~ updated score/rubric evidence, issue list, and next steps after P3 batch :: keeps audit aligned to current repo state
+- `FRONT_FACING_IDEAS.md` :: ~ updated packaging checklist to reference existing release checklist :: keeps front-facing guidance current
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `16 passed`
+- `cd skills-foundry && bin/skills-validate --compact` -> `Validated 27 skills: 0 error(s), 6 warning(s)` (compact preset reduces warning noise while keeping generic warnings)
