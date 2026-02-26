@@ -51,14 +51,14 @@
 
 **Proof points to include**
 
-- `15` passing tests (`skills-foundry/tests/`)
+- `20` passing tests (`skills-foundry/tests/`)
 - `27` skills generated across `core/workflow/polyglot/storage-labs`
 - Smoke command transcript (or script output excerpt)
 - Screenshot/snippet of rendered catalog and lint report
 
 **What NOT to promise yet**
 
-- Full automated prompt lifecycle execution via `repo-*` CLIs (current commands are MVP planning/snapshot helpers, not automation)
+- Full automated prompt lifecycle execution via the canonical `repo-helper-*` CLIs (current commands are MVP planning/snapshot helpers, not automation)
 - Production-grade CI/release pipeline
 - Stable plugin ecosystem / extensibility framework
 
@@ -232,7 +232,7 @@ Features:
 
 - Multi-user auth, RBAC, hosted workspace collaboration
 - Browser-executed arbitrary local CLI commands (unsafe; use an explicit local server wrapper instead)
-- Real-time prompt execution orchestration UI (until `repo-*` CLIs are implemented)
+- Real-time prompt execution orchestration UI (until helper-only `repo-helper-*` CLIs gain an optional execution mode)
 - Cloud sync, telemetry, or analytics dashboards
 - Full WYSIWYG skill editor (Markdown + structured forms is enough initially)
 
@@ -435,7 +435,7 @@ Use existing repo assets as proof and content, not placeholders:
 
 - Keep `skills-foundry/README.md` aligned with shipped CLI behavior and smoke evidence
 - Expand the root `README.md` with screenshots/proof snippets as packaging improves
-- Add a concise "Known limitations" section (e.g., `repo-*` CLIs are helper-only, not prompt execution automation)
+- Add a concise "Known limitations" section (e.g., `repo-helper-*` CLIs are helper-only, not prompt execution automation)
 - Add a compatibility matrix (Python versions tested, OS notes)
 
 ### Proof artifacts
@@ -455,7 +455,7 @@ Use existing repo assets as proof and content, not placeholders:
 
 - Add CI badge now that a workflow exists
 - Add test count and smoke commands to README proof points
-- Surface the existing release checklist (`skills-foundry/docs/RELEASE_CHECKLIST.md`) in README proof points and add license/changelog signals before broader reuse claims
+- Surface the existing release checklist and changelog (`skills-foundry/docs/RELEASE_CHECKLIST.md`, `skills-foundry/CHANGELOG.md`) in README proof points, then add a license before broader reuse claims
 
 ### Site deployment (if frontend is built)
 

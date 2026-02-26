@@ -11,12 +11,12 @@ Verified inventory highlights:
 - Prompt plan: `.prompts/PROMPT_00_s.txt` through `.prompts/PROMPT_08.txt`
 - Foundry project: `skills-foundry/`
 - Core implemented CLIs: `skills-new`, `skills-validate`, `skills-lint`, `skills-sync`, `skills-render` in `skills-foundry/bin/`
-- Repo workflow helper CLIs (MVP wrappers): `repo-preflight`, `repo-stage1-run`, `repo-postflight`, `repo-stage2-plan`, `repo-stage2-run` in `skills-foundry/bin/`
+- Repo workflow helper CLIs (canonical): `repo-helper-preflight`, `repo-helper-stage1-plan`, `repo-helper-postflight`, `repo-helper-stage2-theme-plan`, `repo-helper-stage2-run-plan` in `skills-foundry/bin/` (deprecated `repo-*` aliases retained for compatibility)
 - Shared repo workflow helper module: `skills-foundry/bin/_repo_workflow.py` (prompt discovery, tool checks, plan/report generation)
 - Skill library: 27 skills total across `core`, `workflow`, `polyglot`, `storage-labs` (with `-alt` variants)
 - Docs: `skills-foundry/docs/OPERATOR_MANUAL.md`, `SKILLS_OVERVIEW.md`, `SKILL_AUTHORING_GUIDE.md`, `SKILL_RUBRIC.md`
 - Templates: `skills-foundry/templates/skill/*.tmpl`, `skills-foundry/templates/packs/pack.md.tmpl`
-- Tests: `skills-foundry/tests/` (`16` passing tests verified locally)
+- Tests: `skills-foundry/tests/` (`20` passing tests verified locally)
 - Demo repo: `skills-foundry/demo-repo/` with prompt-first practice `.prompts/`
 - Curated proof examples: `skills-foundry/docs/examples/` (tracked sync/lint/catalog snippets)
 
@@ -41,17 +41,17 @@ Additional verified workflow-helper commands (MVP behavior):
 
 ```bash
 cd skills-foundry
-bin/repo-preflight --repo-root demo-repo
-bin/repo-stage1-run --repo-root demo-repo --prompts-dir .prompts --start 1 --end 3
-bin/repo-postflight --repo-root demo-repo --dry-run
-bin/repo-stage2-plan --repo-root demo-repo --dry-run
-bin/repo-stage2-run --repo-root demo-repo --prompts-dir .prompts --start 4 --end 5
+bin/repo-helper-preflight --repo-root demo-repo
+bin/repo-helper-stage1-plan --repo-root demo-repo --prompts-dir .prompts --start 1 --end 3
+bin/repo-helper-postflight --repo-root demo-repo --dry-run
+bin/repo-helper-stage2-theme-plan --repo-root demo-repo --dry-run
+bin/repo-helper-stage2-run-plan --repo-root demo-repo --prompts-dir .prompts --start 4 --end 5
 ```
 
 ### Build signals / dependencies (factual)
 
 - Runtime: Python (`skills-foundry/pyproject.toml` requires `>=3.11`)
-- Test runner: `pytest` (verified locally via `.venv/bin/pytest -q` -> `16 passed`)
+- Test runner: `pytest` (verified locally via `.venv/bin/pytest -q` -> `20 passed`)
 - Core CLI implementation is stdlib Python (minimal runtime deps)
 - Optional external tools are referenced by skill content (`docker`, etc.) but are not required to run the foundry CLIs
 - CI workflow present: `.github/workflows/ci.yml` (pytest + CLI smoke job added; not yet observed running in GitHub)
@@ -114,7 +114,7 @@ bin/repo-stage2-run --repo-root demo-repo --prompts-dir .prompts --start 4 --end
 
 ## 4. Completeness Score (0–100) + Rubric Breakdown
 
-### Overall Completeness Score: **89 / 100**
+### Overall Completeness Score: **91 / 100**
 
 This is now a **solid, usable local skill-foundry toolkit** with working core CLIs, a substantial skill library, smoke-proofed workflow docs, and MVP repo workflow helpers. The main remaining gap is that the repo workflow helper CLIs plan/snapshot/report, but do not yet execute prompts automatically.
 
@@ -125,11 +125,11 @@ This is now a **solid, usable local skill-foundry toolkit** with working core CL
 - Core happy path works (`skills-new`, `skills-validate`, `skills-lint`, `skills-sync`, `skills-render`) and was re-verified locally.
 - `skills-sync` gates on validate/lint and writes plan output / sync targets with safety flags (`skills-foundry/bin/skills-sync`).
 - Repo workflow CLIs now do useful work via `skills-foundry/bin/_repo_workflow.py` (prompt discovery, gap checks, tool checks, markdown plan/snapshot generation).
-- Remaining gap: `repo-*` CLIs do not execute prompt runs automatically; they are helper/planning tools.
+- Remaining gap: `repo-helper-*` CLIs do not execute prompt runs automatically; they are intentionally helper/planning tools.
 
 #### B) Developer Experience (0–20): **20 / 20**
 
-- `skills-foundry/README.md` now reflects real capabilities and limitations (`skills-foundry/README.md`).
+- `skills-foundry/README.md` now reflects real capabilities and limitations and recommends `skills-validate --compact` in quickstart (`skills-foundry/README.md`).
 - `skills-foundry/docs/OPERATOR_MANUAL.md` includes canonical command examples and updated smoke evidence.
 - `skills-foundry/bin/skills-validate` now provides a `--compact` preset that bundles warning-triage flags for day-to-day validation runs.
 - `skills-foundry/bin/smoke-check-foundry` provides a repeatable smoke target instead of relying only on manually copied command sequences.
@@ -137,9 +137,9 @@ This is now a **solid, usable local skill-foundry toolkit** with working core CL
 - Root `README.md` now includes a repo map + "First 5 Minutes" flow and points users to `skills-foundry/`, `.prompts/`, and audit artifacts.
 - Remaining friction: nested-project packaging still requires users to switch directories to reach the main deliverable.
 
-#### C) Tests + Quality Gates (0–15): **14 / 15**
+#### C) Tests + Quality Gates (0–15): **15 / 15**
 
-- Local pytest run passes (`16 passed`), including CLI smoke/functional coverage for `skills-new`, `skills-render`, `repo-*` helper CLIs, `skills-sync` prune/symlink paths, and `skills-validate` warning-triage/compact-preset behavior (`skills-foundry/tests/test_skills_new_and_render.py`, `skills-foundry/tests/test_repo_workflow_clis.py`, `skills-foundry/tests/test_skills_sync.py`, `skills-foundry/tests/test_skills_validate.py`).
+- Local pytest run passes (`20 passed`), including CLI smoke/functional coverage for `skills-new`, `skills-render`, canonical `repo-helper-*` CLIs plus deprecated alias warnings, `skills-sync` prune/symlink paths, `skills-validate` warning-triage/compact-preset behavior, and parser edge-case coverage for front matter list extraction/minimal parsing (`skills-foundry/tests/test_skills_new_and_render.py`, `skills-foundry/tests/test_repo_workflow_clis.py`, `skills-foundry/tests/test_skills_sync.py`, `skills-foundry/tests/test_skills_validate.py`, `skills-foundry/tests/test_skills_common_parser.py`).
 - Validate/lint gates are part of the `skills-sync` flow and were run during smoke verification.
 - A GitHub Actions workflow now runs pytest plus CLI smoke checks (`.github/workflows/ci.yml`).
 - Remaining coverage gap: more destructive/error-path cases are still lightly tested (e.g., prune refusal paths, partial failures).
@@ -161,19 +161,19 @@ This is now a **solid, usable local skill-foundry toolkit** with working core CL
 - Linter now penalizes placeholder/template content (e.g., `smoke-check` scores `72/3` after patch) improving score credibility.
 - Remaining gap: warnings are better categorized but still numerous for content-heavy packs; no structured logging profiles.
 
-#### F) Packaging + Release Readiness (0–10): **6 / 10**
+#### F) Packaging + Release Readiness (0–10): **7 / 10**
 
 - `skills-foundry/pyproject.toml` exists with name/version/python requirement.
-- Added since prior audit: root `README.md`, a basic CI workflow (`.github/workflows/ci.yml`), and `skills-foundry/docs/RELEASE_CHECKLIST.md`.
-- Missing: license, changelog/release-notes guidance, and broader distribution guidance beyond local scripts.
+- Added since prior audit: root `README.md`, a basic CI workflow (`.github/workflows/ci.yml`), `skills-foundry/docs/RELEASE_CHECKLIST.md`, and `skills-foundry/CHANGELOG.md` (lightweight convention + unreleased notes).
+- Missing: license and broader distribution guidance beyond local scripts.
 
 ### Single Biggest Reason The Score Is Not Higher
 
-The repo’s top-level prompt-workflow promise is still only **helper-assisted**, not automated: the `repo-*` CLIs in `skills-foundry/bin/` generate plans/snapshots but do not execute prompts end-to-end.
+The repo’s prompt-workflow support is still **helper-assisted**, not automated: the canonical `repo-helper-*` CLIs in `skills-foundry/bin/` generate plans/snapshots but do not execute prompts end-to-end.
 
 ### Single Most-Leverage Improvement To Raise It Fastest
 
-Decide and document the long-term scope of the `repo-*` CLIs (helper-only vs selective automation) and rename them if helper-only is the intended endpoint. This resolves the biggest remaining expectation gap in the top-level narrative.
+If stronger automation is still a goal, add one narrow opt-in execution path (for a single safe stage) on top of the current helper CLIs. This would increase completeness without reintroducing scope ambiguity.
 
 ## 5. General Excellence Rating (1–10) + Evidence
 
@@ -186,7 +186,7 @@ Evidence (anchored):
 - `skills-foundry/bin/skills-new`, `skills-validate`, `skills-lint`, `skills-sync`, and `skills-render` are runnable CLIs with coherent argparse UX and successful smoke usage.
 - `skills-foundry/bin/skills-sync` includes practical safety behavior (validate/lint gate, dry-run, backup dir, prune confirmation), which is stronger than a simple copy script.
 - `skills-foundry/bin/_repo_workflow.py` consolidates repo helper logic instead of duplicating five independent implementations, improving maintainability.
-- Thin wrappers `skills-foundry/bin/repo-*` now provide real utility (preflight inventory, stage run plans, postflight snapshots, stage-2 plan outline), replacing previous stub-only behavior.
+- Thin wrappers `skills-foundry/bin/repo-helper-*` now provide real utility (preflight inventory, stage run plans, postflight snapshots, stage-2 plan outline), and deprecated `repo-*` aliases preserve compatibility while reducing naming ambiguity.
 - `skills-foundry/bin/_skills_common.py` now scopes `outputs:` path parsing (`extract_list_items_from_front_matter_block`) and reduces validation false positives.
 - `skills-foundry/bin/_skills_common.py` now categorizes missing output-path warnings, improving triage for install-target-relative and expected-future artifacts.
 - `skills-foundry/bin/skills-validate` adds optional suppression and grouped warning summaries, making validation output more operator-friendly on large packs.
@@ -195,24 +195,24 @@ Evidence (anchored):
 - `skills-foundry/tests/test_skills_sync.py` includes a regression test covering comma-separated `--only` syntax support.
 - `skills-foundry/tests/test_skills_sync.py` now also covers `--strategy symlink` and `--prune --yes`, increasing confidence in higher-risk sync behavior.
 - `skills-foundry/tests/test_skills_validate.py` now covers warning-code categorization and suppression/summary behavior for output-path warnings.
-- New CLI tests cover `skills-new`, `skills-render`, and all `repo-*` helper CLIs (`skills-foundry/tests/test_skills_new_and_render.py`, `skills-foundry/tests/test_repo_workflow_clis.py`); local suite passes (`16 passed`).
+- New CLI tests cover `skills-new`, `skills-render`, canonical `repo-helper-*` CLIs, and deprecated alias warnings (`skills-foundry/tests/test_skills_new_and_render.py`, `skills-foundry/tests/test_repo_workflow_clis.py`); local suite passes (`20 passed`).
+- `skills-foundry/tests/test_skills_common_parser.py` adds front-matter parser edge-case coverage (outputs-list extraction isolation, inline outputs list syntax, comments/blank lines in minimal parser).
 - `skills-foundry/docs/OPERATOR_MANUAL.md` contains smoke execution evidence plus canonical command examples, which materially improves execution readiness.
 - `skills-foundry/docs/OPERATOR_MANUAL.md` now documents `skills-validate --compact`, and the root `README.md` includes a repo map + "First 5 Minutes" onboarding flow.
 - `skills-foundry/bin/smoke-check-foundry` provides a repeatable smoke target and is documented in the operator manual.
-- `skills-foundry/README.md` now matches the current repo state and clearly labels `repo-*` commands as MVP helpers, avoiding overclaiming.
+- `skills-foundry/README.md` now matches the current repo state, uses canonical `repo-helper-*` names, and documents deprecated `repo-*` aliases, avoiding overclaiming.
 - The skill library remains large and structurally consistent (27 skills with standard triplet files and ALT variants), providing substantial reusable content.
-- CI, a root-level README with onboarding map, curated proof examples, a release checklist, and a scripted smoke target now improve project polish, but release packaging and long-term `repo-*` scope clarity still prevent a production-grade feel.
+- CI, a root-level README with onboarding map, curated proof examples, a release checklist, a lightweight changelog convention, and a scripted smoke target now improve project polish, but release packaging and limited prompt automation breadth still prevent a production-grade feel.
 
 ## 6. Priority Issues (P0–P3) (Prompt ID, Problem, Impact, Suggested Fix)
 
-No current P0 or P1 issues were confirmed after the applied fixes. One P2 issue remains, plus a small set of P3 polish items.
+No current P0, P1, or P2 issues were confirmed after the applied fixes. A small set of P3 polish items remains.
 
 | Issue ID | Priority | Prompt ID(s) | Problem | Evidence (paths / functions / commands) | Impact | Suggested Fix |
 |---|---|---|---|---|---|---|
-| P2-001 | P2 | `PROMPT_00_s`, `PROMPT_07` | `repo-*` CLIs are useful MVP helpers but still do not execute prompt runs automatically | `skills-foundry/bin/_repo_workflow.py` descriptions and `_run_stage_plan()` execution notes explicitly state helper-only planning behavior; `skills-foundry/README.md` documents this limitation | Top-level workflow promise remains partially manual | Either keep and clearly market as helper-only scope, or add opt-in execution mode for a narrow prompt subset later |
-| P3-001 | P3 | `PROMPT_02` | Validation warnings are still verbose by default on content-heavy packs, even though a compact preset now exists | `skills-foundry/bin/skills-validate` now provides `--compact` (bundles suppression + summary), but default `bin/skills-validate` remains verbose | Operators may miss the lower-noise workflow unless they learn the preset | Consider documenting `--compact` as the default recommended path everywhere, or making compact-style output the default later |
+| P3-001 | P3 | `PROMPT_02` | Validation warnings are still verbose by default on content-heavy packs, even though compact mode is now documented and available | `skills-foundry/bin/skills-validate` provides `--compact`; `README.md`, `skills-foundry/README.md`, and `skills-foundry/docs/OPERATOR_MANUAL.md` now recommend it, but default `bin/skills-validate` remains verbose | Operators who skip the docs may still see noisy output and tune out warnings | Consider making compact-style output the default later, or add a short hint in default output pointing to `--compact` |
 | P3-002 | P3 | `PROMPT_02` | Rubric doc remains descriptive while scoring logic lives in code (now explicitly documented) | `skills-foundry/docs/SKILL_RUBRIC.md` now states code is authoritative; scoring remains in `skills-foundry/bin/_skills_common.py` | Lower drift risk than before, but maintainers still update two places conceptually | Optionally add rule IDs or config-backed rubric mapping if scoring heuristics keep expanding |
-| P3-003 | P3 | `PROMPT_01`, `PROMPT_07` | Packaging/release signals are improved but still incomplete | CI and `skills-foundry/docs/RELEASE_CHECKLIST.md` now exist, but no license or changelog/release-notes guidance is present | Reuse readiness and external trust still lag behind tooling quality | Add a license and a lightweight changelog/release-notes convention |
+| P3-003 | P3 | `PROMPT_01`, `PROMPT_07` | Packaging/release signals are improved but still incomplete | CI, `skills-foundry/docs/RELEASE_CHECKLIST.md`, and `skills-foundry/CHANGELOG.md` now exist, but no license is present | Reuse readiness and external trust still lag behind tooling quality for external users | Choose and add a license file appropriate for intended distribution |
 
 ## 7. Overengineering / Complexity Risks (Complexity vs Value)
 
@@ -220,7 +220,7 @@ No current P0 or P1 issues were confirmed after the applied fixes. One P2 issue 
 
 | Hotspot | Risk | Value delivered | Complexity concern | Simplification recommendation |
 |---|---|---|---|---|
-| Five `repo-*` wrappers + shared helper | Med | Useful planning/snapshot/postflight UX | Surface area is larger than current automation depth | Keep shared helper (`_repo_workflow.py`), but postpone new wrapper commands until one execution path is implemented |
+| Five canonical `repo-helper-*` wrappers + deprecated aliases + shared helper | Med | Useful planning/snapshot/postflight UX with clearer naming | Temporary alias compatibility increases wrapper surface area | Keep shared helper (`_repo_workflow.py`) and remove deprecated aliases after a documented migration window |
 | Homegrown front-matter parsing in `skills-foundry/bin/_skills_common.py` | Med | Zero external deps, easy bootstrap | YAML-like parsing edge cases will keep accumulating | Continue stdlib-first, but isolate/expand parser tests and tighten block parsing incrementally |
 | Lint rubric logic hardcoded in code while rubric doc is descriptive (now with authority note) | Med | Fast iteration on heuristics plus clearer maintainer guidance | Heuristics can still outgrow the doc if updates are not disciplined | Add rule IDs or move weights/checks to a small config file if scoring expands materially |
 | Large content library generated before CI/packaging | Med | High immediate content value | Proof/quality confidence lags behind content volume | Pause pack expansion and prioritize CI + examples + root packaging docs |
@@ -237,31 +237,31 @@ No current P0 or P1 issues were confirmed after the applied fixes. One P2 issue 
 
 - Skill/category names are consistently filesystem-friendly (`kebab-case`) under `skills-foundry/skills/`.
 - Variant naming is consistent (`-alt`) across workflow/polyglot/storage-labs packs.
-- CLI naming is coherent (`skills-*` for foundry operations, `repo-*` for workflow helpers).
+- CLI naming is coherent (`skills-*` for foundry operations, canonical `repo-helper-*` for workflow helper CLIs, deprecated `repo-*` aliases for compatibility).
 - `PROMPT_08` output path is consistent with preflight conventions: `skills-foundry/templates/packs/pack.md.tmpl`.
-- `skills-foundry/docs/OPERATOR_MANUAL.md` and `skills-foundry/README.md` now agree that `repo-*` commands are MVP helpers, not full automation.
+- `skills-foundry/docs/OPERATOR_MANUAL.md` and `skills-foundry/README.md` now agree on canonical `repo-helper-*` names and helper-only scope, with deprecated `repo-*` aliases documented for compatibility.
 - Tracked front-facing proof snippets now live under `skills-foundry/docs/examples/`, reducing dependence on git-ignored runtime `reports/`.
 - Root `README.md` now includes a repo map and "First 5 Minutes" onboarding flow with verified commands.
 
 ### Consistency / Structure Issues (ordered)
 
-1. **Helper-vs-automation scope can still be misunderstood:** `repo-*` naming suggests stronger automation than is implemented today, even though README/manual now disclose the limitation.
+1. **Deprecated alias cleanup remains to be managed:** `repo-*` aliases are retained intentionally for compatibility and now print migration warnings, but they add temporary command-surface duplication.
 2. **Validation warning volume remains high by default:** categorization, suppression/grouping flags, and `--compact` help, but operators must know to use the compact path.
 3. **Rubric logic still lives in code:** the rubric doc now states code is authoritative, but richer rule mapping could reduce maintenance drift further.
-4. **Packaging/release signals are still incomplete:** CI and a lightweight release checklist now exist, but there is no license or changelog/release-notes convention.
+4. **Packaging/release signals are still incomplete:** CI, a lightweight release checklist, and a changelog convention now exist, but there is still no license.
 5. **Nested-project layout still adds context switching:** the root README now provides a repo map/first-5-minutes flow, but users still move between repo root and `skills-foundry/`.
 
 ## 9. Highest-Leverage Next Steps (Top 10) + Estimated Effort (S/M/L)
 
 | Rank | Next step | Why it matters | Effort |
 |---|---|---|---|
-| 1 | Decide long-term scope for `repo-*` CLIs (helper-only vs selective execution) and rename if needed | Prevents product-positioning confusion and expectation mismatch | S |
+| 1 | Add a license file appropriate for intended audience/distribution | Increases reuse readiness and external trust | S |
 | 2 | Decide whether `skills-validate --compact` should become the default output mode (or be the default recommended command everywhere) | Reduces operator warning fatigue on large packs | S |
-| 3 | Add license + lightweight changelog/release-notes guidance | Increases reuse readiness and project credibility | S |
+| 3 | Decide on a deprecation window for `repo-*` aliases and document removal timing | Reduces long-term CLI surface duplication after the naming fix | S |
 | 4 | Make lint scoring/rubric mapping explicit (rule IDs or config) | Reduces doc/code drift risk as heuristics evolve | M |
-| 5 | Add tests for validator/linter parser edge cases (front matter variants) | Reduces future regressions in heuristics | M |
-| 6 | Expand curated examples with one full lint JSON sample and one sync prune example | Strengthens frontend/README proof points | S |
-| 7 | Add a smoke-script CI job or scheduled smoke check (optional/local-only wrapper if needed) | Guards against drift between docs and `bin/smoke-check-foundry` | M |
-| 8 | Add release/version notes to `skills-foundry/README.md` after first tagged version | Improves adoption confidence | S |
-| 9 | Document a maintainer workflow for refreshing `docs/examples/` from real command runs | Keeps front-facing proof snippets in sync with CLI behavior | S |
-| 10 | Add one optional "prompt-to-artifact trace" screenshot to the root README packaging section | Strengthens front-facing proof for new users quickly | S |
+| 5 | Expand curated examples with one full lint JSON sample and one sync prune example | Strengthens frontend/README proof points | S |
+| 6 | Add a smoke-script CI job or scheduled smoke check (optional/local-only wrapper if needed) | Guards against drift between docs and `bin/smoke-check-foundry` | M |
+| 7 | Add release/version notes to `skills-foundry/README.md` after first tagged version | Improves adoption confidence | S |
+| 8 | Document a maintainer workflow for refreshing `docs/examples/` from real command runs | Keeps front-facing proof snippets in sync with CLI behavior | S |
+| 9 | Add one optional "prompt-to-artifact trace" screenshot to the root README packaging section | Strengthens front-facing proof for new users quickly | S |
+| 10 | Consider a tiny validator output hint when warnings are suppressed or numerous (e.g., suggest `--compact`) | Helps operators discover lower-noise validation workflows | S |
