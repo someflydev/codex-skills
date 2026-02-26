@@ -117,11 +117,12 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
        --start 1 --end 2 \
        --write-plan STAGE1-PLAN.md \
        --execute \
-       --runner-shell-template "python3 -c 'import sys; print(\"RUN\", sys.argv[1])' {prompt_path}" \
+       --runner-argv-template '["python3","-c","import sys; print(\"RUN\", sys.argv[1])","{prompt_path}"]' \
        --run-log STAGE1-RUN-LOG.md
      ```
      Notes:
      - Execution mode is opt-in and helper-first (planning remains the default behavior).
+     - Prefer `--runner-argv-template` (JSON argv list) for non-shell execution. `--runner-shell-template` remains available for explicit shell use only.
      - The helper writes a run log under the selected `--repo-root` (for example `demo-repo/STAGE1-RUN-LOG.md`).
 3. `stage-1 postflight`
    - Review what shipped, what drifted, and what broke.
