@@ -23,6 +23,7 @@ def _make_prompt_repo(tmp_path: Path) -> Path:
     (prompts_dir / "PROMPT_00_s.txt").write_text("System prompt\\n", encoding="utf-8")
     (prompts_dir / "PROMPT_01.txt").write_text("Task 1\\n", encoding="utf-8")
     (prompts_dir / "PROMPT_02.txt").write_text("Task 2\\n", encoding="utf-8")
+    (prompts_dir / "PROMPT_03.txt").write_text("Task 3\\n", encoding="utf-8")
     (repo_root / "README.md").write_text("# Demo Repo\\n", encoding="utf-8")
     return repo_root
 
@@ -159,3 +160,80 @@ def test_repo_workflow_helpers_generate_plans_and_snapshots(tmp_path: Path) -> N
     assert stage2run.returncode == 0, stage2run.stdout + "\n" + stage2run.stderr
     assert stage2_run_plan.exists()
     assert "Stage 2 Run Plan" in stage2_run_plan.read_text(encoding="utf-8")
+
+
+def test_repo_helper_stage1_plan_can_execute_with_deterministic_runner_and_write_log(tmp_path: Path) -> None:
+    repo_root = _make_prompt_repo(tmp_path)
+    run_log = repo_root / "STAGE1-RUN-LOG.md"
+    stage1_plan = repo_root / "STAGE1-PLAN.md"
+
+    result = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "2",
+            "--write-plan",
+            "STAGE1-PLAN.md",
+            "--execute",
+            "--runner-shell-template",
+            "python3 -c 'import sys; print(\"RUN\", sys.argv[1])' {prompt_path}",
+            "--run-log",
+            "STAGE1-RUN-LOG.md",
+            "--require-tools",
+            "python3",
+        ]
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert stage1_plan.exists()
+    assert run_log.exists()
+    log_text = run_log.read_text(encoding="utf-8")
+    assert "# Stage 1 Execution Log" in log_text
+    assert "PROMPT_01.txt" in log_text
+    assert "PROMPT_02.txt" in log_text
+    assert "- status: `success`" in log_text
+    assert "RUN" in log_text
+
+
+def test_repo_helper_stage1_plan_execute_stops_on_first_failure_and_logs_it(tmp_path: Path) -> None:
+    repo_root = _make_prompt_repo(tmp_path)
+    run_log = repo_root / "STAGE1-RUN-FAIL.md"
+
+    result = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "3",
+            "--execute",
+            "--runner-shell-template",
+            (
+                "python3 -c 'import os,sys; p=os.path.basename(sys.argv[1]); "
+                "print(p); raise SystemExit(7 if p == \"PROMPT_02.txt\" else 0)' {prompt_path}"
+            ),
+            "--run-log",
+            "STAGE1-RUN-FAIL.md",
+            "--require-tools",
+            "python3",
+        ]
+    )
+
+    assert result.returncode == 7, result.stdout + "\n" + result.stderr
+    assert run_log.exists()
+    log_text = run_log.read_text(encoding="utf-8")
+    assert "PROMPT_01.txt" in log_text
+    assert "PROMPT_02.txt" in log_text
+    assert "PROMPT_03.txt" not in log_text
+    assert "- status: `failed`" in log_text
+    assert "- returncode: `7`" in log_text
