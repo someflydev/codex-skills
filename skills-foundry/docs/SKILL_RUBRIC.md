@@ -1,5 +1,7 @@
 # Skill Rubric
 
+This document is a human-readable rubric guide. The current scoring behavior is implemented in code (`skills-foundry/bin/_skills_common.py`, `lint_skill()`), which is the authoritative source when doc and code differ.
+
 ## Scoring
 
 - Completeness: 0-100

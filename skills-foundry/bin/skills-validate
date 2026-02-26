@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 from _skills_common import FOUNDRY_ROOT, SKILLS_ROOT, format_validate_summary, validate_skills, validation_failed
@@ -16,7 +17,55 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--skills-root", type=Path, default=SKILLS_ROOT)
     parser.add_argument("--repo-root", type=Path, default=FOUNDRY_ROOT.parent)
     parser.add_argument("--json", dest="json_out", type=Path, help="Optional path to write validation details JSON")
+    parser.add_argument(
+        "--suppress-warning-code",
+        action="append",
+        default=[],
+        help="Repeatable warning code to suppress from output (warnings only).",
+    )
+    parser.add_argument(
+        "--suppress-expected-output-warnings",
+        action="store_true",
+        help="Suppress common output-path warnings for install-target-relative and future-generated artifacts.",
+    )
+    parser.add_argument(
+        "--warning-code-summary",
+        action="store_true",
+        help="Print a grouped warning summary by code after the detailed output.",
+    )
     return parser
+
+
+def _normalize_suppressed_warning_codes(args: argparse.Namespace) -> set[str]:
+    suppressed = {str(code).strip() for code in args.suppress_warning_code if str(code).strip()}
+    if args.suppress_expected_output_warnings:
+        suppressed.update(
+            {
+                "missing_output_path_install_target_relative",
+                "missing_output_path_expected_future",
+            }
+        )
+    return suppressed
+
+
+def _apply_warning_suppression(docs, suppressed_warning_codes: set[str]) -> None:
+    if not suppressed_warning_codes:
+        return
+    for doc in docs:
+        doc.messages = [
+            msg
+            for msg in doc.messages
+            if not (msg.level == "WARN" and msg.code in suppressed_warning_codes)
+        ]
+
+
+def _warning_code_counts(docs) -> Counter[str]:
+    counts: Counter[str] = Counter()
+    for doc in docs:
+        for msg in doc.messages:
+            if msg.level == "WARN":
+                counts[msg.code] += 1
+    return counts
 
 
 def main() -> int:
@@ -24,10 +73,20 @@ def main() -> int:
     args = parser.parse_args()
 
     docs = validate_skills(args.skills_root, args.repo_root)
+    suppressed_warning_codes = _normalize_suppressed_warning_codes(args)
+    _apply_warning_suppression(docs, suppressed_warning_codes)
     if not docs:
         print(f"Validated 0 skills: no SKILL.md files found under {args.skills_root}")
     else:
         print(format_validate_summary(docs))
+        if args.warning_code_summary:
+            counts = _warning_code_counts(docs)
+            print("\nWarning Code Summary:")
+            if not counts:
+                print("- (no warnings)")
+            else:
+                for code in sorted(counts):
+                    print(f"- {code}: {counts[code]}")
 
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
