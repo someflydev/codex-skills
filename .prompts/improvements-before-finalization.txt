@@ -1,0 +1,175 @@
+---
+Timestamp (local): 2026-02-25 18:10:11 CST
+Summary:
+- Performed a post-flight audit of the prompt plan (`.prompts/PROMPT_00_s.txt` .. `PROMPT_08.txt`) against the as-built repository filesystem.
+- Verified inventory, core CLI behavior, tests, docs, generated skill packs, smoke-run evidence, and prompt-to-artifact traceability.
+- Wrote `POST_FLIGHT_REPORT.md` and `FRONT_FACING_IDEAS.md` with scoring, issue prioritization, and frontend/packaging recommendations.
+Top 10 issues found:
+- P0: `repo-*` operator CLIs remain PROMPT_01 scaffold stubs, leaving the top-level prompt-first workflow promise only partially implemented.
+- P1: `skills-foundry/README.md` is stale and still describes pre-PROMPT_02/PROMPT_03 status.
+- P1: `skills-validate` emits false-positive `missing_output_path` warnings for `Confirm` strings due loose front-matter list scanning.
+- P1: `OPERATOR_MANUAL.md` documents unsupported `skills-sync --only skill-a,skill-b` syntax; parser expects repeated `--only` flags.
+- P1: `skills-lint` scores placeholder scaffold content (`smoke-check`) as 100/10, undermining excellence scoring credibility.
+- P2: No CI workflow exists to run tests/smoke checks automatically.
+- P2: Test coverage is narrow (6 tests) and misses `skills-new`, `skills-render`, sync prune/symlink paths, and `repo-*` CLIs.
+- P2: `SKILL_RUBRIC.md` is descriptive only; lint scoring logic is hardcoded and can drift from docs.
+- P2: Runtime proof artifacts in `skills-foundry/reports/` are git-ignored, reducing durable front-facing evidence.
+- P2: Repo root lacks a README, so the nested `skills-foundry/` deliverable is not discoverable from first landing.
+Fixes applied during this run:
+- None (audit/docs/log only; no code or behavior changes applied).
+Files written (requested outputs):
+- POST_FLIGHT_REPORT.md :: created
+- FRONT_FACING_IDEAS.md :: created
+
+---
+Timestamp (local): 2026-02-25 18:23:03 CST
+Summary:
+- Applied previously identified P0/P1 fixes across repo workflow CLIs, validator/linter heuristics, sync CLI/docs semantics, and the nested `skills-foundry` README.
+- Re-ran local verification (`.venv/bin/pytest -q`, `bin/skills-validate`, `bin/skills-lint`) and refreshed `POST_FLIGHT_REPORT.md` + `FRONT_FACING_IDEAS.md` to reflect the new post-fix state.
+- Confirmed no remaining P0/P1 issues in the updated audit; remaining items are P2/P3 packaging, CI, and scope/automation clarity improvements.
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs are MVP planning/snapshot helpers, not full prompt execution automation.
+- P2: No CI workflow exists for pytest + CLI smoke checks.
+- P2: Test coverage remains narrow for `skills-new`, `skills-render`, repo helper CLIs, and sync prune/symlink paths.
+- P2: Repo root still lacks a `README.md`, so first-time users may miss the nested `skills-foundry/` deliverable.
+- P2: Runtime proof artifacts are generated but not curated as tracked examples for front-facing packaging.
+- P2: `skills-validate` warnings remain noisy for intentionally future output paths (best-effort `missing_output_path`).
+- P2: `SKILL_RUBRIC.md` can drift from scoring logic in `_skills_common.py` because rubric rules are code-defined.
+- P3: Smoke proof is documented in prose but not packaged as a reproducible script target.
+- P3: Lint reports emit absolute filesystem paths, which hurts portability of shared snippets/screenshots.
+- P3: Empty `skills/docs-tools/` category is present but unexplained in front-facing docs.
+Fixes applied during this run:
+- `skills-foundry/bin/_repo_workflow.py` :: + added shared MVP repo workflow helper implementation (preflight inventory, stage run plans, postflight snapshot, stage-2 plan) :: replaces stub-only behavior with useful helper functionality
+- `skills-foundry/bin/repo-preflight` :: ~ wrapper now delegates to `_repo_workflow.main_repo_preflight()` :: P0 stub removal
+- `skills-foundry/bin/repo-stage1-run` :: ~ wrapper now delegates to `_repo_workflow.main_repo_stage1_run()` :: P0 stub removal
+- `skills-foundry/bin/repo-postflight` :: ~ wrapper now delegates to `_repo_workflow.main_repo_postflight()` :: P0 stub removal
+- `skills-foundry/bin/repo-stage2-plan` :: ~ wrapper now delegates to `_repo_workflow.main_repo_stage2_plan()` :: P0 stub removal
+- `skills-foundry/bin/repo-stage2-run` :: ~ wrapper now delegates to `_repo_workflow.main_repo_stage2_run()` :: P0 stub removal
+- `skills-foundry/bin/_skills_common.py` :: + `extract_list_items_from_front_matter_block()` and `validate_skill_document()` uses `outputs:`-scoped parsing :: removes false-positive `Confirm` output-path warnings
+- `skills-foundry/bin/_skills_common.py` :: + placeholder/template wording penalties in `lint_skill()` :: lowers false-perfect scores for scaffold content (e.g., `smoke-check`)
+- `skills-foundry/bin/skills-sync` :: + normalize comma-separated `--only` values while retaining repeated-flag support :: aligns CLI behavior with docs examples
+- `skills-foundry/tests/test_skills_sync.py` :: + regression test for comma-separated `--only` syntax :: verifies sync selection parsing
+- `skills-foundry/docs/OPERATOR_MANUAL.md` :: ~ updated `--only` syntax guidance and smoke evidence notes :: matches current CLI semantics and linter behavior
+- `skills-foundry/README.md` :: ~ rewritten to reflect current capabilities, quickstart, project layout, and limitations :: removes stale scaffold-era messaging
+- `POST_FLIGHT_REPORT.md` :: ~ refreshed audit/scoring/priority issues after P0/P1 fixes :: updated completeness/excellence and traceability statuses
+- `FRONT_FACING_IDEAS.md` :: ~ replaced stale “stubbed”/placeholder caveats with current helper-only and heuristic wording :: packaging guidance now matches repo state
+
+---
+Timestamp (local): 2026-02-25 19:11:44 CST
+Summary:
+- Applied requested P2 subset fixes: added GitHub Actions CI, added a root repo README, and expanded pytest coverage to include `skills-new`, `skills-render`, and `repo-*` helper CLIs.
+- Re-ran local verification (`.venv/bin/pytest -q`) and CLI `--help` smoke for all shipped commands.
+- Refreshed `POST_FLIGHT_REPORT.md` and `FRONT_FACING_IDEAS.md` to reflect improved completeness/excellence and reduced remaining P2 scope.
+Top 10 issues found:
+- P2: `repo-*` commands are still helper-only (planning/snapshot/report generation), not full prompt execution automation.
+- P2: `skills-sync` prune/symlink branches remain untested.
+- P2: Runtime proof artifacts are not yet curated as tracked examples for front-facing packaging.
+- P2: `skills-validate` warnings are still noisy for intentionally future output paths.
+- P2: `SKILL_RUBRIC.md` can drift from scoring behavior implemented in `_skills_common.py`.
+- P3: Smoke proof is documented but not yet packaged as a runnable script target.
+- P3: Lint reports use absolute paths, which hurts portability of shared snippets/screenshots.
+- P3: `docs-tools/` empty category is still unexplained in front-facing docs.
+- P3: Nested-project orientation is improved by root README but still light on visual repo mapping.
+- P3: Validator/linter parser edge cases need more focused tests as heuristics evolve.
+Fixes applied during this run:
+- `.github/workflows/ci.yml` :: + added GitHub Actions workflow for pytest + CLI smoke (`--help`, validate, lint) :: addresses CI/trust-signal gap (P2-002)
+- `README.md` :: + added root repo README with repo map, quickstart pointers, prompt lineage/audit links, and scope note for `repo-*` helpers :: addresses root onboarding gap (P2-004)
+- `skills-foundry/tests/test_skills_new_and_render.py` :: + added functional CLI coverage for `skills-new` and `skills-render` :: expands test coverage (P2-003)
+- `skills-foundry/tests/test_repo_workflow_clis.py` :: + added `--help` smoke and plan/snapshot generation tests for all `repo-*` helper CLIs :: expands test coverage (P2-003)
+- `POST_FLIGHT_REPORT.md` :: ~ refreshed completeness score, excellence rating, and remaining issue list after CI/README/test additions :: keeps audit trace current
+- `FRONT_FACING_IDEAS.md` :: ~ removed stale packaging checklist items (root README/CI pending) and updated wording to current state :: keeps front-facing plan accurate
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `10 passed`
+- `cd skills-foundry && for cmd in ...; do bin/$cmd --help; done` -> success (`OK`)
+
+---
+Timestamp (local): 2026-02-25 19:16:43 CST
+Summary:
+- Applied the next high-leverage P2 batch: added `skills-sync` prune/symlink test coverage, categorized validator output-path warnings for better triage, and added curated tracked proof snippets under `skills-foundry/docs/examples/`.
+- Re-ran local verification (`.venv/bin/pytest -q`) and checked validator warning output to confirm new warning codes are emitted.
+- Refreshed READMEs, `POST_FLIGHT_REPORT.md`, and `FRONT_FACING_IDEAS.md` to reflect the reduced remaining P2 scope and improved packaging evidence.
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs are still helper-only and may be interpreted as stronger automation than implemented.
+- P2: `skills-validate` warnings are categorized now but still high-volume for content-heavy packs.
+- P2: `SKILL_RUBRIC.md` remains descriptive while scoring logic is code-defined (`_skills_common.py`), so drift risk remains.
+- P3: Smoke proof is documented but not packaged as a repeatable script target.
+- P3: Runtime lint reports still emit absolute paths (curated examples mitigate this for front-facing docs only).
+- P3: `docs-tools/` empty category remains unexplained in front-facing docs.
+- P3: Nested-project layout is improved by root README, but a visual repo map would help onboarding.
+- P3: Validator/linter parser edge cases need broader tests as heuristics evolve.
+- P3: Curated examples now exist but should be refreshed when report formats change.
+- P3: Release packaging still lacks license + release checklist/changelog guidance.
+Fixes applied during this run:
+- `skills-foundry/bin/_skills_common.py` :: + `classify_missing_output_path_warning()` and categorized warning codes/messages for install-target-relative vs expected-future outputs :: reduces validator triage noise without suppressing warnings
+- `skills-foundry/tests/test_skills_validate.py` :: + validator warning-code categorization regression test :: verifies new warning code semantics
+- `skills-foundry/tests/test_skills_sync.py` :: + tests for `--strategy symlink` and `--prune --yes` flows :: closes high-risk sync behavior coverage gap
+- `skills-foundry/docs/examples/README.md` :: + curated examples index :: creates tracked proof-artifact namespace
+- `skills-foundry/docs/examples/skills-sync-dry-run.txt` :: + tracked sync dry-run sample :: front-facing proof snippet
+- `skills-foundry/docs/examples/skills-lint-summary.md` :: + tracked lint summary sample :: front-facing proof snippet
+- `skills-foundry/docs/examples/skills-catalog-snippet.md` :: + tracked rendered catalog excerpt :: front-facing proof snippet
+- `skills-foundry/README.md` :: ~ linked `docs/examples/` and documented curated proof artifacts :: surfaces tracked proof in foundry docs
+- `README.md` :: ~ linked `skills-foundry/docs/examples/` :: improves root-level discoverability of proof snippets
+- `POST_FLIGHT_REPORT.md` :: ~ updated scores, issue list, and findings after P2 batch :: reflects current state accurately
+- `FRONT_FACING_IDEAS.md` :: ~ updated asset/showcase + packaging checklist wording for existing curated examples :: keeps packaging plan current
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `13 passed`
+- `cd skills-foundry && bin/skills-validate | rg 'missing_output_path'` -> categorized warning codes present (`*_install_target_relative`, `*_expected_future`)
+
+---
+Timestamp (local): 2026-02-25 19:22:08 CST
+Summary:
+- Applied the next high-leverage P2 batch: added `skills-validate` warning suppression/grouping UX and documented rubric authority in `SKILL_RUBRIC.md`.
+- Added validation regression coverage for warning suppression/summary behavior and re-ran the full test suite.
+- Refreshed `POST_FLIGHT_REPORT.md` and `OPERATOR_MANUAL.md` to reflect the reduced remaining P2 list and new validation triage ergonomics.
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs remain helper-only and may be interpreted as stronger automation than implemented.
+- P3: Validation warnings are better categorized/suppressible but still verbose by default unless operators use the triage flags.
+- P3: Smoke proof is documented but not packaged as a repeatable script target.
+- P3: Runtime lint reports still emit absolute paths (curated examples mitigate this for front-facing docs only).
+- P3: `docs-tools/` empty category remains unexplained in front-facing docs.
+- P3: Nested-project layout still benefits from a visual repo map for onboarding.
+- P3: Validator/linter parser edge cases need broader tests as heuristics evolve.
+- P3: Curated examples should be refreshed when report/output formats change.
+- P3: Release packaging still lacks license + release checklist/changelog guidance.
+- P3: Lint rubric/code mapping could be made more explicit if scoring heuristics expand further.
+Fixes applied during this run:
+- `skills-foundry/bin/skills-validate` :: + `--suppress-warning-code`, `--suppress-expected-output-warnings`, `--warning-code-summary` :: reduces day-to-day validation noise without hiding errors
+- `skills-foundry/tests/test_skills_validate.py` :: + suppression/summary regression test :: verifies warning triage UX behavior
+- `skills-foundry/docs/OPERATOR_MANUAL.md` :: ~ documented validation warning triage flags and updated smoke-run warning wording :: improves operator guidance
+- `skills-foundry/docs/SKILL_RUBRIC.md` :: + explicit note that scoring code (`lint_skill()` in `_skills_common.py`) is authoritative :: reduces rubric/code drift ambiguity
+- `POST_FLIGHT_REPORT.md` :: ~ updated test count, issue priorities (P2 reduced), and findings after warning-triage/rubric-doc fixes :: keeps audit current
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `14 passed`
+- `cd skills-foundry && bin/skills-validate --suppress-expected-output-warnings --warning-code-summary` -> warnings reduced from 52 to 6 with grouped summary output
+
+---
+Timestamp (local): 2026-02-25 20:26:12 CST
+Summary:
+- Applied a higher-leverage P3 batch: added a repeatable smoke script target, made lint reports repo-relative by default (with absolute-path opt-in), and documented the previously empty `docs-tools` placeholder category.
+- Added lint path-format regression coverage and re-ran the full test suite; verified the smoke script and lint path output behavior manually.
+- Refreshed `POST_FLIGHT_REPORT.md`, `FRONT_FACING_IDEAS.md`, and operator docs to reflect the reduced remaining issue set.
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs remain helper-only and may be interpreted as stronger automation than implemented.
+- P3: Validation warnings are still verbose by default unless operators use the new triage flags (`--suppress-expected-output-warnings`, `--warning-code-summary`).
+- P3: Rubric scoring logic remains code-defined; doc is authoritative-by-reference but not config-backed.
+- P3: Packaging/release signals remain thin (no license or lightweight release checklist/changelog guidance).
+- P3: Nested-project orientation still benefits from a visual repo map / first-5-minutes flow.
+- P3: Validator/linter parser edge cases need broader tests as heuristics evolve.
+- P3: Curated examples should be refreshed when report/output formats change.
+- P3: Smoke script and smoke docs could drift unless one is treated as the source of truth.
+- P3: A compact validation output preset/alias would further reduce operator friction.
+- P3: Front-facing proof can still be strengthened with one full lint JSON sample and one prune example.
+Fixes applied during this run:
+- `skills-foundry/bin/smoke-check-foundry` :: + added repeatable smoke script (dry-run by default, optional real sync target) :: addresses smoke reproducibility/documentation drift risk
+- `skills-foundry/bin/_skills_common.py` :: ~ `write_lint_reports()` now emits repo-relative paths by default and supports `absolute_paths` opt-in :: improves portability of lint reports/snippets
+- `skills-foundry/bin/skills-lint` :: + `--absolute-paths` flag and passes `repo_root` to report writer :: preserves opt-in absolute-path behavior
+- `skills-foundry/bin/_skills_sync_render.py` :: ~ passes `repo_root` to lint report writer during sync gating :: keeps sync-generated lint reports consistent with new path format
+- `skills-foundry/tests/test_skills_lint.py` :: + asserts repo-relative default path and adds `--absolute-paths` regression test :: verifies path formatting behavior
+- `skills-foundry/docs/OPERATOR_MANUAL.md` :: ~ documented `bin/smoke-check-foundry` and scripted smoke target usage :: improves repeatability guidance
+- `skills-foundry/docs/SKILLS_OVERVIEW.md` :: + documented intentionally empty `skills/docs-tools/` placeholder category :: removes category ambiguity
+- `POST_FLIGHT_REPORT.md` :: ~ removed resolved P3 items (scripted smoke, lint absolute-path default, `docs-tools` ambiguity), updated scores and next-step priorities :: keeps audit current
+- `FRONT_FACING_IDEAS.md` :: ~ updated proof-point test count and asset showcase to include scripted smoke target :: keeps front-facing packaging guidance accurate
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `15 passed`
+- `cd skills-foundry && bin/smoke-check-foundry --help` -> usage output displayed successfully
+- `cd skills-foundry && bin/skills-lint` -> `reports/skills-lint.*` now show repo-relative paths by default (e.g., `skills-foundry/skills/.../SKILL.md`)
