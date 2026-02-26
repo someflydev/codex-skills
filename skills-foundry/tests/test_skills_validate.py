@@ -216,6 +216,78 @@ def test_skills_validate_can_suppress_expected_output_warnings_and_show_summary(
     assert "- missing_output_path: 1" in result.stdout
 
 
+def test_skills_validate_prints_compact_hint_on_noisy_verbose_run(tmp_path: Path) -> None:
+    skills_root = tmp_path / "skills"
+    skill_dir = skills_root / "workflow" / "warn-hint"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text(
+        textwrap.dedent(
+            """\
+            ---
+            id: warn-hint
+            name: Warn Hint
+            description: Exercise compact hint behavior on noisy validation output.
+            version: 0.1.0
+            tags: [workflow, test]
+            inputs:
+              - name: repo_root
+                type: path
+                required: true
+                examples: ["."]
+            expected_tools: [git]
+            safety:
+              dry_run_supported: true
+              destructive_actions: []
+              confirmation_points:
+                - "Confirm before write"
+            outputs:
+              - build/out-1.txt
+              - build/out-2.txt
+              - build/out-3.txt
+              - build/out-4.txt
+              - build/out-5.txt
+              - build/out-6.txt
+              - build/out-7.txt
+              - build/out-8.txt
+              - build/out-9.txt
+              - build/out-10.txt
+            ---
+
+            ## When to use
+            Use this test skill to verify compact hint output.
+
+            ## Inputs
+            - `repo_root`: target repo root.
+
+            ## Procedure
+            1. Inspect the repo.
+            2. Generate outputs.
+            3. Validate and report.
+
+            ## Success criteria
+            Output warnings are shown and the compact hint appears.
+
+            ## Failure modes + recovery
+            Recover by correcting paths and retrying.
+
+            ## Examples
+            Example: validate this skill without compact mode.
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [str(CLI), "--skills-root", str(skills_root), "--repo-root", str(tmp_path)],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert "Hint: this run has a high warning count." in result.stdout
+    assert "--compact" in result.stdout
+
+
 def test_skills_validate_compact_alias_enables_warning_triage_preset(tmp_path: Path) -> None:
     skills_root = tmp_path / "skills"
     skill_dir = skills_root / "workflow" / "warn-compact"
@@ -291,3 +363,4 @@ def test_skills_validate_compact_alias_enables_warning_triage_preset(tmp_path: P
     assert "missing_output_path: Referenced output path does not exist yet (best effort): STAGE-1-POST-FLIGHT.md" in result.stdout
     assert "Warning Code Summary:" in result.stdout
     assert "- missing_output_path: 1" in result.stdout
+    assert "Hint: this run has a high warning count." not in result.stdout

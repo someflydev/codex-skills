@@ -9,6 +9,9 @@ from pathlib import Path
 from _skills_common import FOUNDRY_ROOT, SKILLS_ROOT, format_validate_summary, validate_skills, validation_failed
 
 
+COMPACT_HINT_WARNING_THRESHOLD = 10
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=Path(__file__).name,
@@ -73,6 +76,22 @@ def _warning_code_counts(docs) -> Counter[str]:
     return counts
 
 
+def _total_warning_count(docs) -> int:
+    return sum(1 for doc in docs for msg in doc.messages if msg.level == "WARN")
+
+
+def _maybe_print_compact_hint(args: argparse.Namespace, docs) -> None:
+    if args.compact:
+        return
+    warning_count = _total_warning_count(docs)
+    if warning_count < COMPACT_HINT_WARNING_THRESHOLD:
+        return
+    print(
+        "\nHint: this run has a high warning count. Try `--compact` for grouped output and "
+        "suppression of common expected output-path warnings."
+    )
+
+
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
@@ -87,6 +106,7 @@ def main() -> int:
         print(f"Validated 0 skills: no SKILL.md files found under {args.skills_root}")
     else:
         print(format_validate_summary(docs))
+        _maybe_print_compact_hint(args, docs)
         if args.warning_code_summary:
             counts = _warning_code_counts(docs)
             print("\nWarning Code Summary:")

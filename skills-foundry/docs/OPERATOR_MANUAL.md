@@ -52,6 +52,7 @@ bin/skills-validate --compact
   - `--warning-code-summary` to print grouped warning counts by code.
   - `--suppress-expected-output-warnings` to hide install-target-relative and future-artifact path warnings from the detailed output.
   - `--suppress-warning-code <code>` for targeted suppression (repeatable).
+- On noisy verbose runs (high warning volume without `--compact`), the validator prints a short hint recommending `--compact`.
 - `skills-lint` writes reports to `skills-foundry/reports/skills-lint.json` and `skills-foundry/reports/skills-lint.md`.
 
 ## Sync To `~/.codex/skills`
