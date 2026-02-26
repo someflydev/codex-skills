@@ -455,7 +455,7 @@ Use existing repo assets as proof and content, not placeholders:
 
 - Add CI badge now that a workflow exists
 - Add test count and smoke commands to README proof points
-- Add a small release checklist doc (or section) before claiming broader reuse
+- Surface the existing release checklist (`skills-foundry/docs/RELEASE_CHECKLIST.md`) in README proof points and add license/changelog signals before broader reuse claims
 
 ### Site deployment (if frontend is built)
 
