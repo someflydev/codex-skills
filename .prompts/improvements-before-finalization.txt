@@ -203,3 +203,72 @@ Fixes applied during this run:
 Verification evidence:
 - `cd skills-foundry && ../.venv/bin/pytest -q` -> `16 passed`
 - `cd skills-foundry && bin/skills-validate --compact` -> `Validated 27 skills: 0 error(s), 6 warning(s)` (compact preset reduces warning noise while keeping generic warnings)
+
+---
+Timestamp (local): 2026-02-25 21:06:24 CST
+Summary:
+- Applied a higher-leverage P3 batch focused on parser-regression confidence and packaging guidance: added front-matter parser edge-case tests, a lightweight `skills-foundry/CHANGELOG.md`, and changelog guidance in release docs.
+- Updated root/foundry onboarding docs to recommend `skills-validate --compact` consistently in quickstart paths.
+- Refreshed `POST_FLIGHT_REPORT.md` and `FRONT_FACING_IDEAS.md` to reflect improved test coverage and narrowed packaging gaps (license remains unresolved).
+Top 10 issues found:
+- P2: `repo-*` workflow CLIs remain helper-only and may be interpreted as stronger automation than implemented.
+- P3: Validation output is still verbose by default unless operators use `--compact`.
+- P3: Rubric scoring logic remains code-defined; docs are authoritative-by-reference but not config-backed.
+- P3: Packaging/release readiness improved, but no license is present yet.
+- P3: Nested-project layout still adds context switching despite improved onboarding docs.
+- P3: Curated examples should be refreshed when report/output formats change.
+- P3: Smoke script and smoke docs/examples can drift without a refresh workflow.
+- P3: Front-facing proof would benefit from a full lint JSON sample and a sync prune example.
+- P3: Long-term `repo-*` scope naming should be clarified before broader packaging claims.
+- P3: Validator output could hint more aggressively about `--compact` when warning volume is high.
+Fixes applied during this run:
+- `skills-foundry/tests/test_skills_common_parser.py` :: + front-matter parser edge-case tests (outputs block isolation, inline outputs lists, comments/blank lines) :: reduces regression risk in homegrown parser helpers
+- `skills-foundry/CHANGELOG.md` :: + lightweight changelog/release-notes convention and unreleased notes :: improves packaging/release signaling without choosing a license
+- `skills-foundry/docs/RELEASE_CHECKLIST.md` :: ~ references `CHANGELOG.md` and adds a short changelog/release-notes convention section :: makes release hygiene more explicit
+- `skills-foundry/README.md` :: ~ recommends `bin/skills-validate --compact` in quickstart, links `CHANGELOG.md`, clarifies current release-packaging limitation :: improves operator onboarding and packaging messaging
+- `README.md` :: ~ recommends `bin/skills-validate --compact` in start-here commands and links `skills-foundry/CHANGELOG.md` :: improves root-level onboarding consistency
+- `POST_FLIGHT_REPORT.md` :: ~ updated completeness score/test count, narrowed P3 packaging gap to license, and removed parser-edge-case tests from next-step backlog :: keeps audit aligned to current repo state
+- `FRONT_FACING_IDEAS.md` :: ~ packaging checklist now references existing changelog + release checklist and narrows remaining gap to license :: keeps packaging guidance current
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `19 passed`
+- `cd skills-foundry && bin/skills-validate --compact` -> `Validated 27 skills: 0 error(s), 6 warning(s)`
+
+---
+Timestamp (local): 2026-02-25 21:22:06 CST
+Summary:
+- Applied the remaining P2 fix by introducing canonical helper-first repo workflow CLI names (`repo-helper-*`) and keeping the old `repo-*` commands as deprecated compatibility aliases with migration warnings.
+- Updated docs/tests/audit text to use the canonical helper names and document the alias compatibility window.
+- Verified canonical helper commands and deprecated aliases via tests and a direct alias `--help` invocation.
+Top 10 issues found:
+- P3: Validation output is still verbose by default unless operators use `--compact`.
+- P3: Rubric scoring logic remains code-defined; docs are authoritative-by-reference but not config-backed.
+- P3: Packaging/release readiness improved, but no license is present yet.
+- P3: Deprecated `repo-*` aliases add temporary CLI surface duplication until a removal window is chosen.
+- P3: Nested-project layout still adds context switching despite improved onboarding docs.
+- P3: Curated examples should be refreshed when report/output formats change.
+- P3: Smoke script and smoke docs/examples can drift without a refresh workflow.
+- P3: Front-facing proof would benefit from a full lint JSON sample and a sync prune example.
+- P3: Long-term helper automation breadth is limited (by design today) and may merit one opt-in execution path later.
+- P3: Validator output could hint more aggressively about `--compact` when warning volume is high.
+Fixes applied during this run:
+- `skills-foundry/bin/repo-helper-preflight` :: + canonical helper-first wrapper :: clarifies preflight command scope without breaking behavior
+- `skills-foundry/bin/repo-helper-stage1-plan` :: + canonical planning wrapper (renamed from ambiguous "run" primary name) :: reduces automation ambiguity
+- `skills-foundry/bin/repo-helper-postflight` :: + canonical helper-first wrapper :: clarifies postflight snapshot helper scope
+- `skills-foundry/bin/repo-helper-stage2-theme-plan` :: + canonical helper-first wrapper :: clarifies stage-2 theme planning scope
+- `skills-foundry/bin/repo-helper-stage2-run-plan` :: + canonical planning wrapper (renamed from ambiguous "run" primary name) :: reduces automation ambiguity
+- `skills-foundry/bin/repo-preflight` :: ~ emits deprecated alias warning and points to canonical helper command :: preserves compatibility during migration
+- `skills-foundry/bin/repo-stage1-run` :: ~ emits deprecated alias warning and points to `repo-helper-stage1-plan` :: preserves compatibility during migration
+- `skills-foundry/bin/repo-postflight` :: ~ emits deprecated alias warning and points to canonical helper command :: preserves compatibility during migration
+- `skills-foundry/bin/repo-stage2-plan` :: ~ emits deprecated alias warning and points to `repo-helper-stage2-theme-plan` :: preserves compatibility during migration
+- `skills-foundry/bin/repo-stage2-run` :: ~ emits deprecated alias warning and points to `repo-helper-stage2-run-plan` :: preserves compatibility during migration
+- `skills-foundry/tests/test_repo_workflow_clis.py` :: ~ switched functional tests to canonical helper names and added deprecated-alias warning coverage :: verifies migration behavior
+- `README.md` :: ~ documents canonical `repo-helper-*` commands and deprecated alias compatibility :: fixes root-level naming expectation gap
+- `skills-foundry/README.md` :: ~ documents canonical `repo-helper-*` commands + deprecated aliases :: fixes foundry-level naming expectation gap
+- `skills-foundry/docs/RELEASE_CHECKLIST.md` :: ~ known-limitations wording updated to canonical helper names + alias deprecation note :: keeps release docs consistent
+- `skills-foundry/CHANGELOG.md` :: ~ records helper CLI naming clarification and deprecated alias behavior :: improves release-note traceability
+- `POST_FLIGHT_REPORT.md` :: ~ marks P2 naming gap resolved, switches to canonical helper names, updates remaining issues, and refreshes test count :: keeps audit aligned to current repo state
+- `FRONT_FACING_IDEAS.md` :: ~ updates front-facing wording to canonical helper names and test count :: keeps packaging guidance current
+Verification evidence:
+- `cd skills-foundry && ../.venv/bin/pytest -q` -> `20 passed`
+- `cd skills-foundry && bin/repo-stage1-run --help` -> exit `0` and emits `DEPRECATED alias` migration warning to stderr
+- `cd skills-foundry && ../.venv/bin/pytest -q tests/test_repo_workflow_clis.py` -> `3 passed`
