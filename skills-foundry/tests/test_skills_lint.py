@@ -88,7 +88,10 @@ def test_lint_scoring_works_on_sample_skill(tmp_path: Path) -> None:
     assert "completeness_score_100" in item
     assert "excellence_score_10" in item
     assert "top_issues" in item
+    assert "top_issue_rule_ids" in item
+    assert isinstance(item["top_issue_rule_ids"], list)
     assert "suggested_fixes" in item
+    assert len(item["top_issue_rule_ids"]) == len(item["top_issues"])
 
 
 def test_skills_lint_help_runs() -> None:

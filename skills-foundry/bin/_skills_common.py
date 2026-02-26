@@ -327,6 +327,41 @@ def _count_numbered_steps(text: str) -> int:
     return len(re.findall(r"(?m)^\d+\.\s+", text))
 
 
+def _lint_rule_id_for_issue(issue: str) -> str:
+    issue_lower = issue.lower()
+    if issue_lower.startswith("missing section:"):
+        return "section.missing"
+    if "validation errors present" == issue_lower:
+        return "validation.errors_present"
+    if "procedure steps are not numbered" == issue_lower:
+        return "procedure.not_numbered"
+    if "procedure is too short" in issue_lower:
+        return "procedure.too_short"
+    if "expected_tools is missing" == issue_lower:
+        return "metadata.expected_tools_missing"
+    if "safety confirmation points are missing" == issue_lower:
+        return "safety.confirmation_points_missing"
+    if "examples are missing" == issue_lower:
+        return "examples.missing"
+    if "inputs missing typed inputs" in issue_lower or "inputs missing input examples" in issue_lower:
+        return "inputs.metadata_incomplete"
+    if "examples section is too thin" == issue_lower:
+        return "examples.too_thin"
+    if "failure modes section lacks recovery guidance" == issue_lower:
+        return "failure_modes.recovery_missing"
+    if "scope appears too broad" == issue_lower:
+        return "scope.too_broad"
+    if "procedure is vague / not executable" == issue_lower:
+        return "procedure.vague"
+    if "placeholder description text remains" == issue_lower:
+        return "template.placeholder_description"
+    if "when to use section still contains template wording" == issue_lower:
+        return "template.when_to_use_wording"
+    if "examples section appears to be uncustomized template content" == issue_lower:
+        return "template.examples_uncustomized"
+    return "lint.generic_issue"
+
+
 def lint_skill(doc: SkillDocument) -> dict[str, Any]:
     issues: list[str] = []
     fixes: list[str] = []
@@ -440,6 +475,7 @@ def lint_skill(doc: SkillDocument) -> dict[str, Any]:
     excellence = max(0, min(10, excellence))
     top_issues = issues[:5]
     suggested_fixes = fixes[:5]
+    top_issue_rule_ids = [_lint_rule_id_for_issue(issue) for issue in top_issues]
 
     return {
         "skill_id": doc.skill_id,
@@ -447,6 +483,7 @@ def lint_skill(doc: SkillDocument) -> dict[str, Any]:
         "completeness_score_100": completeness,
         "excellence_score_10": excellence,
         "top_issues": top_issues,
+        "top_issue_rule_ids": top_issue_rule_ids,
         "suggested_fixes": suggested_fixes,
         "validation_errors": [m.message for m in doc.messages if m.level == "ERROR"],
         "validation_warnings": [m.message for m in doc.messages if m.level == "WARN"],
@@ -501,6 +538,8 @@ def write_lint_reports(
                 lines.append(f"  - {issue}")
         else:
             lines.append("- top_issues: []")
+        if item.get("top_issue_rule_ids"):
+            lines.append(f"- top_issue_rule_ids: {item['top_issue_rule_ids']}")
         if item["suggested_fixes"]:
             lines.append("- suggested_fixes:")
             for fix in item["suggested_fixes"]:
