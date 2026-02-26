@@ -1,17 +1,24 @@
-# Skills Catalog Snippet (Example)
-
-Example excerpt from a rendered catalog (`bin/skills-render`):
-
-```markdown
 # Skills Catalog
 
 Total skills: 27
 
-## workflow
+## core
 
-### prompt-preflight-inspector
-- Description: Audit a prompt sequence before the first build run, detect ordering/dependency hazards, and propose minimal safe fixes.
-- Tags: workflow, prompts, preflight, audit
-- Inputs: prompts_dir, repo_root, apply_fixes
-- Expected tools: git, rg, python3
-```
+### changelog-drafter
+- Description: Draft a changelog entry from recent scoped changes.
+- Tags: core, docs
+- Inputs: target_path
+- Expected tools: git, rg
+- Path: `/Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/changelog-drafter/SKILL.md`
+
+### hello-skill
+- Description: Print a simple hello-world style result for workflow sanity checks.
+- Tags: core, demo
+- Inputs: target_path
+- Expected tools: git, rg
+- Path: `/Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/hello-skill/SKILL.md`
+
+### hello-skill-alt
+- Description: Alternate hello skill with a stricter verification/reporting checklist.
+- Tags: core, demo, alt
+- Inputs: target_path

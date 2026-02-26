@@ -1,17 +1,22 @@
-# Lint Summary (Example)
+# Skills Lint Report
 
-Example excerpt from `skills-lint` output after post-flight fixes:
+Total skills: 27
 
-```text
-Linted 27 skills
-- JSON report: skills-foundry/reports/skills-lint.json
-- Markdown report: skills-foundry/reports/skills-lint.md
-- smoke-check: completeness=72 excellence=3
-- prompt-preflight-inspector: completeness=100 excellence=10
-- prompt-preflight-inspector-alt: completeness=100 excellence=10
-```
+## changelog-drafter
+- Path: `skills-foundry/skills/core/changelog-drafter/SKILL.md`
+- completeness_score_100: 84
+- excellence_score_10: 6
+- top_issues:
+  - When to use section still contains template wording
+  - Examples section appears to be uncustomized template content
+- top_issue_rule_ids: ['template.when_to_use_wording', 'template.examples_uncustomized']
+- suggested_fixes:
+  - Rewrite `When to use` with a concrete scenario and trigger conditions
+  - Replace template examples with realistic, task-specific scenarios and outcomes
 
-Notes:
-
-- `smoke-check` is intentionally a scaffold/smoke artifact and now scores lower due placeholder-template detection.
-- Most workflow/polyglot/storage-labs skills score highly because they contain richer, customized content.
+## hello-skill
+- Path: `skills-foundry/skills/core/hello-skill/SKILL.md`
+- completeness_score_100: 84
+- excellence_score_10: 6
+- top_issues:
+  - When to use section still contains template wording

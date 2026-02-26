@@ -1,0 +1,30 @@
+[
+  {
+    "skill_id": "changelog-drafter",
+    "path": "skills-foundry/skills/core/changelog-drafter/SKILL.md",
+    "completeness_score_100": 84,
+    "excellence_score_10": 6,
+    "top_issue_rule_ids": [
+      "template.when_to_use_wording",
+      "template.examples_uncustomized"
+    ],
+    "top_issues": [
+      "When to use section still contains template wording",
+      "Examples section appears to be uncustomized template content"
+    ]
+  },
+  {
+    "skill_id": "hello-skill",
+    "path": "skills-foundry/skills/core/hello-skill/SKILL.md",
+    "completeness_score_100": 84,
+    "excellence_score_10": 6,
+    "top_issue_rule_ids": [
+      "template.when_to_use_wording",
+      "template.examples_uncustomized"
+    ],
+    "top_issues": [
+      "When to use section still contains template wording",
+      "Examples section appears to be uncustomized template content"
+    ]
+  }
+]
