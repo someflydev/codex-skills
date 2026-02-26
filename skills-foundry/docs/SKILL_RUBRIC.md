@@ -1,6 +1,7 @@
 # Skill Rubric
 
 This document is a human-readable rubric guide. The current scoring behavior is implemented in code (`skills-foundry/bin/_skills_common.py`, `lint_skill()`), which is the authoritative source when doc and code differ.
+Rule ID mappings used for lint report issue labels are documented in `skills-foundry/docs/SKILL_RUBRIC_RULES.md` (lightweight reference; code remains authoritative).
 
 ## Scoring
 
@@ -20,4 +21,4 @@ This document is a human-readable rubric guide. The current scoring behavior is 
 
 ## Output Format (Target)
 
-The linter should emit per-skill scores, issues, and concrete suggested fixes.
+The linter should emit per-skill scores, issues, stable rule IDs (where available), and concrete suggested fixes.
