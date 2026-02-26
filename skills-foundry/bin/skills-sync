@@ -44,6 +44,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    normalized_only_ids: list[str] = []
+    for raw in args.only_ids:
+        for part in str(raw).split(","):
+            value = part.strip()
+            if value:
+                normalized_only_ids.append(value)
+    args.only_ids = normalized_only_ids
 
     if args.prune and not args.yes:
         print("ERROR: --prune requires confirmation via --yes")

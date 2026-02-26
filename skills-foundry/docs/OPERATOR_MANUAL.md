@@ -61,7 +61,7 @@ bin/skills-sync --strategy copy
 Useful options:
 
 - `--strategy symlink` for local iteration.
-- `--only skill-a,skill-b` to sync a subset.
+- `--only skill-a --only skill-b` to sync a subset (comma-separated values are also accepted).
 - `--prune --yes` to remove stale installed skills (review dry-run first).
 - `--to /custom/path` to sync into a sandbox/test location instead of `~/.codex/skills`.
 

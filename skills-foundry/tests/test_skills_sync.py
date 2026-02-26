@@ -125,3 +125,113 @@ def test_skills_sync_dry_run_does_not_write(tmp_path: Path) -> None:
 
     assert result.returncode == 0, result.stdout + "\n" + result.stderr
     assert not target_root.exists()
+
+
+def test_skills_sync_only_supports_comma_separated_values(tmp_path: Path) -> None:
+    source_skills = tmp_path / "skills"
+    _write_valid_skill(source_skills, "core", "hello-skill", "A hello skill")
+    _write_valid_skill(source_skills, "core", "repo-tree-summarizer", "A repo tree skill")
+
+    target_root = tmp_path / "installed-skills"
+    backup_root = tmp_path / "backups"
+    reports_dir = tmp_path / "reports"
+
+    result = subprocess.run(
+        [
+            str(SYNC_CLI),
+            "--from",
+            str(source_skills),
+            "--to",
+            str(target_root),
+            "--backup-dir",
+            str(backup_root),
+            "--reports-dir",
+            str(reports_dir),
+            "--repo-root",
+            str(tmp_path),
+            "--dry-run",
+            "--only",
+            "hello-skill,repo-tree-summarizer",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert "- create: 2" in result.stdout
+    assert "hello-skill" in result.stdout
+    assert "repo-tree-summarizer" in result.stdout
+
+
+def test_skills_sync_symlink_strategy_creates_symlink_targets(tmp_path: Path) -> None:
+    source_skills = tmp_path / "skills"
+    _write_valid_skill(source_skills, "core", "hello-skill", "A hello skill")
+
+    target_root = tmp_path / "installed-skills"
+    backup_root = tmp_path / "backups"
+    reports_dir = tmp_path / "reports"
+
+    result = subprocess.run(
+        [
+            str(SYNC_CLI),
+            "--from",
+            str(source_skills),
+            "--to",
+            str(target_root),
+            "--backup-dir",
+            str(backup_root),
+            "--reports-dir",
+            str(reports_dir),
+            "--repo-root",
+            str(tmp_path),
+            "--strategy",
+            "symlink",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    target_skill_dir = target_root / "hello-skill"
+    assert target_skill_dir.is_symlink()
+    assert target_skill_dir.resolve() == (source_skills / "core" / "hello-skill").resolve()
+    assert (target_root / "INDEX.md").exists()
+
+
+def test_skills_sync_prune_removes_extra_targets_with_backup(tmp_path: Path) -> None:
+    source_skills = tmp_path / "skills"
+    _write_valid_skill(source_skills, "core", "hello-skill", "A hello skill")
+
+    target_root = tmp_path / "installed-skills"
+    backup_root = tmp_path / "backups"
+    reports_dir = tmp_path / "reports"
+    stale_skill_dir = target_root / "obsolete-skill"
+    stale_skill_dir.mkdir(parents=True, exist_ok=True)
+    (stale_skill_dir / "SKILL.md").write_text("# obsolete\n", encoding="utf-8")
+    (stale_skill_dir / "EXAMPLES.md").write_text("# obsolete\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            str(SYNC_CLI),
+            "--from",
+            str(source_skills),
+            "--to",
+            str(target_root),
+            "--backup-dir",
+            str(backup_root),
+            "--reports-dir",
+            str(reports_dir),
+            "--repo-root",
+            str(tmp_path),
+            "--prune",
+            "--yes",
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert (target_root / "hello-skill" / "SKILL.md").exists()
+    assert not stale_skill_dir.exists()
+    assert (backup_root / "obsolete-skill" / "SKILL.md").exists()
+    assert "- would-prune: 1" in result.stdout or "Backups (if any) written under:" in result.stdout
