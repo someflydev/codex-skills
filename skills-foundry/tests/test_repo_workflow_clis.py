@@ -203,6 +203,40 @@ def test_repo_helper_stage1_plan_can_execute_with_deterministic_runner_and_write
     assert "RUN" in log_text
 
 
+def test_repo_helper_stage1_plan_can_execute_with_argv_runner_template(tmp_path: Path) -> None:
+    repo_root = _make_prompt_repo(tmp_path)
+    run_log = repo_root / "STAGE1-RUN-ARGV.md"
+
+    result = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "2",
+            "--execute",
+            "--runner-argv-template",
+            '["python3","-c","import sys; print(\\"RUN_ARGV\\", sys.argv[1])","{prompt_path}"]',
+            "--run-log",
+            "STAGE1-RUN-ARGV.md",
+            "--require-tools",
+            "python3",
+        ]
+    )
+
+    assert result.returncode == 0, result.stdout + "\n" + result.stderr
+    assert run_log.exists()
+    log_text = run_log.read_text(encoding="utf-8")
+    assert "- runner_mode: `argv`" in log_text
+    assert "PROMPT_01.txt" in log_text
+    assert "PROMPT_02.txt" in log_text
+    assert "RUN_ARGV" in log_text
+
+
 def test_repo_helper_stage1_plan_execute_stops_on_first_failure_and_logs_it(tmp_path: Path) -> None:
     repo_root = _make_prompt_repo(tmp_path)
     run_log = repo_root / "STAGE1-RUN-FAIL.md"
@@ -292,6 +326,32 @@ def test_repo_helper_stage1_plan_execute_enforces_guardrails(tmp_path: Path) -> 
     )
     assert outside_log.returncode == 2
     assert "--allow-outside-repo-artifacts" in outside_log.stdout
+
+    conflicting_runner_modes = _run(
+        [
+            str(REPO_HELPER_STAGE1_PLAN),
+            "--repo-root",
+            str(repo_root),
+            "--prompts-dir",
+            ".prompts",
+            "--start",
+            "1",
+            "--end",
+            "1",
+            "--execute",
+            "--runner-shell-template",
+            "python3 -c 'print(\"ok\")' {prompt_path}",
+            "--runner-argv-template",
+            '["python3","-c","print(\\"ok\\")","{prompt_path}"]',
+            "--run-log",
+            "STAGE1-RUN-LOG.md",
+            "--no-max-prompts",
+            "--require-tools",
+            "python3",
+        ]
+    )
+    assert conflicting_runner_modes.returncode == 2
+    assert "exactly one of --runner-shell-template or --runner-argv-template" in conflicting_runner_modes.stdout
 
 
 def test_repo_helper_stage1_plan_execute_timeout_writes_run_log(tmp_path: Path) -> None:
