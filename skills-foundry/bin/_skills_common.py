@@ -418,6 +418,24 @@ def lint_skill(doc: SkillDocument) -> dict[str, Any]:
         issues.append("Procedure is vague / not executable")
         fixes.append("Replace vague instructions with explicit commands, files, and verification steps")
 
+    description_text = str(doc.metadata.get("description", "")).strip().lower()
+    when_to_use_body = normalized_sections.get("when to use", "")
+    if description_text in {"describe the skill purpose here.", "describe the skill purpose here"}:
+        completeness -= 12
+        excellence -= 3
+        issues.append("Placeholder description text remains")
+        fixes.append("Replace the template placeholder description with a specific one-line value proposition")
+    if "use this skill when you need a focused, repeatable workflow for `" in when_to_use_body.lower():
+        completeness -= 8
+        excellence -= 2
+        issues.append("When to use section still contains template wording")
+        fixes.append("Rewrite `When to use` with a concrete scenario and trigger conditions")
+    if "example 1: run on a small repo" in examples_body.lower() and "example 2: run in dry-run mode first" in examples_body.lower():
+        completeness -= 8
+        excellence -= 2
+        issues.append("Examples section appears to be uncustomized template content")
+        fixes.append("Replace template examples with realistic, task-specific scenarios and outcomes")
+
     completeness = max(0, completeness)
     excellence = max(0, min(10, excellence))
     top_issues = issues[:5]
