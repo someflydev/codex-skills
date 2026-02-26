@@ -25,9 +25,15 @@ Use this checklist before tagging a version or sharing the foundry more broadly.
 
 ## 4. Tag/Release Prep (Optional)
 
-- Add a short changelog note (even if only in release notes / commit summary)
+- Update `skills-foundry/CHANGELOG.md` (or capture equivalent release notes if intentionally not using the changelog file)
 - Record notable behavior changes (CLI flags, defaults, output formats)
-- Document known limitations (especially `repo-*` helper-only scope)
+- Document known limitations (especially `repo-helper-*` helper-only scope and deprecated `repo-*` aliases)
+
+## 4a. Changelog / Release Notes Convention (Lightweight)
+
+- Prefer one `## Unreleased` section in `skills-foundry/CHANGELOG.md` while iterating locally.
+- When tagging/releasing, move the relevant bullets into a dated/versioned section and start a fresh `## Unreleased`.
+- Keep entries concrete and operator-facing: what changed, why it matters, and any migration/behavior notes.
 
 ## 5. Post-Release Follow-Through
 

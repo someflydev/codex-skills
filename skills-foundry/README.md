@@ -5,11 +5,11 @@ Repo-local toolkit for authoring, validating, linting, rendering, and syncing re
 ## What Works Today
 
 - `bin/skills-new`: create a skill skeleton from templates
-- `bin/skills-validate`: validate skill front matter + required sections
+- `bin/skills-validate`: validate skill front matter + required sections (`--compact` recommended for day-to-day runs)
 - `bin/skills-lint`: score skills and write JSON/Markdown lint reports
 - `bin/skills-sync`: validate/lint + sync skills into `~/.codex/skills` (or another target) with dry-run, backups, and prune confirmation
 - `bin/skills-render`: render a skills catalog markdown page
-- `bin/repo-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
+- `bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
 
 ## Quickstart
 
@@ -19,7 +19,7 @@ uv venv .venv
 uv pip install --python .venv/bin/python pytest
 
 bin/skills-new --category core --skill-id demo-skill --name "Demo Skill"
-bin/skills-validate
+bin/skills-validate --compact
 bin/skills-lint
 bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
 bin/skills-render
@@ -27,6 +27,7 @@ bin/skills-render
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.
 For release readiness checks, see `docs/RELEASE_CHECKLIST.md`.
+For release notes/changelog conventions, see `CHANGELOG.md`.
 
 ## Project Layout
 
@@ -41,9 +42,10 @@ For release readiness checks, see `docs/RELEASE_CHECKLIST.md`.
 
 ## Current Limitations
 
-- `repo-*` workflow commands are planning/snapshot helpers today; they do not execute prompts automatically.
+- `repo-helper-*` workflow commands are planning/snapshot helpers today; they do not execute prompts automatically.
+- Deprecated `repo-*` aliases are still shipped for compatibility and print a migration warning to stderr.
 - Lint/validate heuristics are practical but still evolving.
-- CI/release packaging is not set up yet.
+- CI is set up, but release packaging is still incomplete (for example: no license yet).
 
 ## Curated Proof Artifacts
 
