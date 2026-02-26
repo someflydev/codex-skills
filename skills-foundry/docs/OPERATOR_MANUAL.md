@@ -205,6 +205,17 @@ Useful options:
 
 - `--sync-target /tmp/skills-sync-smoke` to override the dry-run sync target.
 - `--with-real-sync` to also run a real sync to the target and generate `INDEX.md`.
+- Reset behavior is intentionally handled by `bin/demo-repo-reset` (not by `smoke-check-foundry`) to keep smoke runs non-destructive by default.
+
+## Demo Repo Reset (Safe Cleanup)
+
+Use the helper below to clean known generated artifacts in `skills-foundry/demo-repo/`.
+It defaults to dry-run mode and only removes a small allowlist when `--yes` is provided.
+
+```bash
+cd skills-foundry
+bin/demo-repo-reset --dry-run
+```
 
 ## Sync Notes (Copy vs Symlink)
 

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: demo-repo-reset [--dry-run] [--yes]
+
+Safely remove known generated artifacts from skills-foundry/demo-repo.
+
+Defaults to dry-run behavior unless --yes is provided.
+
+Options:
+  --dry-run   Show what would be removed (default behavior)
+  --yes       Perform deletion of known generated artifacts
+  --help      Show this help
+USAGE
+}
+
+DRY_RUN=1
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    --yes)
+      DRY_RUN=0
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FOUNDRY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DEMO_ROOT="$FOUNDRY_ROOT/demo-repo"
+
+if [[ ! -d "$DEMO_ROOT" ]]; then
+  echo "ERROR: demo repo directory not found: $DEMO_ROOT" >&2
+  exit 2
+fi
+
+TARGETS=(
+  "$DEMO_ROOT/STAGE1-PLAN.md"
+  "$DEMO_ROOT/STAGE1-RUN-LOG.md"
+  "$DEMO_ROOT/STAGE1-RUN-FAIL.md"
+  "$DEMO_ROOT/STAGE-1-POST-FLIGHT.md"
+  "$DEMO_ROOT/STAGE2-RUN-PLAN.md"
+  "$DEMO_ROOT/.prompts/STAGE2-PLAN.md"
+)
+
+echo "[demo-reset] demo root: $DEMO_ROOT"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  echo "[demo-reset] mode: dry-run (no files will be removed)"
+else
+  echo "[demo-reset] mode: apply (--yes)"
+fi
+
+removed=0
+would_remove=0
+already_absent=0
+
+for path in "${TARGETS[@]}"; do
+  if [[ -e "$path" ]]; then
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+      echo "[demo-reset] would remove: $path"
+      would_remove=$((would_remove + 1))
+    else
+      rm -f "$path"
+      echo "[demo-reset] removed: $path"
+      removed=$((removed + 1))
+    fi
+  else
+    echo "[demo-reset] absent: $path"
+    already_absent=$((already_absent + 1))
+  fi
+done
+
+if [[ "$DRY_RUN" -eq 1 ]]; then
+  echo "[demo-reset] summary: would_remove=$would_remove absent=$already_absent"
+else
+  echo "[demo-reset] summary: removed=$removed absent=$already_absent"
+fi
