@@ -37,7 +37,7 @@ Current baseline extracted from `POST_FLIGHT_REPORT.md`:
 - [ ] Operator safety/idempotency guardrails exist for helper execution/demo cleanup (bounded execution + dry-run reset tooling) with tests/docs.
 - [ ] `skills-validate` provides a visible low-noise discovery path when warnings are high (hinting `--compact` if default verbose mode is used).
 - [ ] Root packaging hygiene includes a real `LICENSE` file after explicit human choice:
-  - `test -f LICENSE`
+  - `test -f LICENSE` (blocked until explicit human license choice is provided to `PROMPT_12.txt`)
 - [ ] Deprecation policy for deprecated `repo-*` aliases is documented:
   - `test -f skills-foundry/docs/DEPRECATIONS.md`
 - [ ] Curated example refresh hook and manifest exist:
@@ -50,7 +50,7 @@ Current baseline extracted from `POST_FLIGHT_REPORT.md`:
 ## Minimal Deterministic Value Slice (must be provable by Stage-2 end)
 
 - Bring-up (deterministic):
-  - `cd skills-foundry && bin/repo-helper-stage1-plan --repo-root demo-repo --start 1 --end 2 --execute --runner-cmd-template "<deterministic local command>" --run-log demo-repo/STAGE1-RUN-LOG.md`
+  - `cd skills-foundry && bin/repo-helper-stage1-plan --repo-root demo-repo --start 1 --end 2 --execute --runner-shell-template "<deterministic local command>" --run-log STAGE1-RUN-LOG.md`
 - Validation (deterministic):
   - `cd skills-foundry && bin/skills-validate --compact`
 - Teardown (deterministic):

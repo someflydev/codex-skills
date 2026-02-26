@@ -6,7 +6,7 @@ Close the remaining packaging/release gap by adding a real license (with explici
 
 Dependencies / Sequencing
 - Designed order: after `PROMPT_10.txt` and `PROMPT_11.txt`
-- Runnable independently: partially (requires a human license choice)
+- Runnable independently: yes, with an explicit blocker path if a license choice is not provided
 - If no explicit license choice is provided at run time, STOP and report the blocker before making legal-text changes
 
 Human Decision Required (must ask before applying legal text)
@@ -41,7 +41,8 @@ Two-path acceptance:
 A) If license choice is provided (success path)
 ```bash
 test -f LICENSE
-rg -n "repo-helper-\\*|DEPRECATIONS\\.md|License" README.md skills-foundry/README.md skills-foundry/docs/RELEASE_CHECKLIST.md
+rg -n "repo-helper-|DEPRECATIONS\\.md" README.md skills-foundry/README.md skills-foundry/docs/RELEASE_CHECKLIST.md
+rg -ni "license" README.md skills-foundry/README.md skills-foundry/docs/RELEASE_CHECKLIST.md
 test -f skills-foundry/docs/DEPRECATIONS.md
 ```
 Expected:
@@ -75,4 +76,3 @@ Evidence To Include In Diff
 - `LICENSE` header and identifier (if chosen)
 - `skills-foundry/docs/DEPRECATIONS.md` deprecation table/timeline snippet
 - README/release-checklist references to license + deprecations policy
-

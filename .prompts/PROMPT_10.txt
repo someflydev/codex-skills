@@ -29,6 +29,10 @@ Required Scope
    - `bin/smoke-check-foundry --dry-run-only`
 
 Acceptance Criteria (commands + expected checks)
+Conditional branch:
+- If `PROMPT_09` execution mode has been implemented, include execution-mode assertions in `skills-foundry/tests/test_repo_workflow_clis.py`.
+- If `PROMPT_09` has not been executed yet, this prompt may land canonical-helper CI updates + smoke-script tests and document skipped execution-mode assertions in the prompt run summary.
+
 1) Repo-helper tests pass:
 ```bash
 cd skills-foundry
@@ -57,6 +61,7 @@ rg -n "smoke-check-foundry --dry-run-only" .github/workflows/ci.yml
 ```
 Expected:
 - both commands return matches
+- If `rg` is unavailable locally, an equivalent `grep -E` check is acceptable.
 
 Anti-Scope (do NOT do)
 - Do NOT add multi-version Python matrices

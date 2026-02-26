@@ -30,6 +30,9 @@ Required Scope
    - when warning volume is high and user is not using `--compact`, print a short hint recommending `--compact` (without changing exit codes)
 
 Acceptance Criteria (commands + expected checks)
+Conditional branch:
+- If `PROMPT_09` execution mode is not present yet, execution-specific guardrail checks may be deferred; still land validator UX + `demo-repo-reset` (and any smoke-script non-execution guardrails) and document skipped checks.
+
 1) Demo reset script is safe and idempotent:
 ```bash
 cd skills-foundry
@@ -42,7 +45,10 @@ Expected:
 - dry-run exits `0` both times
 - output clearly lists what would be removed without deleting by default
 
-2) Smoke script supports deterministic reset option (if added):
+2) Smoke script reset behavior is explicit and testable:
+- Either add a reset-related smoke-script flag and verify it here, OR explicitly leave `smoke-check-foundry` unchanged and document that reset behavior is handled only by `bin/demo-repo-reset` in this prompt.
+
+If a smoke-script reset flag is added, verify it:
 ```bash
 cd skills-foundry
 bin/smoke-check-foundry --dry-run-only --sync-target /tmp/skills-sync-smoke-stage2
