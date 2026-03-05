@@ -19,6 +19,7 @@ Artifacts To Create / Modify (exact paths)
 - `skills-foundry/docs/OPERATOR_MANUAL.md` (add flow-index usage)
 - `skills-foundry/README.md` (quick reference to flow commands)
 - `skills-foundry/tests/test_skills_flow_next.py` (new tests)
+- `.skills-flow-state.json` (optional local state file written by CLI when `--mark-done` is used)
 
 Required Scope
 1) Define ordered flow manifests per group (at minimum: `workflow`, `meta-runner`, `polyglot`, `storage-labs`, `core`):
@@ -34,6 +35,7 @@ Required Scope
    - show next step from:
      - explicit `--from-step`, or
      - persisted local state file
+   - support `--state-file` (default: `.skills-flow-state.json`)
    - optional `--mark-done` to advance local state
    - deterministic text output suitable for copy/paste workflow notes
 4) Implement `skills-flow-render`:
@@ -54,6 +56,7 @@ test -f skills-foundry/docs/SKILL_FLOWS.md
 ./skills-foundry/bin/skills-flow-next --list-groups
 ./skills-foundry/bin/skills-flow-next --group meta-runner --lane standard
 ./skills-foundry/bin/skills-flow-next --group meta-runner --lane alt
+./skills-foundry/bin/skills-flow-next --group workflow --lane standard --state-file /tmp/skills-flow-state.json --mark-done
 ./skills-foundry/bin/skills-flow-render
 ```
 3) New tests pass:
