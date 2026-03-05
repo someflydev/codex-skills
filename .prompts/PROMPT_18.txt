@@ -1,0 +1,57 @@
+Stage-3 Prompt 4/5
+Title: Meta-Runner Operator Adoption Pack (Flow Mapping + Runbook)
+
+Objective
+Bridge real operator behavior to reusable skills by documenting exact mapping from prompt-by-prompt workflows to `meta-runner` skill invocations, including human-notes logging patterns and commit discipline checkpoints.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_17.txt`
+- Depends on: finalized `meta-runner` skill IDs and verification commands
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/docs/META_RUNNER_OPERATORS_GUIDE.md` (new)
+- `skills-foundry/docs/META_RUNNER_PROMPT_MAPPING.md` (new)
+- `skills-foundry/demo-repo/README.md` (update with meta-runner usage path)
+- `skills-foundry/docs/OPERATOR_MANUAL.md` (cross-link updates)
+
+Required Scope
+1) Create a practical operators guide that includes:
+   - when to use meta-runner skills vs legacy manual prompt copy/paste
+   - a "human-notes.md" template section for run tracking
+   - exact commit-prefix discipline examples (`[PROMPT_XX, AGENT_role]`)
+2) Build a mapping document from real workflow steps to skill IDs:
+   - meta-runner creation
+   - preflight
+   - stage runner
+   - port isolation
+   - test-stack isolation
+   - operators guide generation
+   - playwright UI audit
+   - postflight audit
+3) Include a minimal adoption path (first 60 minutes) and a full-run path.
+
+Acceptance Criteria (commands + expected checks)
+1) Docs exist and include required mapping terms:
+```bash
+test -f skills-foundry/docs/META_RUNNER_OPERATORS_GUIDE.md
+test -f skills-foundry/docs/META_RUNNER_PROMPT_MAPPING.md
+rg -n "human-notes|PROMPT_XX|AGENT_|meta-runner-" skills-foundry/docs/META_RUNNER_OPERATORS_GUIDE.md skills-foundry/docs/META_RUNNER_PROMPT_MAPPING.md
+```
+2) Existing operator docs cross-link meta-runner docs:
+```bash
+rg -n "META_RUNNER_" skills-foundry/docs/OPERATOR_MANUAL.md
+```
+
+Anti-Scope (do NOT do)
+- Do NOT redesign existing stage-1/stage-2 helper architecture
+- Do NOT add new code execution paths in this prompt
+
+Overengineering Guardrails
+- Documentation-first integration only
+- Keep runbook templates lightweight and directly actionable
+- No new reporting services or telemetry tools
+
+Evidence To Include In Diff
+- Prompt-step -> skill ID mapping table
+- human-notes template snippet
+- quickstart adoption checklist

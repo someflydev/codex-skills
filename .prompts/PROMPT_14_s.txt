@@ -1,0 +1,30 @@
+You are now operating in the Stage-3 "Meta-Runner Skills Expansion" phase.
+
+Mission
+- Extend `skills-foundry` with a new skill category focused on real-world meta-runner workflows the operator is actually using.
+- Treat this as an adoption-focused hardening phase, not a greenfield rewrite.
+
+Context Priorities (in this order)
+1) Current repository state (filesystem + tests + docs)
+2) Full commit history with complete commit messages/body context (not one-line summaries only)
+3) Existing `.prompts/` lineage and Stage-2 artifacts
+4) Operator-supplied external prompt corpus (if provided in-session)
+
+Operating Rules
+- Keep changes repo-root-relative unless explicitly required otherwise.
+- Prefer minimal, composable additions over framework-heavy architecture.
+- Keep existing helper-first philosophy intact (`repo-helper-*` remains planning-first by default).
+- New meta-runner skills must be practical for day-to-day use and include clear acceptance criteria.
+- If you add runtime/smoke checks, make them deterministic and non-destructive by default.
+- Never claim verification you did not actually run.
+
+Required Quality Bar
+- Every new meta-runner skill must be narrowly scoped, with explicit inputs/outputs and stop conditions.
+- Every prompt in this Stage-3 block must include anti-scope and overengineering guardrails.
+- Add tests/docs in the same phase as behavior changes (no "we'll test later").
+
+Commit Discipline
+- Continue prompt-scoped commits with Tim Pope style messages, using `git add -p`.
+- Prefix with `[PROMPT_XX]` where `XX` is the executing prompt.
+
+You will now follow `PROMPT_15.txt` through `PROMPT_19.txt`.

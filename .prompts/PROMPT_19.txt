@@ -1,0 +1,56 @@
+Stage-3 Prompt 5/5
+Title: Meta-Runner Postflight Audit + Next-Prompt Generator
+
+Objective
+Audit the newly added meta-runner skill group for real adoption readiness and generate the next small set of prompts only if measurable gaps remain.
+
+Dependencies / Sequencing
+- Designed order: final Stage-3 prompt
+- Depends on: `PROMPT_15`..`PROMPT_18` outputs
+
+Artifacts To Create / Modify (exact paths)
+- `POST_FLIGHT_REPORT_META_RUNNER.md` (new)
+- `.prompts/improvements-before-finalization.txt` (append Stage-3 section)
+- `.prompts/PROMPT_STAGE3_MANIFEST.md` (update DoD status)
+- optional: `.prompts/PROMPT_20.txt`..`.prompts/PROMPT_22.txt` ONLY if clearly justified by unresolved P1/P2 gaps
+
+Required Scope
+1) Re-audit with evidence:
+   - full git commit history context
+   - prompt lineage and new Stage-3 files
+   - skill validation/lint/render outputs
+   - test/smoke results for meta-runner group
+2) Score meta-runner adoption readiness:
+   - Completeness (0-100)
+   - Excellence (1-10)
+   - Biggest blocker to daily usage
+   - Highest-leverage next fix
+3) If unresolved high-value gaps remain, generate 1-3 tightly scoped follow-up prompts with explicit anti-scope.
+4) Append a Stage-3 entry to `.prompts/improvements-before-finalization.txt` with concrete evidence and command outputs.
+
+Acceptance Criteria (commands + expected checks)
+1) New postflight report exists:
+```bash
+test -f POST_FLIGHT_REPORT_META_RUNNER.md
+```
+2) Finalization log appended with Stage-3 summary:
+```bash
+rg -n "Stage-3|meta-runner|POST_FLIGHT_REPORT_META_RUNNER" .prompts/improvements-before-finalization.txt
+```
+3) Stage-3 manifest reflects DoD status updates:
+```bash
+rg -n "DoD|\[x\]|\[ \]" .prompts/PROMPT_STAGE3_MANIFEST.md
+```
+
+Anti-Scope (do NOT do)
+- Do NOT auto-generate broad Stage-4 plans without evidence
+- Do NOT inflate scores without command-backed verification
+
+Overengineering Guardrails
+- Follow-up prompt generation is conditional and capped (max 3)
+- Maintain prompt-scoped, evidence-first recommendations
+
+Evidence To Include In Diff
+- Scorecard table and rationale
+- DoD closure status table
+- concise list of any newly generated follow-up prompts and why they were necessary

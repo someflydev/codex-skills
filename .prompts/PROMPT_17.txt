@@ -1,0 +1,58 @@
+Stage-3 Prompt 3/5
+Title: Meta-Runner Rigor Harness (Tests + Smoke + Safety Contracts)
+
+Objective
+Add rigorous automated verification for the new meta-runner skill group so adoption is trustable: schema/quality checks, behavior-oriented smoke paths, and explicit safety contracts for port isolation and test-stack isolation workflows.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_16.txt`
+- Depends on: implemented `skills/meta-runner/*`
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/tests/test_meta_runner_skills.py` (new)
+- `skills-foundry/bin/smoke-check-meta-runner` (new)
+- `skills-foundry/docs/META_RUNNER_VERIFICATION.md` (new)
+- `skills-foundry/docs/OPERATOR_MANUAL.md` (update with meta-runner verification commands)
+- `.github/workflows/ci.yml` (optional update to add lightweight meta-runner smoke check)
+
+Required Scope
+1) Add focused tests that assert:
+   - all required `meta-runner` skills exist
+   - required front matter keys are present
+   - each skill defines explicit safety section and stop conditions
+   - required procedural sections exist
+2) Add a deterministic smoke script for meta-runner skill quality checks:
+   - default mode must be non-destructive
+   - include `--dry-run` and `--check-only` style behavior
+3) Add verification documentation with copy-pasteable commands from repo root.
+4) If CI runtime budget allows, add one dry-run-only CI step invoking `smoke-check-meta-runner`.
+
+Acceptance Criteria (commands + expected checks)
+1) New tests pass:
+```bash
+.venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py
+```
+2) Smoke script is usable and passes in check mode:
+```bash
+./skills-foundry/bin/smoke-check-meta-runner --help
+./skills-foundry/bin/smoke-check-meta-runner --check-only
+```
+3) End-to-end foundry tests remain green:
+```bash
+.venv/bin/pytest -q skills-foundry
+```
+
+Anti-Scope (do NOT do)
+- Do NOT spin up real Docker stacks in CI by default
+- Do NOT run destructive teardown commands in smoke default mode
+- Do NOT add flaky network-dependent checks
+
+Overengineering Guardrails
+- Keep tests fast and structural/contract-based
+- Smoke script should orchestrate existing CLIs, not duplicate business logic
+- CI integration should be a single lightweight step if added
+
+Evidence To Include In Diff
+- New test module assertions for meta-runner safety/section contracts
+- smoke-check-meta-runner output sample
+- operator docs snippet for verification workflow

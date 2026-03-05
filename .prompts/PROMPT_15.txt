@@ -1,0 +1,81 @@
+Stage-3 Prompt 1/5
+Title: Meta-Runner Workflow Discovery + Skills Architecture Plan
+
+Objective
+Create an evidence-backed architecture plan for a new `meta-runner` skill category in `skills-foundry/skills/` that mirrors the operator's evolved prompt workflow (meta-runner generation, preflight, stage run, port isolation, integration-stack isolation, operators guide generation, UI audit, postflight).
+
+Dependencies / Sequencing
+- Designed order: first Stage-3 prompt
+- Depends on: existing `skills-foundry/` project, `.prompts/` lineage, and full git history
+- Optional external context: operator-provided local prompt corpus (for example a sibling `prompts/` repo)
+
+Inputs You Must Read
+1) Full git history with commit bodies:
+   - `git log --reverse --pretty=fuller`
+2) Current prompt lineage:
+   - `.prompts/PROMPT_00_s.txt` through latest prompt file
+   - `.prompts/PROMPT_MANIFEST.md`
+   - `.prompts/PROMPT_STAGE2_MANIFEST.md`
+3) Current workflow skills:
+   - `skills-foundry/skills/workflow/*/SKILL.md`
+4) If present, external operator prompt corpus:
+   - prefer `../prompts/` or a path explicitly provided by user
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/docs/META_RUNNER_DISCOVERY.md` (new)
+- `skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md` (new)
+- `.prompts/PROMPT_STAGE3_MANIFEST.md` (create/update)
+
+Required Scope
+1) Build a "workflow reality map" from evidence:
+   - current foundry workflow skills and gaps
+   - operator's actual prompt execution flow and pain points
+   - where current `workflow/*` skills are too generic or missing runtime rigor
+2) Define a target `meta-runner` skill inventory with IDs and purpose.
+   Required minimum set:
+   - meta-runner-bootstrap
+   - meta-runner-preflight-inspector
+   - meta-runner-stage-runner
+   - meta-runner-port-isolation
+   - meta-runner-test-stack-isolation
+   - meta-runner-operators-guide-author
+   - meta-runner-ui-audit-playwright
+   - meta-runner-postflight-analyzer
+   Include `_ALT` variants for at least 3 of the above where divergence is meaningful.
+3) For each planned skill, specify:
+   - trigger intent
+   - required tools
+   - expected outputs
+   - safety model (dry-run and destructive-action boundaries)
+4) Define Stage-3 DoD checkboxes in `.prompts/PROMPT_STAGE3_MANIFEST.md`.
+
+Acceptance Criteria (commands + expected checks)
+1) New planning docs exist:
+```bash
+test -f skills-foundry/docs/META_RUNNER_DISCOVERY.md
+test -f skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md
+test -f .prompts/PROMPT_STAGE3_MANIFEST.md
+```
+2) Plan contains required skills and evidence mapping:
+```bash
+rg -n "meta-runner-(bootstrap|preflight-inspector|stage-runner|port-isolation|test-stack-isolation|operators-guide-author|ui-audit-playwright|postflight-analyzer)" skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md
+rg -n "Evidence|Commit History|Prompt Lineage|Gap" skills-foundry/docs/META_RUNNER_DISCOVERY.md
+```
+3) Stage-3 manifest contains measurable DoD:
+```bash
+rg -n "Definition of Done|DoD|\[ \]" .prompts/PROMPT_STAGE3_MANIFEST.md
+```
+
+Anti-Scope (do NOT do)
+- Do NOT implement new skills yet
+- Do NOT modify existing skill behavior yet
+- Do NOT create frontend/site artifacts
+
+Overengineering Guardrails
+- Architecture docs only; no orchestration framework work in this prompt
+- Use plain markdown and explicit tables; no generated schema engines
+
+Evidence To Include In Diff
+- Table mapping external workflow steps -> planned `meta-runner` skills
+- Gap list between current `workflow/*` and planned `meta-runner/*`
+- Stage-3 DoD checklist

@@ -1,0 +1,69 @@
+Stage-3 Prompt 2/5
+Title: Implement Meta-Runner Skill Group (Core + ALT Variants)
+
+Objective
+Implement the new `meta-runner` skill category under `skills-foundry/skills/meta-runner/` as production-grade reusable skills that encode the operator's evolved workflow and maintain safety/verification rigor.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_15.txt`
+- Depends on: `skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md`
+- Runnable independently: yes, if this prompt first regenerates a minimal skill inventory from current repo context
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/skills/meta-runner/` (new category)
+- Skill directories (minimum):
+  - `meta-runner-bootstrap`
+  - `meta-runner-preflight-inspector`
+  - `meta-runner-stage-runner`
+  - `meta-runner-port-isolation`
+  - `meta-runner-test-stack-isolation`
+  - `meta-runner-operators-guide-author`
+  - `meta-runner-ui-audit-playwright`
+  - `meta-runner-postflight-analyzer`
+- At least 3 meaningful `_alt` skill variants under `meta-runner/`
+- `skills-foundry/docs/SKILLS_OVERVIEW.md` (update category index)
+- `skills-foundry/README.md` (update if category list/examples need refresh)
+
+Required Scope
+1) Create each skill with full front matter and required sections already used by this repo:
+   - front matter: id, name, description, version, tags, inputs, expected_tools, safety, outputs
+   - sections: When to use, Inputs, Procedure, Success criteria, Failure modes + recovery, Examples
+2) Ensure each skill procedure is concrete and action-oriented, not aspirational prose.
+3) ALT variants must introduce real policy differences (for example stricter gates, safer defaults, rollback-first behavior), not wording-only edits.
+4) Keep skills composable:
+   - bootstrap -> preflight -> stage-runner -> postflight
+   - optional branches for port/test-stack/operators-guide/ui-audit
+
+Acceptance Criteria (commands + expected checks)
+1) New category and required skills exist:
+```bash
+test -d skills-foundry/skills/meta-runner
+rg -n "id: meta-runner-" skills-foundry/skills/meta-runner/*/SKILL.md
+```
+2) Validate/lint pass:
+```bash
+./skills-foundry/bin/skills-validate --compact
+./skills-foundry/bin/skills-lint
+```
+Expected: exit code `0`; warnings acceptable only if pre-existing expected-output-path warnings.
+
+3) Rendered catalog includes meta-runner skills:
+```bash
+./skills-foundry/bin/skills-render
+rg -n "meta-runner" skills-foundry/reports/SKILLS_CATALOG.md
+```
+
+Anti-Scope (do NOT do)
+- Do NOT add a new runtime service
+- Do NOT implement a full execution daemon
+- Do NOT introduce non-stdlib dependencies purely for skill authoring
+
+Overengineering Guardrails
+- Keep each skill to one primary job
+- Prefer references to existing repo tools over new helper binaries
+- Avoid deeply nested cross-skill dependencies
+
+Evidence To Include In Diff
+- New `meta-runner` skill tree
+- Example pair showing meaningful base vs ALT divergence
+- Validate/lint/render outputs proving integration

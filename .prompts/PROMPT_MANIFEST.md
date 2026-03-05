@@ -28,9 +28,22 @@ See `.prompts/PROMPT_STAGE2_MANIFEST.md` for goals, DoD-S2, and stop conditions.
 | `PROMPT_12.txt` | task | Packaging/release hygiene baseline (license + deprecation policy) | 4 | Prior docs/changelog/release checklist; human license choice required |
 | `PROMPT_13.txt` | task | Light specs + drift-control hooks for examples/rubric maintenance | 5 | Prior docs/tests stable; final Stage-2 polish |
 
+## Stage 3 (Planned)
+
+See `.prompts/PROMPT_STAGE3_MANIFEST.md` for goals, DoD, and stop conditions.
+
+| Prompt ID | Role | Summary | Intended Order | Primary Dependencies |
+|---|---|---|---|---|
+| `PROMPT_14_s.txt` | system | Stage-3 system constraints for meta-runner expansion | 0 | Existing foundry + prompt lineage |
+| `PROMPT_15.txt` | task | Discovery + architecture plan for `skills/meta-runner/*` | 1 | Full git history, `.prompts/`, existing workflow skills |
+| `PROMPT_16.txt` | task | Implement meta-runner skill group (core + ALT variants) | 2 | `PROMPT_15.txt` plan |
+| `PROMPT_17.txt` | task | Add rigor harness (tests + smoke + safety contracts) | 3 | `PROMPT_16.txt` |
+| `PROMPT_18.txt` | task | Operator adoption docs + prompt-to-skill mapping | 4 | `PROMPT_16.txt`, `PROMPT_17.txt` |
+| `PROMPT_19.txt` | task | Meta-runner postflight audit + conditional next-prompt generation | 5 | `PROMPT_15`..`PROMPT_18` outputs |
+
 ## Execution Notes
 
 - Stage-2 prompts are intentionally narrow and acceptance-driven.
 - If any Stage-2 prompt fails its acceptance criteria, stop and report before continuing.
+- Stage-3 prompts follow the same acceptance-first stop condition discipline.
 - Continue prompt-scoped commit discipline (`[PROMPT_XX] ...`) with `git add -p`.
-
