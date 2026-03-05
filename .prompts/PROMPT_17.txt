@@ -13,7 +13,7 @@ Artifacts To Create / Modify (exact paths)
 - `skills-foundry/bin/smoke-check-meta-runner` (new)
 - `skills-foundry/docs/META_RUNNER_VERIFICATION.md` (new)
 - `skills-foundry/docs/OPERATOR_MANUAL.md` (update with meta-runner verification commands)
-- `.github/workflows/ci.yml` (optional update to add lightweight meta-runner smoke check)
+- `.github/workflows/ci.yml` (required update to add lightweight meta-runner smoke check)
 
 Required Scope
 1) Add focused tests that assert:
@@ -25,7 +25,7 @@ Required Scope
    - default mode must be non-destructive
    - include `--dry-run` and `--check-only` style behavior
 3) Add verification documentation with copy-pasteable commands from repo root.
-4) If CI runtime budget allows, add one dry-run-only CI step invoking `smoke-check-meta-runner`.
+4) Add one dry-run/check-only CI step invoking `smoke-check-meta-runner`.
 
 Acceptance Criteria (commands + expected checks)
 1) New tests pass:
@@ -37,7 +37,11 @@ Acceptance Criteria (commands + expected checks)
 ./skills-foundry/bin/smoke-check-meta-runner --help
 ./skills-foundry/bin/smoke-check-meta-runner --check-only
 ```
-3) End-to-end foundry tests remain green:
+3) CI includes required meta-runner smoke check step:
+```bash
+rg -n "smoke-check-meta-runner --check-only" .github/workflows/ci.yml
+```
+4) End-to-end foundry tests remain green:
 ```bash
 .venv/bin/pytest -q skills-foundry
 ```
@@ -50,7 +54,7 @@ Anti-Scope (do NOT do)
 Overengineering Guardrails
 - Keep tests fast and structural/contract-based
 - Smoke script should orchestrate existing CLIs, not duplicate business logic
-- CI integration should be a single lightweight step if added
+- CI integration must be a single lightweight dry-run/check-only step
 
 Evidence To Include In Diff
 - New test module assertions for meta-runner safety/section contracts

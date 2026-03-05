@@ -27,10 +27,12 @@ Meta-runner skills expansion: convert the operator's evolved real-world prompt o
 - [ ] At least 3 meaningful `_alt` variants exist in `meta-runner/`.
 - [ ] Structural contract tests exist and pass (`test_meta_runner_skills.py`).
 - [ ] A non-destructive meta-runner smoke command exists and passes.
+- [ ] CI includes a lightweight meta-runner smoke check step (`smoke-check-meta-runner --check-only`).
 - [ ] Operator docs include:
   - prompt-step -> skill mapping
   - human-notes run-tracking template
   - root-level command examples
+- [ ] Discovery/plan artifacts explicitly map relevant operator corpus prompts into meta-runner skill capabilities.
 - [ ] `POST_FLIGHT_REPORT_META_RUNNER.md` exists with evidence-backed scorecard.
 - [ ] `.prompts/improvements-before-finalization.txt` includes a Stage-3 log entry.
 

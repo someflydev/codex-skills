@@ -20,6 +20,8 @@ Inputs You Must Read
    - `skills-foundry/skills/workflow/*/SKILL.md`
 4) If present, external operator prompt corpus:
    - prefer `../prompts/` or a path explicitly provided by user
+5) Operator-supplied corpus excerpt provided in-session (if present in conversation):
+   - treat it as first-class workflow evidence and map concrete steps into skill capabilities
 
 Artifacts To Create / Modify (exact paths)
 - `skills-foundry/docs/META_RUNNER_DISCOVERY.md` (new)
@@ -31,6 +33,15 @@ Required Scope
    - current foundry workflow skills and gaps
    - operator's actual prompt execution flow and pain points
    - where current `workflow/*` skills are too generic or missing runtime rigor
+   - explicitly map and preserve useful behavior from these operator corpus prompts:
+     - `prompt00--CREATE-PROMPT-META-RUNNER.txt`
+     - `prompt01--PRE-FLIGHT-INSPECTOR.txt`
+     - `prompt01.1--start-build-run-with-prompt-set.txt`
+     - `prompt01.7--FIX-PORTS-DURING-META-RUNNER.txt`
+     - `prompt06.5--DESIGN-NEW-PROMPT-TO-MAKE-INTEGRATION-TESTS-ON-SEPARATE-DOCKER-STACK.txt`
+     - `prompt06.4--DESIGN-NEW-PROMPT-TO-CREATE-OPERATORS-GUIDE.txt`
+     - `prompt07--THOROUGH-PLAYWRIGHT-UI-TESTING.txt`
+     - `prompt02--POST-FLIGHT-REPO-AUDIT.txt`
 2) Define a target `meta-runner` skill inventory with IDs and purpose.
    Required minimum set:
    - meta-runner-bootstrap
@@ -60,6 +71,7 @@ test -f .prompts/PROMPT_STAGE3_MANIFEST.md
 ```bash
 rg -n "meta-runner-(bootstrap|preflight-inspector|stage-runner|port-isolation|test-stack-isolation|operators-guide-author|ui-audit-playwright|postflight-analyzer)" skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md
 rg -n "Evidence|Commit History|Prompt Lineage|Gap" skills-foundry/docs/META_RUNNER_DISCOVERY.md
+rg -n "CREATE-PROMPT-META-RUNNER|PRE-FLIGHT-INSPECTOR|start-build-run-with-prompt-set|FIX-PORTS-DURING-META-RUNNER|SEPARATE-DOCKER-STACK|OPERATORS-GUIDE|PLAYWRIGHT-UI-TESTING|POST-FLIGHT-REPO-AUDIT" skills-foundry/docs/META_RUNNER_DISCOVERY.md skills-foundry/docs/META_RUNNER_SKILLS_PLAN.md
 ```
 3) Stage-3 manifest contains measurable DoD:
 ```bash
