@@ -13,6 +13,7 @@ installed into `~/.codex/skills/<skill-id>/SKILL.md`.
 - `reports/` stores generated validation/lint/preflight/catalog outputs.
 - `docs/` stores durable operator and authoring documentation.
 - `skills/docs-tools/` currently exists as an intentionally empty placeholder category for future documentation-oriented utility skills.
+- `skills/meta-runner/` stores Stage-3 orchestration skills for meta-runner bootstrap, preflight, execution, isolation, and postflight workflows.
 
 ## Sync Model
 

@@ -10,6 +10,7 @@ Repo-local toolkit for authoring, validating, linting, rendering, and syncing re
 - `./skills-foundry/bin/skills-sync`: validate/lint + sync skills into `~/.codex/skills` (or another target) with dry-run, backups, and prune confirmation
 - `./skills-foundry/bin/skills-render`: render a skills catalog markdown page
 - `./skills-foundry/bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
+- `skills-foundry/skills/meta-runner/*`: Stage-3 skill pack for resume-aware meta-runner bootstrap, preflight, stage execution, isolation workflows, and postflight scoring
 
 ## Quickstart
 
@@ -34,6 +35,7 @@ Repository license terms are in the repo root `../LICENSE` (MIT).
 
 - `bin/` - CLI tools and workflow helpers
 - `skills/` - source skill library (`<category>/<skill-id>/`)
+- `skills/meta-runner/` - meta-runner orchestration skills (Stage-3)
 - `templates/` - skill and pack-generation templates
 - `docs/` - operator and authoring docs
 - `docs/examples/` - curated tracked example outputs/snippets for packaging and front-facing proof
