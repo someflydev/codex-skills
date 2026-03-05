@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from _skills_flows import DEFAULT_DOC_OUTPUT, DEFAULT_FLOWS_ROOT, load_manifests, render_flows_markdown
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog=Path(__file__).name,
+        description="Render docs/SKILL_FLOWS.md from flow manifests.",
+    )
+    parser.add_argument("--flows-root", type=Path, default=DEFAULT_FLOWS_ROOT)
+    parser.add_argument("--output", type=Path, default=DEFAULT_DOC_OUTPUT)
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    manifests = load_manifests(args.flows_root)
+    if not manifests:
+        print(f"ERROR: no flow manifests found under {args.flows_root}")
+        return 2
+
+    content = render_flows_markdown(manifests)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(content, encoding="utf-8")
+    print(f"Rendered flow docs for {len(manifests)} groups")
+    print(f"- Output: {args.output}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

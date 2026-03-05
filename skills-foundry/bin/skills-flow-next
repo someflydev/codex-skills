@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from _skills_flows import (
+    DEFAULT_FLOWS_ROOT,
+    DEFAULT_STATE_FILE,
+    SUPPORTED_LANES,
+    list_groups,
+    load_manifests,
+    manifest_by_group,
+    read_state,
+    resolve_next_step,
+    write_state,
+)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog=Path(__file__).name,
+        description="Show ordered skill lanes and resolve the next invocation step.",
+    )
+    parser.add_argument("--flows-root", type=Path, default=DEFAULT_FLOWS_ROOT)
+    parser.add_argument("--list-groups", action="store_true", help="List available flow groups and exit.")
+    parser.add_argument("--group", help="Flow group id, for example: meta-runner")
+    parser.add_argument("--lane", choices=SUPPORTED_LANES, default="standard")
+    parser.add_argument(
+        "--from-step",
+        type=int,
+        help="Treat this step as already completed when calculating next step.",
+    )
+    parser.add_argument(
+        "--state-file",
+        type=Path,
+        default=DEFAULT_STATE_FILE,
+        help="State file path used for persisted progress (default: .skills-flow-state.json).",
+    )
+    parser.add_argument(
+        "--mark-done",
+        action="store_true",
+        help="Mark current completed/next step as done in the state file before reporting next step.",
+    )
+    return parser
+
+
+def main() -> int:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    manifests = load_manifests(args.flows_root)
+    if not manifests:
+        print(f"ERROR: no flow manifests found under {args.flows_root}")
+        return 2
+
+    if args.list_groups:
+        for group_id, description in list_groups(manifests):
+            print(f"{group_id}\t{description}")
+        return 0
+
+    if not args.group:
+        print("ERROR: --group is required unless --list-groups is used")
+        return 2
+
+    try:
+        manifest = manifest_by_group(manifests, args.group)
+    except KeyError:
+        print(f"ERROR: unknown group '{args.group}'")
+        return 2
+
+    state = read_state(args.state_file)
+    try:
+        resolution = resolve_next_step(
+            manifest,
+            args.lane,
+            from_step=args.from_step,
+            state=state,
+            mark_done=args.mark_done,
+        )
+    except ValueError as exc:
+        print(f"ERROR: {exc}")
+        return 2
+
+    if args.mark_done:
+        write_state(args.state_file, state)
+
+    print(f"Group: {manifest.group_id}")
+    print(f"Lane: {args.lane}")
+    print(f"State file: {args.state_file}")
+    if resolution.marked_done_step is not None:
+        print(f"Marked done step: {resolution.marked_done_step}")
+    print(f"Completed step: {resolution.completed_step}")
+    if resolution.next_step:
+        print(f"Next step: {resolution.next_step.step}")
+        print(f"Next skill: {resolution.next_step.skill_id}")
+        print(f"Why: {resolution.next_step.why}")
+        print(f"Verify: {resolution.next_step.verify_cmd}")
+    else:
+        print("Next step: (none)")
+        print("Status: lane complete")
+
+    print("Ordered lane steps:")
+    for step in manifest.lanes[args.lane]:
+        marker = "*" if resolution.next_step and step.step == resolution.next_step.step else " "
+        print(f"{marker} {step.step}. {step.skill_id} :: {step.why}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

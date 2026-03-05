@@ -11,6 +11,7 @@ Repo-local toolkit for authoring, validating, linting, rendering, and syncing re
 - `./skills-foundry/bin/skills-render`: render a skills catalog markdown page
 - `./skills-foundry/bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
 - `skills-foundry/skills/meta-runner/*`: Stage-3 skill pack for resume-aware meta-runner bootstrap, preflight, stage execution, isolation workflows, and postflight scoring
+- `./skills-foundry/bin/skills-flow-next` and `./skills-foundry/bin/skills-flow-render`: ordered skill-flow resolver and flow-doc generator for standard/alt lanes
 
 ## Quickstart
 
@@ -26,6 +27,7 @@ uv pip install --python .venv/bin/python pytest
 ```
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.
+See `docs/SKILL_FLOWS.md` for ordered skill invocation lanes per group (`standard` and `alt`).
 For release readiness checks, see `docs/RELEASE_CHECKLIST.md`.
 For helper alias migration policy, see `docs/DEPRECATIONS.md`.
 For release notes/changelog conventions, see `CHANGELOG.md`.
@@ -38,6 +40,7 @@ Repository license terms are in the repo root `../LICENSE` (MIT).
 - `skills/meta-runner/` - meta-runner orchestration skills (Stage-3)
 - `templates/` - skill and pack-generation templates
 - `docs/` - operator and authoring docs
+- `flows/` - ordered flow manifests per group (`*.json`)
 - `docs/examples/` - curated tracked example outputs/snippets for packaging and front-facing proof
 - `reports/` - generated lint/catalog outputs (intentionally git-ignored except `.gitkeep`)
 - `demo-repo/` - tiny prompt-first practice repo

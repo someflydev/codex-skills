@@ -232,6 +232,22 @@ Related Stage-3 operator docs:
 - `skills-foundry/docs/META_RUNNER_OPERATORS_GUIDE.md`
 - `skills-foundry/docs/META_RUNNER_PROMPT_MAPPING.md`
 
+## Ordered Skill Flows (Standard + ALT)
+
+Use flow manifests so you do not have to memorize skill order:
+
+```bash
+./skills-foundry/bin/skills-flow-next --list-groups
+./skills-foundry/bin/skills-flow-next --group meta-runner --lane standard
+./skills-foundry/bin/skills-flow-next --group meta-runner --lane alt
+./skills-foundry/bin/skills-flow-next --group workflow --lane standard --state-file /tmp/skills-flow-state.json --mark-done
+./skills-foundry/bin/skills-flow-render
+```
+
+- Flow manifests live under `skills-foundry/flows/*.json`.
+- Persisted progression state is optional and local (`.skills-flow-state.json` by default).
+- Generated flow docs are written to `skills-foundry/docs/SKILL_FLOWS.md`.
+
 ## Demo Repo Reset (Safe Cleanup)
 
 Use the helper below to clean known generated artifacts in `skills-foundry/demo-repo/`.
