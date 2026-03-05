@@ -46,20 +46,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Skill directory: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/workflow/my-skill
 - would create: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/workflow/my-skill/SKILL.md
 - would create: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/workflow/my-skill/EXAMPLES.md
@@ -75,20 +61,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Skill directory: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/demo-skill
 - would create: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/demo-skill/SKILL.md
 - would create: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/demo-skill/EXAMPLES.md
@@ -104,20 +76,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Validated 27 skills: 0 error(s), 6 warning(s)
 - OK /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/changelog-drafter/SKILL.md
 - OK /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/hello-skill/SKILL.md
@@ -166,20 +124,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Validated 27 skills: 0 error(s), 52 warning(s)
 - /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/changelog-drafter/SKILL.md
   [WARN] missing_output_path_install_target_relative: Referenced output path does not exist in repo root (likely install-target-relative): skills/core/changelog-drafter/SKILL.md
@@ -273,20 +217,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Linted 27 skills
 - JSON report: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/skills-lint.json
 - Markdown report: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/skills-lint.md
@@ -328,20 +258,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 docs example refresh root: /Users/ken/repos/someflydev/codex-skills/skills-foundry
 manifest: /Users/ken/repos/someflydev/codex-skills/skills-foundry/docs/examples/manifest.json
 entries: 5
@@ -367,20 +283,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 docs example refresh root: /Users/ken/repos/someflydev/codex-skills/skills-foundry
 manifest: /Users/ken/repos/someflydev/codex-skills/skills-foundry/docs/examples/manifest.json
 entries: 5
@@ -402,20 +304,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Running skills-validate and skills-lint before sync...
 Sync plan:
 - create: 27
@@ -461,20 +349,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Running skills-validate and skills-lint before sync...
 Sync plan:
 - create: 0
@@ -520,20 +394,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Rendered skills catalog for 27 skills
 - Output: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/SKILLS_CATALOG.md
 
@@ -547,20 +407,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Stage 1 run plan for repo: /Users/ken/repos/someflydev/codex-skills/skills-foundry/demo-repo
 - prompts selected: 2
 - tools present: git, python3
@@ -586,42 +432,13 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 [smoke] skills-new (smoke-check)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Skill directory: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/smoke-check
 - overwrite: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/smoke-check/SKILL.md
 - overwrite: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/smoke-check/EXAMPLES.md
 - overwrite: /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/smoke-check/CHECKLIST.md
 Created skill skeleton successfully.
 [smoke] skills-validate
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Validated 27 skills: 0 error(s), 52 warning(s)
 - /Users/ken/repos/someflydev/codex-skills/skills-foundry/skills/core/changelog-drafter/SKILL.md
   [WARN] missing_output_path_install_target_relative: Referenced output path does not exist in repo root (likely install-target-relative): skills/core/changelog-drafter/SKILL.md
@@ -705,20 +522,6 @@ Validated 27 skills: 0 error(s), 52 warning(s)
 
 Hint: this run has a high warning count. Try `--compact` for grouped output and suppression of common expected output-path warnings.
 [smoke] skills-lint
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Linted 27 skills
 - JSON report: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/skills-lint.json
 - Markdown report: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/skills-lint.md
@@ -750,20 +553,6 @@ Linted 27 skills
 - stage2-runner: completeness=100 excellence=10
 - stage2-runner-alt: completeness=100 excellence=10
 [smoke] skills-sync --dry-run -> /tmp/skills-sync-smoke
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Running skills-validate and skills-lint before sync...
 Sync plan:
 - create: 27
@@ -799,20 +588,6 @@ Sync plan:
 - would-prune: 0
 Dry-run: no files were written
 [smoke] skills-render
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 Rendered skills catalog for 27 skills
 - Output: /Users/ken/repos/someflydev/codex-skills/skills-foundry/reports/SKILLS_CATALOG.md
 [smoke] skipping real sync (use --with-real-sync to generate target INDEX.md)
@@ -828,7 +603,6 @@ INPUT
 
 OUTPUT
 (exit 0)
-bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8): No such file or directory
 [demo-reset] demo root: /Users/ken/repos/someflydev/codex-skills/skills-foundry/demo-repo
 [demo-reset] mode: dry-run (no files will be removed)
 [demo-reset] absent: /Users/ken/repos/someflydev/codex-skills/skills-foundry/demo-repo/STAGE1-PLAN.md
