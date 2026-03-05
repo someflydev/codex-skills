@@ -51,6 +51,12 @@
         "skill_id": "meta-runner-postflight-analyzer",
         "why": "Close stage with evidence-backed scoring and DoD status.",
         "verify_cmd": "test -f POST_FLIGHT_REPORT_META_RUNNER.md"
+      },
+      {
+        "step": 9,
+        "skill_id": "meta-runner-reference-example-curator",
+        "why": "Curate and verify high-signal reference examples in deterministic flow order.",
+        "verify_cmd": "./skills-foundry/bin/skills-flow-render"
       }
     ],
     "alt": [
@@ -101,6 +107,12 @@
         "skill_id": "meta-runner-postflight-analyzer-alt",
         "why": "Use score-delta and drift-emphasis closure profile.",
         "verify_cmd": "test -f POST_FLIGHT_REPORT_META_RUNNER.md"
+      },
+      {
+        "step": 9,
+        "skill_id": "meta-runner-reference-example-curator",
+        "why": "Curate and verify high-signal reference examples in deterministic flow order.",
+        "verify_cmd": "./skills-foundry/bin/skills-flow-render"
       }
     ]
   }

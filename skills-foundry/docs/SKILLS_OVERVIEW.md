@@ -15,6 +15,15 @@ installed into `~/.codex/skills/<skill-id>/SKILL.md`.
 - `skills/docs-tools/` currently exists as an intentionally empty placeholder category for future documentation-oriented utility skills.
 - `skills/meta-runner/` stores Stage-3 orchestration skills for meta-runner bootstrap, preflight, execution, isolation, and postflight workflows.
 
+## High-Signal Reference Examples
+
+Recent reference-example additions focus on day-to-day operator execution discipline:
+
+- `skills/workflow/prompt-resume-reconciler/`: derive deterministic next-prompt decisions from commit + artifact evidence.
+- `skills/workflow/prompt-commit-batch-planner/`: plan prompt-scoped Tim Pope style commit groups.
+- `skills/core/manual-command-prooflogger/`: capture command input/output/exit-code evidence for audits.
+- `skills/meta-runner/meta-runner-reference-example-curator/`: curate and verify reference-example ordering in flow manifests.
+
 ## Sync Model
 
 Skills are authored locally, validated/linted, then synchronized into `~/.codex/skills` using

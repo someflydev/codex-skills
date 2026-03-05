@@ -14,6 +14,7 @@ Core utility skills and lightweight repo hygiene flow.
 | 2 | `changelog-drafter` | Draft meaningful change summaries once implementation stabilizes. | `test -f skills-foundry/CHANGELOG.md` |
 | 3 | `smoke-check` | Run a bounded smoke pass before final commit recommendation. | `./skills-foundry/bin/smoke-check-foundry --dry-run-only` |
 | 4 | `hello-skill` | Create or validate a simple baseline skill artifact. | `./skills-foundry/bin/skills-validate --compact` |
+| 5 | `manual-command-prooflogger` | Capture reproducible command proof logs for audits and handoffs. | `test -f manual-tool-invocation-outputs.md || true` |
 
 ### Alt Lane
 
@@ -23,6 +24,7 @@ Core utility skills and lightweight repo hygiene flow.
 | 2 | `changelog-drafter` | Draft meaningful change summaries once implementation stabilizes. | `test -f skills-foundry/CHANGELOG.md` |
 | 3 | `smoke-check` | Run a bounded smoke pass before final commit recommendation. | `./skills-foundry/bin/smoke-check-foundry --dry-run-only` |
 | 4 | `hello-skill-alt` | Use alternate baseline skill style when testing variant wording. | `./skills-foundry/bin/skills-validate --compact` |
+| 5 | `manual-command-prooflogger` | Capture reproducible command proof logs for audits and handoffs. | `test -f manual-tool-invocation-outputs.md || true` |
 
 ## meta-runner
 
@@ -40,6 +42,7 @@ Resume-aware meta-runner flow from bootstrap through postflight closure.
 | 6 | `meta-runner-operators-guide-author` | Publish operator-grade runbook with root-level commands. | `test -f skills-foundry/docs/OPERATOR_MANUAL.md` |
 | 7 | `meta-runner-ui-audit-playwright` | Run deterministic UI audit with trace/video evidence. | `.venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py` |
 | 8 | `meta-runner-postflight-analyzer` | Close stage with evidence-backed scoring and DoD status. | `test -f POST_FLIGHT_REPORT_META_RUNNER.md` |
+| 9 | `meta-runner-reference-example-curator` | Curate and verify high-signal reference examples in deterministic flow order. | `./skills-foundry/bin/skills-flow-render` |
 
 ### Alt Lane
 
@@ -53,6 +56,7 @@ Resume-aware meta-runner flow from bootstrap through postflight closure.
 | 6 | `meta-runner-operators-guide-author` | Publish operator-grade runbook with root-level commands. | `test -f skills-foundry/docs/OPERATOR_MANUAL.md` |
 | 7 | `meta-runner-ui-audit-playwright` | Run deterministic UI audit with trace/video evidence. | `.venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py` |
 | 8 | `meta-runner-postflight-analyzer-alt` | Use score-delta and drift-emphasis closure profile. | `test -f POST_FLIGHT_REPORT_META_RUNNER.md` |
+| 9 | `meta-runner-reference-example-curator` | Curate and verify high-signal reference examples in deterministic flow order. | `./skills-foundry/bin/skills-flow-render` |
 
 ## polyglot
 
@@ -105,6 +109,8 @@ Prompt-first workflow execution from preflight through Stage-2 postflight.
 | 5 | `stage2-preflight-inspector` | Preflight-check new Stage-2 prompts before execution. | `./skills-foundry/bin/repo-helper-preflight --help` |
 | 6 | `stage2-runner` | Run Stage-2 prompt sequence with acceptance gates. | `./skills-foundry/bin/repo-helper-stage2-run-plan --help` |
 | 7 | `stage2-postflight-analyzer` | Close Stage-2 loop and identify only high-leverage follow-ups. | `./skills-foundry/bin/repo-helper-postflight --help` |
+| 8 | `prompt-resume-reconciler` | Reconcile prompt completion evidence before continuing an interrupted run. | `./skills-foundry/bin/skills-flow-next --group workflow --lane standard` |
+| 9 | `prompt-commit-batch-planner` | Plan prompt-scoped Tim Pope style commit batches with clear rationale. | `git log --oneline -n 5` |
 
 ### Alt Lane
 
@@ -117,3 +123,5 @@ Prompt-first workflow execution from preflight through Stage-2 postflight.
 | 5 | `stage2-preflight-inspector-alt` | Apply stricter stage-specific preflight checks. | `./skills-foundry/bin/repo-helper-preflight --help` |
 | 6 | `stage2-runner-alt` | Use alternate stage execution strategy. | `./skills-foundry/bin/repo-helper-stage2-run-plan --help` |
 | 7 | `stage2-postflight-analyzer-alt` | Use alternate postflight scoring for Stage-2. | `./skills-foundry/bin/repo-helper-postflight --help` |
+| 8 | `prompt-resume-reconciler` | Reconcile prompt completion evidence before continuing an interrupted run. | `./skills-foundry/bin/skills-flow-next --group workflow --lane standard` |
+| 9 | `prompt-commit-batch-planner` | Plan prompt-scoped Tim Pope style commit batches with clear rationale. | `git log --oneline -n 5` |

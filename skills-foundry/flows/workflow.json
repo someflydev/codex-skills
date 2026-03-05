@@ -45,6 +45,18 @@
         "skill_id": "stage2-postflight-analyzer",
         "why": "Close Stage-2 loop and identify only high-leverage follow-ups.",
         "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      },
+      {
+        "step": 8,
+        "skill_id": "prompt-resume-reconciler",
+        "why": "Reconcile prompt completion evidence before continuing an interrupted run.",
+        "verify_cmd": "./skills-foundry/bin/skills-flow-next --group workflow --lane standard"
+      },
+      {
+        "step": 9,
+        "skill_id": "prompt-commit-batch-planner",
+        "why": "Plan prompt-scoped Tim Pope style commit batches with clear rationale.",
+        "verify_cmd": "git log --oneline -n 5"
       }
     ],
     "alt": [
@@ -89,6 +101,18 @@
         "skill_id": "stage2-postflight-analyzer-alt",
         "why": "Use alternate postflight scoring for Stage-2.",
         "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      },
+      {
+        "step": 8,
+        "skill_id": "prompt-resume-reconciler",
+        "why": "Reconcile prompt completion evidence before continuing an interrupted run.",
+        "verify_cmd": "./skills-foundry/bin/skills-flow-next --group workflow --lane standard"
+      },
+      {
+        "step": 9,
+        "skill_id": "prompt-commit-batch-planner",
+        "why": "Plan prompt-scoped Tim Pope style commit batches with clear rationale.",
+        "verify_cmd": "git log --oneline -n 5"
       }
     ]
   }
