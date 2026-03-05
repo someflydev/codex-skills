@@ -72,6 +72,7 @@ Anti-Scope (do NOT do)
 - Do NOT rename existing skill IDs to numbered names.
 - Do NOT add network-dependent behavior to `skills-flow-next`.
 - Do NOT add hidden background processes or daemons.
+- Do NOT create standalone preflight report files for this prompt; keep preflight refinements inline in `PROMPT_20.txt`.
 
 Overengineering Guardrails
 - Prefer simple JSON manifests over introducing external parsing dependencies.
