@@ -356,11 +356,11 @@ def test_skills_validate_compact_alias_enables_warning_triage_preset(tmp_path: P
     )
 
     assert result.returncode == 0, result.stdout + "\n" + result.stderr
-    # `skills/` and reports outputs are suppressed by the compact preset.
+    # `skills/`, reports, and known future artifacts are suppressed by the compact preset.
     assert "missing_output_path_install_target_relative" not in result.stdout
     assert "missing_output_path_expected_future" not in result.stdout
-    # Generic warning remains visible and a grouped summary is printed.
-    assert "missing_output_path: Referenced output path does not exist yet (best effort): STAGE-1-POST-FLIGHT.md" in result.stdout
+    # No generic warning should remain for STAGE report outputs.
+    assert "STAGE-1-POST-FLIGHT.md" not in result.stdout
     assert "Warning Code Summary:" in result.stdout
-    assert "- missing_output_path: 1" in result.stdout
+    assert "- (no warnings)" in result.stdout
     assert "Hint: this run has a high warning count." not in result.stdout

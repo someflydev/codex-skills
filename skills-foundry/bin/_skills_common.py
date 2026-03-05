@@ -194,6 +194,18 @@ def classify_missing_output_path_warning(token: str) -> ValidationMessage:
             "missing_output_path_install_target_relative",
             f"Referenced output path does not exist in repo root (likely install-target-relative): {token}",
         )
+    if normalized in {"Makefile", "docker-compose.yml", "docker-compose.test.yml"}:
+        return ValidationMessage(
+            "WARN",
+            "missing_output_path_expected_future",
+            f"Referenced output path does not exist yet (likely future-generated artifact): {token}",
+        )
+    if normalized.startswith("STAGE-") and normalized.endswith(".md"):
+        return ValidationMessage(
+            "WARN",
+            "missing_output_path_expected_future",
+            f"Referenced output path does not exist yet (likely future-generated artifact): {token}",
+        )
     if normalized.startswith(
         (
             "skills-foundry/reports/",
@@ -202,6 +214,7 @@ def classify_missing_output_path_warning(token: str) -> ValidationMessage:
             "data/",
             "schemas/",
             "manifests/",
+            "prompts/",
         )
     ):
         return ValidationMessage(
