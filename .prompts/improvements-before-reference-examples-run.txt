@@ -1,0 +1,17 @@
+---
+Round: 1
+Timestamp: 2026-03-05T12:25:01Z
+Summary: Added Stage-4 reference-examples expansion planning artifacts and prompt batch sequence (`PROMPT_22`..`PROMPT_25`).
+Changes Applied:
+- .prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md :: added baseline inventory, full-implementation gate, prioritized backlog, and batch dependency map
+- .prompts/PROMPT_22.txt :: planning + batch-prompt generation contract with acceptance gates
+- .prompts/PROMPT_23.txt :: Batch A contract to close partial coverage gaps
+- .prompts/PROMPT_24.txt :: Batch B contract for net-new high-signal examples
+- .prompts/PROMPT_25.txt :: Batch C contract for verification/docs integration and readiness
+- .prompts/PROMPT_STAGE4_MANIFEST.md :: Stage-4 theme, ordered sequence, DoD, stop condition
+- .prompts/PROMPT_MANIFEST.md :: integrated Stage-4 prompt records and execution notes
+- .prompts/PROMPT_META_RUNNER.txt :: integrated Stage-4 track/classification/order and support-file references
+Notes / Followups:
+- Pre-flight validation passed for numbering, dependency ordering, and required prompt sections.
+- Next run should execute `PROMPT_22.txt` first, then gate through `PROMPT_23` -> `PROMPT_25`.
+---

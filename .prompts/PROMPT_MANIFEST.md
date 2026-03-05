@@ -43,9 +43,21 @@ See `.prompts/PROMPT_STAGE3_MANIFEST.md` for goals, DoD, and stop conditions.
 | `PROMPT_20.txt` | task | Skill flow index + next-step CLI (standard/alt lanes) | 6 | `PROMPT_19.txt` (or current skill inventory) |
 | `PROMPT_21.txt` | task | Definitive operators-guide generation (fact-only, no-fabrication) | 7 | `PROMPT_20.txt` (or current repo inventory) |
 
+## Stage 4 (Planned)
+
+See `.prompts/PROMPT_STAGE4_MANIFEST.md` for goals, DoD, and stop conditions.
+
+| Prompt ID | Role | Summary | Intended Order | Primary Dependencies |
+|---|---|---|---|---|
+| `PROMPT_22.txt` | task | Reference-example expansion plan + Stage-4 batch prompt generation | 1 | `PROMPT_21.txt` (or current repo inventory) |
+| `PROMPT_23.txt` | task | Batch A: close partial reference-example coverage gaps | 2 | `PROMPT_22.txt` |
+| `PROMPT_24.txt` | task | Batch B: add high-signal net-new reference examples | 3 | `PROMPT_23.txt` |
+| `PROMPT_25.txt` | task | Batch C: verification/docs integration + readiness decision | 4 | `PROMPT_23.txt`, `PROMPT_24.txt` |
+
 ## Execution Notes
 
 - Stage-2 prompts are intentionally narrow and acceptance-driven.
 - If any Stage-2 prompt fails its acceptance criteria, stop and report before continuing.
 - Stage-3 prompts follow the same acceptance-first stop condition discipline.
+- Stage-4 prompts are batch-oriented and require passing acceptance gates between batches.
 - Continue prompt-scoped commit discipline (`[PROMPT_XX] ...`) with `git add -p`.

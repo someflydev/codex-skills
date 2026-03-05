@@ -1,0 +1,65 @@
+Stage-4 Execution Prompt
+Title: Batch C - Verification, Documentation, And Expansion Readiness
+
+Objective
+Finalize Stage-4 by wiring updated/new reference examples into verification surfaces, operator docs, and reproducible evidence artifacts, then produce a readiness decision for the next expansion wave.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_24.txt`
+- Depends on: Batches A and B outputs
+- Runnable independently: no
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/docs/examples/manifest.json`
+- `skills-foundry/docs/examples/README.md`
+- `skills-foundry/docs/examples/*` (new curated snippets tied to Stage-4 examples)
+- `skills-foundry/docs/OPERATOR_MANUAL.md`
+- `skills-foundry/README.md`
+- `skills-foundry/tests/test_refresh_doc_examples.py` (or equivalent targeted tests)
+- `.prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md` (status refresh)
+
+Required Scope
+1) Add curated reference-example snippets to docs/examples manifest.
+2) Ensure snippet generation/check tooling validates cleanly.
+3) Refresh operator-facing docs with clear root-level invocation flow.
+4) Update expansion plan status (completed vs pending backlog).
+5) Emit a Stage-4 readiness recommendation for the next batch wave.
+
+Acceptance Criteria (commands + expected checks)
+1) Docs example refresh/check pass:
+```bash
+./skills-foundry/bin/refresh-doc-examples --check
+```
+2) Core tests pass:
+```bash
+.venv/bin/pytest -q skills-foundry/tests/test_refresh_doc_examples.py
+.venv/bin/pytest -q skills-foundry
+```
+3) Smoke checks pass:
+```bash
+./skills-foundry/bin/smoke-check-foundry --dry-run-only
+./skills-foundry/bin/smoke-check-meta-runner --check-only
+```
+4) Stage-4 status update present:
+```bash
+rg -n "Stage-4|Batch A|Batch B|Batch C|Readiness" .prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md
+```
+
+Anti-Scope (do NOT do)
+- Do NOT introduce breaking CLI changes.
+- Do NOT add speculative new tracks beyond Stage-4 scope.
+- Do NOT skip reproducible verification evidence.
+
+Overengineering Guardrails
+- Prefer incremental docs/example updates over new subsystems.
+- Keep all verification non-destructive by default.
+- Keep readiness output concise and evidence-backed.
+
+Stop Conditions
+- Stop if docs examples cannot be validated deterministically.
+- Stop if smoke checks fail and root cause is unresolved.
+
+Evidence To Include In Diff
+- New/updated docs example snippet list.
+- Command outputs for refresh/check/tests/smoke.
+- Updated backlog status and next-wave recommendation.

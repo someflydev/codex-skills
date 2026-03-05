@@ -1,0 +1,60 @@
+Stage-4 Planning Prompt
+Title: Reference Examples Expansion Plan + Batch Prompt Generation
+
+Objective
+Establish a concrete Stage-4 execution plan for reference-example expansion, then generate the next batch prompts needed to implement that plan with deterministic acceptance gates.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_21.txt`
+- Depends on: current prompt set, `skills-foundry` inventory, validation/tests evidence
+- Runnable independently: yes (must re-discover repository evidence before finalizing plan)
+
+Artifacts To Create / Modify (exact paths)
+- `.prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md`
+- `.prompts/PROMPT_STAGE4_MANIFEST.md`
+- `.prompts/PROMPT_23.txt`
+- `.prompts/PROMPT_24.txt`
+- `.prompts/PROMPT_25.txt`
+- `.prompts/PROMPT_MANIFEST.md`
+- `.prompts/PROMPT_META_RUNNER.txt`
+
+Required Scope
+1) Build a fact-based reference-example inventory and status table.
+2) Define full-implementation gates for this repository.
+3) Produce a prioritized backlog (top 5, next 10, long-tail).
+4) Design three execution prompts (`23..25`) as small, high-confidence batches.
+5) Integrate new Stage-4 sequence into prompt manifests and meta-runner ordering.
+
+Acceptance Criteria (commands + expected checks)
+1) Stage-4 plan and prompt files exist:
+```bash
+test -f .prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md
+test -f .prompts/PROMPT_STAGE4_MANIFEST.md
+test -f .prompts/PROMPT_23.txt
+test -f .prompts/PROMPT_24.txt
+test -f .prompts/PROMPT_25.txt
+```
+2) Manifest/meta-runner include Stage-4 references:
+```bash
+rg -n "Stage-4|PROMPT_22|PROMPT_23|PROMPT_24|PROMPT_25|REFERENCE_EXAMPLES_EXPANSION_PLAN" .prompts/PROMPT_MANIFEST.md .prompts/PROMPT_META_RUNNER.txt .prompts/PROMPT_STAGE4_MANIFEST.md
+```
+3) Baseline evidence remains reproducible:
+```bash
+./skills-foundry/bin/skills-validate --compact
+.venv/bin/pytest -q skills-foundry
+```
+
+Anti-Scope (do NOT do)
+- Do NOT implement the full Stage-4 batch changes yet (design-only in this prompt).
+- Do NOT add external data-source adapters or connectors.
+- Do NOT introduce new runtime services.
+
+Overengineering Guardrails
+- Keep Stage-4 to three execution prompts with explicit dependencies.
+- Use existing repository conventions and command surfaces.
+- Require command-verifiable acceptance criteria in every generated prompt.
+
+Evidence To Include In Diff
+- Inventory summary (counts + status breakdown).
+- Stage-4 batch map with rationale.
+- Prompt manifest/meta-runner updates with explicit sequencing.

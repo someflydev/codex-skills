@@ -1,0 +1,66 @@
+Stage-4 Execution Prompt
+Title: Batch B - Add New High-Signal Reference Examples
+
+Objective
+Implement a focused net-new set of high-signal reference examples that improve day-to-day operator/developer effectiveness around resume logic, commit discipline, and verification traceability.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_23.txt`
+- Depends on: Batch A baseline stabilization
+- Runnable independently: no (requires Batch A outputs)
+
+Artifacts To Create / Modify (exact paths)
+- New reference examples (proposed minimum set):
+  - `skills-foundry/skills/workflow/prompt-resume-reconciler/{SKILL.md,CHECKLIST.md,EXAMPLES.md}`
+  - `skills-foundry/skills/workflow/prompt-commit-batch-planner/{SKILL.md,CHECKLIST.md,EXAMPLES.md}`
+  - `skills-foundry/skills/core/manual-command-prooflogger/{SKILL.md,CHECKLIST.md,EXAMPLES.md}`
+  - `skills-foundry/skills/meta-runner/meta-runner-reference-example-curator/{SKILL.md,CHECKLIST.md,EXAMPLES.md}`
+- Optional ALT variants where meaningful.
+- Flow and docs integration:
+  - `skills-foundry/flows/*.json`
+  - `skills-foundry/docs/SKILL_FLOWS.md`
+  - `skills-foundry/docs/SKILLS_OVERVIEW.md`
+
+Required Scope
+1) Implement each new example with complete contract/checklist/examples artifacts.
+2) Ensure all examples include root-level command usage.
+3) Wire examples into flow ordering and overview docs.
+4) Add targeted tests to prove structural validity and expected integration.
+
+Acceptance Criteria (commands + expected checks)
+1) New artifacts exist:
+```bash
+test -f skills-foundry/skills/workflow/prompt-resume-reconciler/SKILL.md
+test -f skills-foundry/skills/workflow/prompt-commit-batch-planner/SKILL.md
+test -f skills-foundry/skills/core/manual-command-prooflogger/SKILL.md
+test -f skills-foundry/skills/meta-runner/meta-runner-reference-example-curator/SKILL.md
+```
+2) Flow docs regenerate and include new examples:
+```bash
+./skills-foundry/bin/skills-flow-render
+rg -n "prompt-resume-reconciler|prompt-commit-batch-planner|manual-command-prooflogger|meta-runner-reference-example-curator" skills-foundry/docs/SKILL_FLOWS.md
+```
+3) Validation + tests green:
+```bash
+./skills-foundry/bin/skills-validate --compact
+.venv/bin/pytest -q skills-foundry
+```
+
+Anti-Scope (do NOT do)
+- Do NOT add external data-source or connector examples.
+- Do NOT add network-dependent behavior for local verification.
+- Do NOT bypass checklist/examples quality requirements.
+
+Overengineering Guardrails
+- Add a small, cohesive set (3-5) of new examples only.
+- Reuse existing patterns/templates where possible.
+- Keep each example narrowly scoped and operator-usable.
+
+Stop Conditions
+- Stop if any new example lacks executable acceptance evidence.
+- Stop if flow/docs integration introduces unresolved ordering ambiguity.
+
+Evidence To Include In Diff
+- New example inventory rows with status = Full.
+- Flow/doc snippets showing integration.
+- Validation and targeted test outputs.

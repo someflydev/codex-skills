@@ -1,0 +1,63 @@
+Stage-4 Execution Prompt
+Title: Batch A - Close Partial Reference-Example Coverage Gaps
+
+Objective
+Convert currently partial reference examples to full coverage status by resolving repository-context output-path gaps and adding minimal non-destructive fixture artifacts where required.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_22.txt`
+- Depends on: Stage-4 plan and identified partial inventory
+- Runnable independently: yes, but must start with fresh discovery of partial status
+
+Artifacts To Create / Modify (exact paths)
+- Existing partial example contracts under:
+  - `skills-foundry/skills/workflow/*`
+  - `skills-foundry/skills/meta-runner/*`
+- Supporting minimal fixture artifacts as needed under:
+  - `skills-foundry/demo-repo/`
+  - `skills-foundry/demo-repo/.prompts/`
+- Optional warning-triage notes:
+  - `skills-foundry/docs/REFERENCE_EXAMPLE_WARNINGS.md`
+- Tests/docs updated only where behavior/contracts change.
+
+Required Scope
+1) Re-run inventory and isolate Partial examples with precise warning causes.
+2) Normalize each partial example so referenced output paths are either:
+   - present in-repo/demo fixtures, or
+   - explicitly documented as optional/conditional with clear constraints.
+3) Keep changes minimal and deterministic.
+4) Ensure no regressions in existing tests/smoke checks.
+
+Acceptance Criteria (commands + expected checks)
+1) Validation has zero errors and fewer missing-output-path warnings than baseline:
+```bash
+./skills-foundry/bin/skills-validate --compact | tee /tmp/stage4_batchA_validate.txt
+rg -n "Validated .* 0 error\(s\)" /tmp/stage4_batchA_validate.txt
+```
+2) Full suite remains green:
+```bash
+.venv/bin/pytest -q skills-foundry
+```
+3) Meta-runner smoke remains green:
+```bash
+./skills-foundry/bin/smoke-check-meta-runner --check-only
+```
+
+Anti-Scope (do NOT do)
+- Do NOT add unrelated net-new examples in this batch.
+- Do NOT add destructive automation or mandatory Docker startup.
+- Do NOT change public CLI behavior unless required to resolve partial-status gaps.
+
+Overengineering Guardrails
+- Prefer contract/path corrections over broad rewrites.
+- Add only minimal fixture files needed for reproducible validation.
+- Keep warning-reduction work auditable and reversible.
+
+Stop Conditions
+- Stop if changes would require speculative architecture decisions.
+- Stop if warning reductions depend on introducing heavy new infrastructure.
+
+Evidence To Include In Diff
+- Before/after partial-status summary.
+- List of normalized paths and created fixture artifacts.
+- Validation and test command outputs.

@@ -1,7 +1,7 @@
 # PROMPT META RUNNER
 
 SECTION 1 - Purpose
-- This prompt set builds and hardens the `skills-foundry` prompt-first workflow system, then expands it with Stage-2 helper rigor and Stage-3 meta-runner skills.
+- This prompt set builds and hardens the `skills-foundry` prompt-first workflow system, then expands it with Stage-2 helper rigor, Stage-3 meta-runner skills, and Stage-4 reference-example expansion batches.
 - Completion is successful only when each executed prompt's acceptance criteria pass, required artifacts exist, smoke checks pass when applicable, and prompt-scoped commits are created with the required prefix discipline.
 - This runner does not introduce extra pre-flight/post-flight lifecycle stages outside what already exists in the prompt files themselves.
 
@@ -14,7 +14,7 @@ SECTION 2 - Required Tool Verification
   - `pytest` (or `./.venv_tools/bin/pytest` if installed via fallback)
 - Runtime-conditional tools (required only when selected prompts require them):
   - `docker` / `docker compose` (runtime + smoke prompts and CI smoke checks reference container workflows)
-- Discovery signals in this repo indicate runtime-aware prompts exist (`PROMPT_07`, `PROMPT_10`, `PROMPT_11`, `PROMPT_17`, `PROMPT_19`), so Docker verification is required before running those prompts.
+- Discovery signals in this repo indicate runtime-aware prompts exist (`PROMPT_07`, `PROMPT_10`, `PROMPT_11`, `PROMPT_17`, `PROMPT_19`, `PROMPT_23`, `PROMPT_25`), so Docker verification is required before running those prompts.
 - Verification commands (run from repo root):
   - `git --version`
   - `git add -p --help`
@@ -40,24 +40,28 @@ SECTION 2 - Required Tool Verification
 SECTION 3 - Prompt Classification Summary
 - Prompt files discovered:
   - System prompts (`_s`): `PROMPT_00_s.txt`, `PROMPT_14_s.txt`
-  - Task prompts: `PROMPT_01.txt`..`PROMPT_13.txt`, `PROMPT_15.txt`..`PROMPT_21.txt`
+  - Task prompts: `PROMPT_01.txt`..`PROMPT_13.txt`, `PROMPT_15.txt`..`PROMPT_25.txt`
   - Template prompts (`_t`): none currently
   - System-template prompts: none currently
   - Meta/support files:
     - `.prompts/PROMPT_MANIFEST.md`
     - `.prompts/PROMPT_STAGE2_MANIFEST.md`
     - `.prompts/PROMPT_STAGE3_MANIFEST.md`
+    - `.prompts/PROMPT_STAGE4_MANIFEST.md`
+    - `.prompts/REFERENCE_EXAMPLES_EXPANSION_PLAN.md`
     - `.prompts/STAGE2_PRE_FLIGHT.md`
     - `.prompts/STAGE3_PRE_FLIGHT_NOTES.md`
     - `.prompts/STAGE3_PRE_FLIGHT_SNAPSHOT.md`
     - `.prompts/improvements-before-initial-run.txt`
     - `.prompts/improvements-before-finalization.txt`
+    - `.prompts/improvements-before-reference-examples-run.txt`
 - Variable placeholders `{{LIKE_THIS}}`: none detected in current `.prompts/` files.
 - Distinct tracks inferred from dependencies (not raw numbering alone):
   - Track A: Foundation build and baseline workflow (`PROMPT_00_s` -> `PROMPT_01`..`PROMPT_08`)
   - Track B: Stage-2 hardening and release-quality guardrails (`PROMPT_09`..`PROMPT_13`)
   - Track C: Stage-3 meta-runner skill expansion (`PROMPT_14_s` -> `PROMPT_15`..`PROMPT_19`)
   - Track D: Stage-3 follow-up operator hardening (`PROMPT_20`..`PROMPT_21`)
+  - Track E: Stage-4 reference-example expansion (`PROMPT_22`..`PROMPT_25`)
 - True sequential chains:
   - Foundation chain: strict sequential
   - Stage-2 chain: primarily sequential with guarded independent fallback notes in each prompt
@@ -76,6 +80,7 @@ SECTION 4 - Execution Modes
     4) `PROMPT_14_s.txt`
     5) `PROMPT_15.txt`..`PROMPT_19.txt`
     6) `PROMPT_20.txt`..`PROMPT_21.txt`
+    7) `PROMPT_22.txt`..`PROMPT_25.txt`
   - Do not skip required predecessors.
 - Track mode:
   - Run one dependency-closed track at a time:
@@ -83,6 +88,7 @@ SECTION 4 - Execution Modes
     - Stage-2 hardening track
     - Stage-3 meta-runner track
     - Stage-3 follow-up operators-guide track
+    - Stage-4 reference-examples track
   - Valid only if track prerequisites already pass artifact and test gates.
 - Template instantiation mode:
   - Enabled only when `_t` prompt files are present.
