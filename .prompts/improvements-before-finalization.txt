@@ -309,3 +309,29 @@ Verification evidence:
 - `cd skills-foundry && bin/repo-helper-stage1-plan ... --execute ... --run-log STAGE1-RUN-LOG.md` -> created deterministic Stage-1 plan + run log, then cleaned via `bin/demo-repo-reset --yes`
 - `cd skills-foundry && bin/skills-validate | rg -- '--compact'` -> compact hint present on noisy verbose run
 - `cd skills-foundry && bin/refresh-doc-examples --dry-run` -> manifest-driven curated example refresh preview succeeded
+
+---
+Stage-3 Meta-Runner Finalization
+Timestamp: 2026-03-05T10:54:04Z
+Report: POST_FLIGHT_REPORT_META_RUNNER.md
+
+Summary
+- Executed PROMPT_15 through PROMPT_19 with prompt-scoped commits.
+- Added meta-runner skill group, verification harness, CI smoke gate, and operator adoption docs.
+- Re-ran postflight verification and updated Stage-3 DoD closure.
+
+Evidence Commands
+- .venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py -> 3 passed
+- ./skills-foundry/bin/smoke-check-meta-runner --check-only -> PASS (check-only)
+- .venv/bin/pytest -q skills-foundry -> 37 passed
+
+Closed Stage-3 Items
+- meta-runner baseline skills + required ALT variants
+- contract tests + smoke-check command + CI check-only smoke step
+- operator mapping docs + human-notes template guidance
+- discovery/plan artifacts mapped to operator corpus prompts
+- postflight scorecard and DoD closure recorded
+
+New Risks
+- Non-blocking environment warning noise (`LC_ALL`) observed during shell script execution.
+---

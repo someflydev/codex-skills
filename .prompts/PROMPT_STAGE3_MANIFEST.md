@@ -15,7 +15,7 @@ Meta-runner skills expansion: convert the operator's evolved real-world prompt o
 
 ## Definition of Done (Stage-3)
 
-- [ ] `skills-foundry/skills/meta-runner/` exists with required baseline skills:
+- [x] `skills-foundry/skills/meta-runner/` exists with required baseline skills:
   - bootstrap
   - preflight-inspector
   - stage-runner
@@ -24,17 +24,17 @@ Meta-runner skills expansion: convert the operator's evolved real-world prompt o
   - operators-guide-author
   - ui-audit-playwright
   - postflight-analyzer
-- [ ] At least 3 meaningful `_alt` variants exist in `meta-runner/`.
-- [ ] Structural contract tests exist and pass (`test_meta_runner_skills.py`).
-- [ ] A non-destructive meta-runner smoke command exists and passes.
-- [ ] CI includes a lightweight meta-runner smoke check step (`smoke-check-meta-runner --check-only`).
-- [ ] Operator docs include:
+- [x] At least 3 meaningful `_alt` variants exist in `meta-runner/`.
+- [x] Structural contract tests exist and pass (`test_meta_runner_skills.py`).
+- [x] A non-destructive meta-runner smoke command exists and passes.
+- [x] CI includes a lightweight meta-runner smoke check step (`smoke-check-meta-runner --check-only`).
+- [x] Operator docs include:
   - prompt-step -> skill mapping
   - human-notes run-tracking template
   - root-level command examples
-- [ ] Discovery/plan artifacts explicitly map relevant operator corpus prompts into meta-runner skill capabilities.
-- [ ] `POST_FLIGHT_REPORT_META_RUNNER.md` exists with evidence-backed scorecard.
-- [ ] `.prompts/improvements-before-finalization.txt` includes a Stage-3 log entry.
+- [x] Discovery/plan artifacts explicitly map relevant operator corpus prompts into meta-runner skill capabilities.
+- [x] `POST_FLIGHT_REPORT_META_RUNNER.md` exists with evidence-backed scorecard.
+- [x] `.prompts/improvements-before-finalization.txt` includes a Stage-3 log entry.
 
 ## Stop Condition
 
