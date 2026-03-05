@@ -4,25 +4,24 @@ Repo-local toolkit for authoring, validating, linting, rendering, and syncing re
 
 ## What Works Today
 
-- `bin/skills-new`: create a skill skeleton from templates
-- `bin/skills-validate`: validate skill front matter + required sections (`--compact` recommended for day-to-day runs)
-- `bin/skills-lint`: score skills and write JSON/Markdown lint reports
-- `bin/skills-sync`: validate/lint + sync skills into `~/.codex/skills` (or another target) with dry-run, backups, and prune confirmation
-- `bin/skills-render`: render a skills catalog markdown page
-- `bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
+- `./skills-foundry/bin/skills-new`: create a skill skeleton from templates
+- `./skills-foundry/bin/skills-validate`: validate skill front matter + required sections (`--compact` recommended for day-to-day runs)
+- `./skills-foundry/bin/skills-lint`: score skills and write JSON/Markdown lint reports
+- `./skills-foundry/bin/skills-sync`: validate/lint + sync skills into `~/.codex/skills` (or another target) with dry-run, backups, and prune confirmation
+- `./skills-foundry/bin/skills-render`: render a skills catalog markdown page
+- `./skills-foundry/bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
 
 ## Quickstart
 
 ```bash
-cd skills-foundry
 uv venv .venv
 uv pip install --python .venv/bin/python pytest
 
-bin/skills-new --category core --skill-id demo-skill --name "Demo Skill"
-bin/skills-validate --compact
-bin/skills-lint
-bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
-bin/skills-render
+./skills-foundry/bin/skills-new --category core --skill-id demo-skill --name "Demo Skill"
+./skills-foundry/bin/skills-validate --compact
+./skills-foundry/bin/skills-lint
+./skills-foundry/bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
+./skills-foundry/bin/skills-render
 ```
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.
@@ -53,5 +52,5 @@ Repository license terms are in the repo root `../LICENSE` (MIT).
 ## Curated Proof Artifacts
 
 For tracked examples that do not require rerunning the CLIs locally, see `docs/examples/`.
-Use `cd skills-foundry && bin/refresh-doc-examples --check` to verify tracked snippets are current.
-Use `cd skills-foundry && bin/refresh-doc-examples` to refresh tracked snippets after intentional output changes.
+Use `./skills-foundry/bin/refresh-doc-examples --check` to verify tracked snippets are current.
+Use `./skills-foundry/bin/refresh-doc-examples` to refresh tracked snippets after intentional output changes.

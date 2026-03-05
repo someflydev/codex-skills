@@ -11,19 +11,17 @@ Run the `skills-foundry` workflow end-to-end on repositories that use ordered `.
 ### Local setup (recommended)
 
 ```bash
-cd skills-foundry
 uv venv .venv
 uv pip install --python .venv/bin/python pytest
 ```
 
-Run tools directly from `bin/` (no activation required), for example `bin/skills-validate`.
+Run tools directly from repo root (no activation required), for example `./skills-foundry/bin/skills-validate`.
 
 ## Author Or Update Skills
 
 1. Create a new skill skeleton:
    ```bash
-   cd skills-foundry
-   bin/skills-new --category workflow --skill-id my-skill --name "My Skill"
+   ./skills-foundry/bin/skills-new --category workflow --skill-id my-skill --name "My Skill"
    ```
 2. Edit `SKILL.md` (required), then refine `EXAMPLES.md` and `CHECKLIST.md`.
 3. Keep IDs stable; evolve `version` as behavior changes.
@@ -34,16 +32,14 @@ Run tools directly from `bin/` (no activation required), for example `bin/skills
 Run validation before syncing or relying on a new skill pack:
 
 ```bash
-cd skills-foundry
-bin/skills-validate
-bin/skills-lint
+./skills-foundry/bin/skills-validate
+./skills-foundry/bin/skills-lint
 ```
 
 Day-to-day compact validation view:
 
 ```bash
-cd skills-foundry
-bin/skills-validate --compact
+./skills-foundry/bin/skills-validate --compact
 ```
 
 - `skills-validate` checks front matter and required sections.
@@ -60,11 +56,10 @@ bin/skills-validate --compact
 Use the examples checker before release/CI-sensitive commits:
 
 ```bash
-cd skills-foundry
-bin/refresh-doc-examples --check
+./skills-foundry/bin/refresh-doc-examples --check
 ```
 
-- If `--check` reports stale/missing files, refresh them with `bin/refresh-doc-examples`.
+- If `--check` reports stale/missing files, refresh them with `./skills-foundry/bin/refresh-doc-examples`.
 - Use `--dry-run` to preview what the refresh/check flow will touch.
 
 ## Sync To `~/.codex/skills`
@@ -72,15 +67,13 @@ bin/refresh-doc-examples --check
 Dry-run first:
 
 ```bash
-cd skills-foundry
-bin/skills-sync --dry-run
+./skills-foundry/bin/skills-sync --dry-run
 ```
 
 Typical real sync (copy strategy):
 
 ```bash
-cd skills-foundry
-bin/skills-sync --strategy copy
+./skills-foundry/bin/skills-sync --strategy copy
 ```
 
 Useful options:
@@ -122,9 +115,8 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
    - Group diffs into prompt-sized commits.
    - Optional helper-only local execution simulation for Stage 1 (post-Stage-2 hardening):
      ```bash
-     cd skills-foundry
-     bin/repo-helper-stage1-plan \
-       --repo-root demo-repo \
+     ./skills-foundry/bin/repo-helper-stage1-plan \
+       --repo-root skills-foundry/demo-repo \
        --prompts-dir .prompts \
        --start 1 --end 2 \
        --write-plan STAGE1-PLAN.md \
@@ -135,7 +127,7 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
      Notes:
      - Execution mode is opt-in and helper-first (planning remains the default behavior).
      - Prefer `--runner-argv-template` (JSON argv list) for non-shell execution. `--runner-shell-template` remains available for explicit shell use only.
-     - The helper writes a run log under the selected `--repo-root` (for example `demo-repo/STAGE1-RUN-LOG.md`).
+     - The helper writes a run log under the selected `--repo-root` (for example `skills-foundry/demo-repo/STAGE1-RUN-LOG.md`).
 3. `stage-1 postflight`
    - Review what shipped, what drifted, and what broke.
    - Produce a risk register and stage-2 inputs.
@@ -155,17 +147,16 @@ A tiny practice repo lives at `skills-foundry/demo-repo/` with a simple 6-file `
 
 The following smoke commands were actually run in this repo on February 25, 2026.
 
-For a repeatable local smoke run, use `bin/smoke-check-foundry` (added after the initial smoke proof). It runs the same core command sequence and supports a custom sync target.
+For a repeatable local smoke run, use `./skills-foundry/bin/smoke-check-foundry` (added after the initial smoke proof). It runs the same core command sequence and supports a custom sync target.
 
 Canonical command examples (repo root -> foundry root):
 
 ```bash
-cd skills-foundry
-bin/skills-new --category core --skill-id smoke-check --name "Smoke Check"
-bin/skills-validate
-bin/skills-lint
-bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
-bin/skills-render
+./skills-foundry/bin/skills-new --category core --skill-id smoke-check --name "Smoke Check"
+./skills-foundry/bin/skills-validate
+./skills-foundry/bin/skills-lint
+./skills-foundry/bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
+./skills-foundry/bin/skills-render
 ```
 
 ### Key outputs and results
@@ -194,8 +185,7 @@ bin/skills-render
 Because `--dry-run` does not write the target index, an extra local sync was run to generate a real index without touching `~/.codex/skills`:
 
 ```bash
-cd skills-foundry
-bin/skills-sync --to /tmp/skills-sync-smoke
+./skills-foundry/bin/skills-sync --to /tmp/skills-sync-smoke
 ```
 
 Result:
@@ -211,15 +201,14 @@ All operator-facing scripts in `skills-foundry/bin/` were checked with `--help` 
 Run the packaged smoke script:
 
 ```bash
-cd skills-foundry
-bin/smoke-check-foundry --dry-run-only
+./skills-foundry/bin/smoke-check-foundry --dry-run-only
 ```
 
 Useful options:
 
 - `--sync-target /tmp/skills-sync-smoke` to override the dry-run sync target.
 - `--with-real-sync` to also run a real sync to the target and generate `INDEX.md`.
-- Reset behavior is intentionally handled by `bin/demo-repo-reset` (not by `smoke-check-foundry`) to keep smoke runs non-destructive by default.
+- Reset behavior is intentionally handled by `./skills-foundry/bin/demo-repo-reset` (not by `smoke-check-foundry`) to keep smoke runs non-destructive by default.
 
 ## Demo Repo Reset (Safe Cleanup)
 
@@ -227,8 +216,7 @@ Use the helper below to clean known generated artifacts in `skills-foundry/demo-
 It defaults to dry-run mode and only removes a small allowlist when `--yes` is provided.
 
 ```bash
-cd skills-foundry
-bin/demo-repo-reset --dry-run
+./skills-foundry/bin/demo-repo-reset --dry-run
 ```
 
 ## Sync Notes (Copy vs Symlink)

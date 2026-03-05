@@ -4,10 +4,10 @@ Use this checklist before tagging a version or sharing the foundry more broadly.
 
 ## 1. Verify Core Behavior
 
-- Run `cd skills-foundry && ../.venv/bin/pytest -q`
-- Run `cd skills-foundry && bin/skills-validate --compact`
-- Run `cd skills-foundry && bin/skills-lint`
-- Run `cd skills-foundry && bin/smoke-check-foundry --dry-run-only`
+- Run `.venv/bin/pytest -q skills-foundry`
+- Run `./skills-foundry/bin/skills-validate --compact`
+- Run `./skills-foundry/bin/skills-lint`
+- Run `./skills-foundry/bin/smoke-check-foundry --dry-run-only`
 
 ## 2. Check Docs and Examples
 

@@ -28,11 +28,11 @@ codex-skills/
 ## First 5 Minutes
 
 1. Run the tests to confirm your local setup:
-   - `cd skills-foundry && .venv/bin/pytest -q` (or create `.venv` first from the quickstart below)
+   - `.venv/bin/pytest -q skills-foundry` (or create `.venv` first from the quickstart below)
 2. Run compact validation to see a lower-noise health check:
-   - `cd skills-foundry && bin/skills-validate --compact`
+   - `./skills-foundry/bin/skills-validate --compact`
 3. Run the repeatable smoke script:
-   - `cd skills-foundry && bin/smoke-check-foundry --dry-run-only`
+   - `./skills-foundry/bin/smoke-check-foundry --dry-run-only`
 4. Read the operator workflow:
    - `skills-foundry/docs/OPERATOR_MANUAL.md`
 5. Review tracked proof snippets:
@@ -40,15 +40,14 @@ codex-skills/
 
 ## Start Here
 
-If you want to use the generated toolkit, start in `skills-foundry/`:
+If you want to use the generated toolkit from repo root:
 
 ```bash
-cd skills-foundry
 uv venv .venv
 uv pip install --python .venv/bin/python pytest
-.venv/bin/pytest -q
-bin/skills-validate --compact
-bin/skills-lint
+.venv/bin/pytest -q skills-foundry
+./skills-foundry/bin/skills-validate --compact
+./skills-foundry/bin/skills-lint
 ```
 
 Then read:

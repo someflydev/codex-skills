@@ -1,0 +1,51 @@
+You are a repository-maintenance coding agent. Your task is to normalize tool invocation examples in docs/guides/checklists so they run from the repository root (no `cd` hopping), then verify them and log exact input/output pairs.
+
+Goals:
+1. Discover docs that contain command examples for internal tooling.
+2. Rewrite those examples to root-level invocation forms.
+3. Verify each changed example command actually works.
+4. Save a readable verification artifact containing all command inputs/outputs.
+5. Commit the changes.
+
+Hard constraints:
+- Do not delete any files.
+- Prefer non-destructive verification flags where possible (`--dry-run`, `--help`, sandbox paths).
+- Keep command semantics intact while changing invocation style.
+- If a command needs a project-specific working directory, use explicit path arguments instead of `cd` where possible.
+- If a command truly requires a subdirectory working dir and cannot be rewritten safely, keep it and note why.
+
+Discovery scope:
+- Check top-level `README*` plus docs directories (e.g. `docs/`, `guides/`, `manuals/`, `examples/`), including operator/operations guides and release checklists.
+- Search for patterns like:
+  - `cd <subdir> && ...`
+  - bare `bin/...` commands
+  - venv/tool commands that assume subdirectory context
+
+Rewrite strategy:
+- Prefer root-level executable paths, e.g. `./<tool-subdir>/bin/<cmd>`.
+- Prefer root-level test commands with explicit target paths, e.g. `.venv/bin/pytest -q <subdir>`.
+- Update surrounding explanatory prose when needed so it matches rewritten commands.
+- Keep examples copy-pasteable from repo root.
+
+Verification + logging:
+- Create a file named `manual-tool-invocation-outputs.md` at repo root.
+- For each verified command, record input and output in order.
+- Between each input/output pair, insert exactly this delimiter line (77 chars), with a blank line before and after:
+  `=============================================================================`
+- Include command exit code in each output block.
+- If environment/sandbox requires overrides (e.g. cache dir), include them inline in the logged input command.
+- Continue until all changed examples are verified or explicitly documented as not safely runnable.
+
+Commit requirements:
+- Make one commit for docs rewrites + verification artifact.
+- Use a commit message like:
+  `[DOCS] Normalize root-level tool invocation examples and log manual verification`
+- After commit, provide:
+  - files changed
+  - summary of rewrites
+  - count of verified commands and non-zero exits (if any)
+  - any commands intentionally not run and reason
+
+Output style:
+- Concise and factual.
+- Show exact file paths with line references for notable edits.
