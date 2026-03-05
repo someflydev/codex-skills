@@ -60,6 +60,7 @@ Use when production-like and test stacks must run simultaneously without default
 
 ## Failure modes + recovery
 
+- If no safe remap can be verified, stop and keep existing mappings until operator approval is provided.
 - If no suitable nearby port is free, expand search range and document rationale.
 - If service health fails after remap, revert mapping and re-test incrementally.
 - If docs drift from config, regenerate mapping notes before commit.

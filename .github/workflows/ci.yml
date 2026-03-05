@@ -50,6 +50,10 @@ jobs:
         working-directory: skills-foundry
         run: bin/smoke-check-foundry --dry-run-only
 
+      - name: Meta-runner smoke (check-only)
+        working-directory: skills-foundry
+        run: bin/smoke-check-meta-runner --check-only
+
       - name: Curated docs examples drift check
         working-directory: skills-foundry
         run: bin/refresh-doc-examples --check

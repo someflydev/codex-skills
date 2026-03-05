@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage: smoke-check-meta-runner [--check-only] [--dry-run] [--full]
+
+Deterministic, non-destructive smoke checks for meta-runner skills.
+
+Modes:
+  --check-only  Validate/lint/render + run focused meta-runner tests (default)
+  --dry-run     Alias of --check-only for safety-oriented workflows
+  --full        Run check-only set plus full foundry test suite
+  --help        Show this help
+USAGE
+}
+
+MODE="check-only"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --check-only)
+      MODE="check-only"
+      shift
+      ;;
+    --dry-run)
+      MODE="check-only"
+      shift
+      ;;
+    --full)
+      MODE="full"
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FOUNDRY_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+cd "$FOUNDRY_ROOT"
+
+echo "[meta-runner-smoke] skills-validate --compact"
+bin/skills-validate --compact >/dev/null
+
+echo "[meta-runner-smoke] skills-lint"
+bin/skills-lint >/dev/null
+
+echo "[meta-runner-smoke] skills-render"
+bin/skills-render >/dev/null
+
+if [[ -x "../.venv/bin/pytest" ]]; then
+  PYTEST_CMD="../.venv/bin/pytest"
+else
+  PYTEST_CMD="python3 -m pytest"
+fi
+
+echo "[meta-runner-smoke] pytest meta-runner contracts"
+# shellcheck disable=SC2086
+$PYTEST_CMD -q tests/test_meta_runner_skills.py
+
+if [[ "$MODE" == "full" ]]; then
+  echo "[meta-runner-smoke] pytest full foundry suite"
+  # shellcheck disable=SC2086
+  $PYTEST_CMD -q
+fi
+
+echo "[meta-runner-smoke] PASS ($MODE)"

@@ -60,6 +60,7 @@ Use after a stage run to produce evidence-backed closure status, readiness score
 
 ## Failure modes + recovery
 
+- If mandatory evidence checks fail, stop and mark the report as blocked until checks pass.
 - If required checks cannot run, list blockers and refrain from inflating scores.
 - If DoD evidence conflicts with report claims, reconcile and rerun checks.
 - If new prompt suggestions exceed scope, reduce to minimal high-leverage set.

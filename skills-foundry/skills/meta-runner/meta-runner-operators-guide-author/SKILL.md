@@ -59,6 +59,7 @@ Use when operational docs need to be generated or refreshed with concrete, verif
 
 ## Failure modes + recovery
 
+- If core verification commands fail repeatedly, stop and publish a prerequisite/blocker checklist before proceeding.
 - If required services are unavailable, document exact prerequisites and defer verification.
 - If command examples are stale, update docs and rerun verification capture.
 - If output path conflicts with existing docs conventions, align and document move rationale.

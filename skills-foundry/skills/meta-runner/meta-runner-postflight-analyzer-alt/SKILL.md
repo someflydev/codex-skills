@@ -59,6 +59,7 @@ Use when stakeholders care most about measurable score deltas, residual drift ri
 
 ## Failure modes + recovery
 
+- If delta evidence is inconsistent or missing, stop and rerun baseline/current checks before scoring.
 - If baseline report is missing, fall back to current-state scoring and note limitation.
 - If drift cannot be reproduced, mark as suspected and add repro steps.
 - If follow-up list grows, split into immediate vs deferred and cap immediate items.

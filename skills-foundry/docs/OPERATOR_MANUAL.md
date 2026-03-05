@@ -210,6 +210,23 @@ Useful options:
 - `--with-real-sync` to also run a real sync to the target and generate `INDEX.md`.
 - Reset behavior is intentionally handled by `./skills-foundry/bin/demo-repo-reset` (not by `smoke-check-foundry`) to keep smoke runs non-destructive by default.
 
+## Meta-Runner Verification (Stage-3)
+
+Use these checks after changing `skills/meta-runner/*`:
+
+```bash
+.venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py
+./skills-foundry/bin/smoke-check-meta-runner --check-only
+```
+
+For a full regression pass:
+
+```bash
+.venv/bin/pytest -q skills-foundry
+```
+
+Reference: `skills-foundry/docs/META_RUNNER_VERIFICATION.md`.
+
 ## Demo Repo Reset (Safe Cleanup)
 
 Use the helper below to clean known generated artifacts in `skills-foundry/demo-repo/`.
