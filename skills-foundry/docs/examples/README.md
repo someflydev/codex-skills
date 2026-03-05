@@ -11,6 +11,9 @@ Current samples:
 - `skills-lint-summary.md` - sample lint summary excerpt
 - `skills-lint-json-snippet.json` - sample lint JSON excerpt (with stable rule IDs)
 - `skills-catalog-snippet.md` - sample rendered catalog excerpt
+- `skills-flow-next-workflow-standard.txt` - sample ordered next-step output for workflow lane
+- `skills-flow-next-meta-runner-standard.txt` - sample ordered next-step output for meta-runner lane
+- `skills-flow-reference-snippet.md` - sample generated flow-doc excerpt
 
 Refresh workflow:
 

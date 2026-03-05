@@ -1,6 +1,6 @@
 # Skills Catalog
 
-Total skills: 27
+Total skills: 42
 
 ## core
 

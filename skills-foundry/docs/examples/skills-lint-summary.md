@@ -1,6 +1,6 @@
 # Skills Lint Report
 
-Total skills: 27
+Total skills: 42
 
 ## changelog-drafter
 - Path: `skills-foundry/skills/core/changelog-drafter/SKILL.md`

@@ -1,6 +1,6 @@
 Running skills-validate and skills-lint before sync...
 Sync plan:
-- create: 27
+- create: 42
 - update: 0
 - unchanged: 0
 - would-prune: 0

@@ -12,6 +12,11 @@ Repo-local toolkit for authoring, validating, linting, rendering, and syncing re
 - `./skills-foundry/bin/repo-helper-*`: **MVP workflow helpers** for prompt inventory, run planning, postflight snapshots, and stage-2 planning (not full prompt execution automation)
 - `skills-foundry/skills/meta-runner/*`: Stage-3 skill pack for resume-aware meta-runner bootstrap, preflight, stage execution, isolation workflows, and postflight scoring
 - `./skills-foundry/bin/skills-flow-next` and `./skills-foundry/bin/skills-flow-render`: ordered skill-flow resolver and flow-doc generator for standard/alt lanes
+- Stage-4 reference examples:
+  - `skills-foundry/skills/workflow/prompt-resume-reconciler`
+  - `skills-foundry/skills/workflow/prompt-commit-batch-planner`
+  - `skills-foundry/skills/core/manual-command-prooflogger`
+  - `skills-foundry/skills/meta-runner/meta-runner-reference-example-curator`
 
 ## Quickstart
 
@@ -24,6 +29,7 @@ uv pip install --python .venv/bin/python pytest
 ./skills-foundry/bin/skills-lint
 ./skills-foundry/bin/skills-sync --dry-run --to /tmp/skills-sync-smoke
 ./skills-foundry/bin/skills-render
+./skills-foundry/bin/skills-flow-next --group workflow --lane standard
 ```
 
 See `docs/OPERATOR_MANUAL.md` for the prompt-first workflow walkthrough and smoke-run evidence.

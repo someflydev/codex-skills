@@ -196,3 +196,41 @@ Theme:
 - Inventory evidence is sufficient to proceed.
 - Validation/test tooling already works in current environment.
 - Pre-flight pass must run before executing Stage-4 batches.
+
+## Stage-4 Execution Status
+
+### Batch A - Close Partial Coverage Gaps
+
+- Status: Completed
+- Result: compact validation warning count reduced from 13 to 0 without introducing destructive scaffolding.
+- Evidence:
+  - `./skills-foundry/bin/skills-validate --compact` -> `Validated 38 skills: 0 error(s), 0 warning(s)` (after Batch A changes)
+  - `.venv/bin/pytest -q skills-foundry` -> passed
+  - `./skills-foundry/bin/smoke-check-meta-runner --check-only` -> PASS
+
+### Batch B - Add High-Signal Net-New Reference Examples
+
+- Status: Completed
+- Added examples:
+  - `prompt-resume-reconciler`
+  - `prompt-commit-batch-planner`
+  - `manual-command-prooflogger`
+  - `meta-runner-reference-example-curator`
+- Integration:
+  - wired into `flows/core.json`, `flows/workflow.json`, `flows/meta-runner.json`
+  - regenerated `docs/SKILL_FLOWS.md`
+  - added targeted integration test: `tests/test_reference_example_skills.py`
+
+### Batch C - Verification, Docs, And Expansion Readiness
+
+- Status: Completed
+- Docs/examples manifest expanded with flow-reference snippets and validated with:
+  - `./skills-foundry/bin/refresh-doc-examples --check`
+- Operator docs refreshed for Stage-4 examples:
+  - `skills-foundry/docs/OPERATOR_MANUAL.md`
+  - `skills-foundry/README.md`
+
+## Readiness Recommendation
+
+- Stage-4 is ready to close.
+- Recommended next wave: focus on one narrow follow-up batch that turns the new reference examples into end-to-end demonstration runs in `skills-foundry/demo-repo/` with explicit proof logs, while keeping non-destructive defaults.

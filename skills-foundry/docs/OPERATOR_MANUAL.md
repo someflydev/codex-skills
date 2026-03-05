@@ -248,6 +248,23 @@ Use flow manifests so you do not have to memorize skill order:
 - Persisted progression state is optional and local (`.skills-flow-state.json` by default).
 - Generated flow docs are written to `skills-foundry/docs/SKILL_FLOWS.md`.
 
+### Stage-4 Reference Examples
+
+High-signal reference examples added for execution discipline and verification:
+
+- `prompt-resume-reconciler`
+- `prompt-commit-batch-planner`
+- `manual-command-prooflogger`
+- `meta-runner-reference-example-curator`
+
+Quick root-level checks:
+
+```bash
+./skills-foundry/bin/skills-flow-next --group workflow --lane standard
+./skills-foundry/bin/skills-flow-next --group meta-runner --lane standard
+./skills-foundry/bin/skills-validate --compact
+```
+
 ## Demo Repo Reset (Safe Cleanup)
 
 Use the helper below to clean known generated artifacts in `skills-foundry/demo-repo/`.

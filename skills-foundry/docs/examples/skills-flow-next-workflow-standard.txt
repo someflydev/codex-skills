@@ -1,0 +1,4 @@
+Group: workflow
+Lane: standard
+Next step: 1
+Next skill: prompt-preflight-inspector

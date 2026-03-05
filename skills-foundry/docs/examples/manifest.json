@@ -70,6 +70,43 @@
       "source": "reports/SKILLS_CATALOG.md",
       "target": "docs/examples/skills-catalog-snippet.md",
       "max_lines": 24
+    },
+    {
+      "id": "skills-flow-next-workflow-standard",
+      "type": "command-text",
+      "command": ["bin/skills-flow-next", "--group", "workflow", "--lane", "standard"],
+      "cwd": ".",
+      "target": "docs/examples/skills-flow-next-workflow-standard.txt",
+      "include_substrings": [
+        "Group: workflow",
+        "Lane: standard",
+        "Next step:",
+        "Next skill:"
+      ],
+      "max_lines": 12
+    },
+    {
+      "id": "skills-flow-next-meta-runner-standard",
+      "type": "command-text",
+      "command": ["bin/skills-flow-next", "--group", "meta-runner", "--lane", "standard"],
+      "cwd": ".",
+      "target": "docs/examples/skills-flow-next-meta-runner-standard.txt",
+      "include_substrings": [
+        "Group: meta-runner",
+        "Lane: standard",
+        "Next step:",
+        "Next skill:"
+      ],
+      "max_lines": 12
+    },
+    {
+      "id": "skills-flow-reference-snippet",
+      "type": "file-head",
+      "command": ["bin/skills-flow-render"],
+      "cwd": ".",
+      "source": "docs/SKILL_FLOWS.md",
+      "target": "docs/examples/skills-flow-reference-snippet.md",
+      "max_lines": 36
     }
   ]
 }
