@@ -49,3 +49,7 @@ jobs:
       - name: Scripted foundry smoke (dry-run only)
         working-directory: skills-foundry
         run: bin/smoke-check-foundry --dry-run-only
+
+      - name: Curated docs examples drift check
+        working-directory: skills-foundry
+        run: bin/refresh-doc-examples --check

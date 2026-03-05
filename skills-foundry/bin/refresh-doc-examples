@@ -24,7 +24,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path("docs/examples/manifest.json"),
         help="Manifest path (foundry-root-relative by default)",
     )
-    parser.add_argument("--dry-run", action="store_true", help="List planned refresh/check actions without writing files")
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument("--dry-run", action="store_true", help="List planned refresh/check actions without writing files")
+    mode_group.add_argument(
+        "--check",
+        action="store_true",
+        help="Render expected content and fail if tracked example files are stale or missing",
+    )
     return parser
 
 
@@ -134,6 +140,17 @@ def _render_entry(entry: dict[str, Any], *, root: Path, dry_run: bool) -> tuple[
     return target, content
 
 
+def _check_target_content(*, entry_id: str, target: Path, expected: str) -> tuple[bool, str]:
+    # `entry_id` is intentionally retained even though current checks only print paths.
+    # It is a stable logical key for future machine-readable reports and backend correlation.
+    if not target.exists():
+        return False, f"[check] missing: {target}"
+    actual = target.read_text(encoding="utf-8")
+    if actual != expected:
+        return False, f"[check] stale: {target}"
+    return True, f"[check] up-to-date: {target}"
+
+
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
@@ -156,9 +173,12 @@ def main() -> int:
     print(f"entries: {len(entries)}")
     if args.dry_run:
         print("mode: dry-run")
+    elif args.check:
+        print("mode: check")
     else:
         print("mode: write")
 
+    stale_count = 0
     for entry in entries:
         entry_id = entry.get("id", "<unnamed>")
         try:
@@ -171,9 +191,22 @@ def main() -> int:
             print(f"[dry-run] would refresh/check: {target}")
             continue
 
+        if args.check:
+            ok, message = _check_target_content(entry_id=entry_id, target=target, expected=content or "")
+            print(message)
+            if not ok:
+                stale_count += 1
+            continue
+
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content or "", encoding="utf-8")
         print(f"[write] refreshed: {target}")
+
+    if args.check:
+        if stale_count:
+            print(f"ERROR: docs/examples check failed: {stale_count} file(s) stale or missing")
+            return 1
+        print("docs/examples check passed")
 
     return 0
 

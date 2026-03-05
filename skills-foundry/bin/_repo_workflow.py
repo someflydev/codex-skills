@@ -356,6 +356,14 @@ def _write_stage_execution_log(
     _write_text(out_path, "\n".join(lines))
 
 
+def _coerce_timeout_stream_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def _is_path_within(child: Path, parent: Path) -> bool:
     try:
         child.relative_to(parent)
@@ -456,6 +464,8 @@ def _execute_stage_plan(
                 )
         except subprocess.TimeoutExpired as exc:
             finished_at = _now_iso_utc()
+            timeout_stdout = _coerce_timeout_stream_text(exc.stdout)
+            timeout_stderr = _coerce_timeout_stream_text(exc.stderr)
             entries.append(
                 {
                     "prompt_name": prompt.path.name,
@@ -464,8 +474,8 @@ def _execute_stage_plan(
                     "started_at": started_at,
                     "finished_at": finished_at,
                     "command": command_display,
-                    "stdout": (exc.stdout or ""),
-                    "stderr": (exc.stderr or "") + f"\nTimed out after {runner_timeout_seconds} second(s)",
+                    "stdout": timeout_stdout,
+                    "stderr": timeout_stderr + f"\nTimed out after {runner_timeout_seconds} second(s)",
                 }
             )
             print(f"- executed {prompt.path.name}: timed_out (rc=124)")

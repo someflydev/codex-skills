@@ -17,3 +17,4 @@ Refresh workflow:
 - Manifest/spec: `docs/examples/manifest.json`
 - Local refresh helper: `bin/refresh-doc-examples`
 - Preview changes without writing: `cd skills-foundry && bin/refresh-doc-examples --dry-run`
+- `entries[].id` is currently informational during check output flow, but is intentionally stable for future per-entry reporting, resume/checkpoint state, and cross-backend correlation.

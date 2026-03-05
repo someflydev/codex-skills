@@ -80,3 +80,66 @@ def test_refresh_doc_examples_can_write_from_manifest_entries(tmp_path: Path) ->
     cmd_text = (docs_examples / "cmd-snippet.txt").read_text(encoding="utf-8")
     assert "keep line2" in cmd_text
     assert "line1" not in cmd_text
+
+
+def test_refresh_doc_examples_check_passes_when_examples_are_current(tmp_path: Path) -> None:
+    docs_examples = tmp_path / "docs" / "examples"
+    docs_examples.mkdir(parents=True)
+    manifest = {
+        "version": 1,
+        "entries": [
+            {
+                "id": "cmd-snippet",
+                "type": "command-text",
+                "command": ["python3", "-c", "print('alpha'); print('beta')"],
+                "cwd": ".",
+                "target": "docs/examples/cmd-snippet.txt",
+            }
+        ],
+    }
+    (docs_examples / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+    write_result = subprocess.run(
+        [str(CLI), "--root", str(tmp_path), "--manifest", "docs/examples/manifest.json"],
+        capture_output=True,
+        text=True,
+    )
+    assert write_result.returncode == 0, write_result.stdout + "\n" + write_result.stderr
+
+    check_result = subprocess.run(
+        [str(CLI), "--root", str(tmp_path), "--manifest", "docs/examples/manifest.json", "--check"],
+        capture_output=True,
+        text=True,
+    )
+    assert check_result.returncode == 0, check_result.stdout + "\n" + check_result.stderr
+    assert "mode: check" in check_result.stdout
+    assert "[check] up-to-date:" in check_result.stdout
+    assert "docs/examples check passed" in check_result.stdout
+
+
+def test_refresh_doc_examples_check_fails_when_example_is_stale(tmp_path: Path) -> None:
+    docs_examples = tmp_path / "docs" / "examples"
+    docs_examples.mkdir(parents=True)
+    manifest = {
+        "version": 1,
+        "entries": [
+            {
+                "id": "cmd-snippet",
+                "type": "command-text",
+                "command": ["python3", "-c", "print('fresh')"],
+                "cwd": ".",
+                "target": "docs/examples/cmd-snippet.txt",
+            }
+        ],
+    }
+    (docs_examples / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (docs_examples / "cmd-snippet.txt").write_text("stale\n", encoding="utf-8")
+
+    check_result = subprocess.run(
+        [str(CLI), "--root", str(tmp_path), "--manifest", "docs/examples/manifest.json", "--check"],
+        capture_output=True,
+        text=True,
+    )
+    assert check_result.returncode == 1, check_result.stdout + "\n" + check_result.stderr
+    assert "[check] stale:" in check_result.stdout
+    assert "docs/examples check failed: 1 file(s) stale or missing" in check_result.stdout

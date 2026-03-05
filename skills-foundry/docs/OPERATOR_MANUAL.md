@@ -55,6 +55,18 @@ bin/skills-validate --compact
 - On noisy verbose runs (high warning volume without `--compact`), the validator prints a short hint recommending `--compact`.
 - `skills-lint` writes reports to `skills-foundry/reports/skills-lint.json` and `skills-foundry/reports/skills-lint.md`.
 
+## Curated Docs Examples Drift Check
+
+Use the examples checker before release/CI-sensitive commits:
+
+```bash
+cd skills-foundry
+bin/refresh-doc-examples --check
+```
+
+- If `--check` reports stale/missing files, refresh them with `bin/refresh-doc-examples`.
+- Use `--dry-run` to preview what the refresh/check flow will touch.
+
 ## Sync To `~/.codex/skills`
 
 Dry-run first:

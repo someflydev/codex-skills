@@ -53,3 +53,5 @@ Repository license terms are in the repo root `../LICENSE` (MIT).
 ## Curated Proof Artifacts
 
 For tracked examples that do not require rerunning the CLIs locally, see `docs/examples/`.
+Use `cd skills-foundry && bin/refresh-doc-examples --check` to verify tracked snippets are current.
+Use `cd skills-foundry && bin/refresh-doc-examples` to refresh tracked snippets after intentional output changes.
