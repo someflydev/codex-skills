@@ -40,7 +40,7 @@ SECTION 2 - Required Tool Verification
 SECTION 3 - Prompt Classification Summary
 - Prompt files discovered:
   - System prompts (`_s`): `PROMPT_00_s.txt`, `PROMPT_14_s.txt`
-  - Task prompts: `PROMPT_01.txt`..`PROMPT_13.txt`, `PROMPT_15.txt`..`PROMPT_19.txt`
+  - Task prompts: `PROMPT_01.txt`..`PROMPT_13.txt`, `PROMPT_15.txt`..`PROMPT_21.txt`
   - Template prompts (`_t`): none currently
   - System-template prompts: none currently
   - Meta/support files:
@@ -57,6 +57,7 @@ SECTION 3 - Prompt Classification Summary
   - Track A: Foundation build and baseline workflow (`PROMPT_00_s` -> `PROMPT_01`..`PROMPT_08`)
   - Track B: Stage-2 hardening and release-quality guardrails (`PROMPT_09`..`PROMPT_13`)
   - Track C: Stage-3 meta-runner skill expansion (`PROMPT_14_s` -> `PROMPT_15`..`PROMPT_19`)
+  - Track D: Stage-3 follow-up operator hardening (`PROMPT_20`..`PROMPT_21`)
 - True sequential chains:
   - Foundation chain: strict sequential
   - Stage-2 chain: primarily sequential with guarded independent fallback notes in each prompt
@@ -74,12 +75,14 @@ SECTION 4 - Execution Modes
     3) `PROMPT_09.txt`..`PROMPT_13.txt`
     4) `PROMPT_14_s.txt`
     5) `PROMPT_15.txt`..`PROMPT_19.txt`
+    6) `PROMPT_20.txt`..`PROMPT_21.txt`
   - Do not skip required predecessors.
 - Track mode:
   - Run one dependency-closed track at a time:
     - Foundation track
     - Stage-2 hardening track
     - Stage-3 meta-runner track
+    - Stage-3 follow-up operators-guide track
   - Valid only if track prerequisites already pass artifact and test gates.
 - Template instantiation mode:
   - Enabled only when `_t` prompt files are present.

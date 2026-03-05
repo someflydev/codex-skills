@@ -1,0 +1,85 @@
+Stage-3 Follow-up Prompt
+Title: Definitive Operators Guide Generator (Fact-Only, No-Fabrication)
+
+Objective
+Create a definitive `OPERATORS_GUIDE.md` for the current repository using verified, project-specific operational data only. The output must be practical for day-to-day run/debug/audit workflows and must not invent runtime services, APIs, Makefile targets, or datastores that are not present.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_20.txt`
+- Depends on: current repo filesystem, docs, scripts, tests, CI workflow
+- Runnable independently: yes
+
+Artifacts To Create / Modify (exact paths)
+- `OPERATORS_GUIDE.md` (new or refresh)
+- optional supporting evidence notes under `skills-foundry/docs/` only if required to avoid ambiguity
+
+Required Scope
+1) Run an operational discovery pass and verify:
+   - services and primary language/runtime
+   - storage backends and actual roles
+   - all `Makefile` commands (if any `Makefile` exists)
+   - log locations/tailing patterns
+   - key API endpoints (if any)
+   - sync/background trigger paths
+   - debugger tooling per language in-repo
+2) Build `OPERATORS_GUIDE.md` with these mandatory sections (in order):
+   1. Installation & System Requirements
+   2. Service Catalog & Internal Locations
+   3. Log Locations & Tailing
+   4. Storage Backends
+   5. Raw Data Exploration
+   6. AI/Brain Operations (if applicable)
+   7. Exhaustive Database Query Catalog
+   8. Makefile Command Reference
+   9. Testing Strategy
+   10. CLI Debugger Quickstarts
+   11. Interesting API/Curl Requests
+   12. Troubleshooting Scenarios
+3) Database-query rules:
+   - For each discovered datastore, provide exactly 15 verified queries/commands with 1-2 sentence descriptions.
+   - If zero datastores are discovered, explicitly state that no datastore query catalog applies and include discovery evidence commands proving absence.
+4) Makefile rules:
+   - If a `Makefile` exists, include a complete command table.
+   - If no `Makefile` exists, explicitly document that status and point to equivalent operational command surfaces (for example, `skills-foundry/bin/*` scripts).
+5) API/curl rules:
+   - If endpoints exist, include practical validated examples.
+   - If no endpoints exist in this repo, state that explicitly and include evidence commands.
+6) Validation discipline:
+   - Run every verification command included in acceptance criteria.
+   - Do not leave placeholder text.
+   - Do not claim services/datastores that are external to the repository unless clearly marked as out-of-scope examples.
+
+Acceptance Criteria (commands + expected checks)
+1) Guide exists and has all mandatory section headings:
+```bash
+test -f OPERATORS_GUIDE.md
+rg -n "^## 1\\.|^## 2\\.|^## 3\\.|^## 4\\.|^## 5\\.|^## 6\\.|^## 7\\.|^## 8\\.|^## 9\\.|^## 10\\.|^## 11\\.|^## 12\\." OPERATORS_GUIDE.md
+```
+2) Inventory evidence commands complete successfully:
+```bash
+rg --files | rg '(^|/)Makefile$|docker-compose|compose\\.ya?ml|\\.env($|\\.)|\\.github/workflows/ci\\.yml'
+rg -n "health|/api|localhost|docker|postgres|redis|mongo|elasticsearch|sync" -S skills-foundry docs README.md .prompts || true
+```
+3) If datastore section claims datastores, queries are present in 15-per-datastore blocks and are executable or logically valid against discovered stack.
+4) If no datastores or no Makefile are present, the guide explicitly states this with evidence commands (no fabricated tables/queries).
+5) Core verification still green:
+```bash
+.venv/bin/pytest -q skills-foundry
+./skills-foundry/bin/smoke-check-meta-runner --check-only
+```
+
+Anti-Scope (do NOT do)
+- Do NOT fabricate nonexistent services, DBs, endpoints, or Make targets.
+- Do NOT add new runtime services just to satisfy documentation sections.
+- Do NOT include generic template placeholders.
+
+Overengineering Guardrails
+- Keep the guide factual and execution-oriented.
+- Prefer root-level commands and explicit paths.
+- If a section is non-applicable, document N/A with hard evidence instead of speculative content.
+
+Evidence To Include In Diff
+- Service/runtime inventory table.
+- Makefile presence/absence proof.
+- Datastore presence/absence proof and query catalog handling.
+- API endpoint presence/absence proof and curl handling.

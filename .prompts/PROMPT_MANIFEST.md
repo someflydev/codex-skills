@@ -41,6 +41,7 @@ See `.prompts/PROMPT_STAGE3_MANIFEST.md` for goals, DoD, and stop conditions.
 | `PROMPT_18.txt` | task | Operator adoption docs + prompt-to-skill mapping | 4 | `PROMPT_16.txt`, `PROMPT_17.txt` |
 | `PROMPT_19.txt` | task | Meta-runner postflight audit + conditional next-prompt generation | 5 | `PROMPT_15`..`PROMPT_18` outputs |
 | `PROMPT_20.txt` | task | Skill flow index + next-step CLI (standard/alt lanes) | 6 | `PROMPT_19.txt` (or current skill inventory) |
+| `PROMPT_21.txt` | task | Definitive operators-guide generation (fact-only, no-fabrication) | 7 | `PROMPT_20.txt` (or current repo inventory) |
 
 ## Execution Notes
 
