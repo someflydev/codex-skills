@@ -1,0 +1,211 @@
+# PROMPT META RUNNER
+
+SECTION 1 - Purpose
+- This prompt set builds and hardens the `skills-foundry` prompt-first workflow system, then expands it with Stage-2 helper rigor and Stage-3 meta-runner skills.
+- Completion is successful only when each executed prompt's acceptance criteria pass, required artifacts exist, smoke checks pass when applicable, and prompt-scoped commits are created with the required prefix discipline.
+- This runner does not introduce extra pre-flight/post-flight lifecycle stages outside what already exists in the prompt files themselves.
+
+SECTION 2 - Required Tool Verification
+- Required baseline tools:
+  - `git`
+  - `git add -p` (interactive patch mode availability)
+  - `python3`
+  - `uv`
+  - `pytest` (or `./.venv_tools/bin/pytest` if installed via fallback)
+- Runtime-conditional tools (required only when selected prompts require them):
+  - `docker` / `docker compose` (runtime + smoke prompts and CI smoke checks reference container workflows)
+- Discovery signals in this repo indicate runtime-aware prompts exist (`PROMPT_07`, `PROMPT_10`, `PROMPT_11`, `PROMPT_17`, `PROMPT_19`), so Docker verification is required before running those prompts.
+- Verification commands (run from repo root):
+  - `git --version`
+  - `git add -p --help`
+  - `python3 --version`
+  - `uv --version`
+  - `pytest --version`
+  - `docker --version`
+  - `docker compose version`
+- Missing-tool handling policy:
+  - Diagnose each missing tool as either:
+    - system-level binary (not safely installable in-project), or
+    - Python package/tool installable in isolated venv via `uv`.
+  - If and only if exactly one missing tool is a Python package/tool installable with `uv`:
+    1) Create `.venv_tools` if missing with `uv venv .venv_tools`
+    2) Install the missing tool with `uv pip install --python .venv_tools/bin/python <tool>`
+    3) Re-run verification using `./.venv_tools/bin/<tool>`
+  - For subsequent invocations of that installed tool, always use:
+    - `./.venv_tools/bin/<tool>`, or
+    - `./.venv_tools/bin/python -m <module>`
+  - Do not activate the venv (`source .venv_tools/bin/activate` is forbidden).
+  - Stop execution if tooling is still missing after this retry path, or if missing tools are system-level installs.
+
+SECTION 3 - Prompt Classification Summary
+- Prompt files discovered:
+  - System prompts (`_s`): `PROMPT_00_s.txt`, `PROMPT_14_s.txt`
+  - Task prompts: `PROMPT_01.txt`..`PROMPT_13.txt`, `PROMPT_15.txt`..`PROMPT_19.txt`
+  - Template prompts (`_t`): none currently
+  - System-template prompts: none currently
+  - Meta/support files:
+    - `.prompts/PROMPT_MANIFEST.md`
+    - `.prompts/PROMPT_STAGE2_MANIFEST.md`
+    - `.prompts/PROMPT_STAGE3_MANIFEST.md`
+    - `.prompts/STAGE2_PRE_FLIGHT.md`
+    - `.prompts/STAGE3_PRE_FLIGHT_NOTES.md`
+    - `.prompts/STAGE3_PRE_FLIGHT_SNAPSHOT.md`
+    - `.prompts/improvements-before-initial-run.txt`
+    - `.prompts/improvements-before-finalization.txt`
+- Variable placeholders `{{LIKE_THIS}}`: none detected in current `.prompts/` files.
+- Distinct tracks inferred from dependencies (not raw numbering alone):
+  - Track A: Foundation build and baseline workflow (`PROMPT_00_s` -> `PROMPT_01`..`PROMPT_08`)
+  - Track B: Stage-2 hardening and release-quality guardrails (`PROMPT_09`..`PROMPT_13`)
+  - Track C: Stage-3 meta-runner skill expansion (`PROMPT_14_s` -> `PROMPT_15`..`PROMPT_19`)
+- True sequential chains:
+  - Foundation chain: strict sequential
+  - Stage-2 chain: primarily sequential with guarded independent fallback notes in each prompt
+  - Stage-3 chain: strict (`14_s`, then `15`..`19`)
+- Template-heavy sections:
+  - Prompt content references template artifacts (`templates/skill/*.tmpl`, `templates/packs/pack.md.tmpl`), but no `.prompts/PROMPT_*_t.txt` files exist today.
+- Chunk groups:
+  - Total prompt file count is below 60, so chunk mode is not required now.
+
+SECTION 4 - Execution Modes
+- Sequential mode (default):
+  - Use dependency-aware order:
+    1) `PROMPT_00_s.txt`
+    2) `PROMPT_01.txt`..`PROMPT_08.txt`
+    3) `PROMPT_09.txt`..`PROMPT_13.txt`
+    4) `PROMPT_14_s.txt`
+    5) `PROMPT_15.txt`..`PROMPT_19.txt`
+  - Do not skip required predecessors.
+- Track mode:
+  - Run one dependency-closed track at a time:
+    - Foundation track
+    - Stage-2 hardening track
+    - Stage-3 meta-runner track
+  - Valid only if track prerequisites already pass artifact and test gates.
+- Template instantiation mode:
+  - Enabled only when `_t` prompt files are present.
+  - Render outputs to `.prompts/rendered/`.
+  - Never overwrite template source files.
+  - Maintain a render log documenting:
+    - template source
+    - rendered target
+    - timestamp
+    - variables supplied
+    - overwrite policy result
+- Chunk mode:
+  - Activate only if prompt count exceeds 60.
+  - Build thematic chunk groups and execute chunk-by-chunk with full gates between chunks.
+  - Not active for current prompt inventory.
+- Resume mode (required start behavior):
+  - Determine next prompt from repository state, not an unconditional "start at PROMPT_00_s".
+  - Build candidate prompt list from actual `.prompts/PROMPT_*` files.
+  - Parse git commit subjects for prompt completion prefixes:
+    - `[PROMPT_XX]`
+    - `[PROMPT_XX, AGENT_<role>]`
+    - `[PROMPT_XX-YY]` or `[NEW PROMPT_XX-YY]` means prompt-generation range commit, not automatic execution completion for all prompts in that range.
+  - Mark a prompt "completed" only when commit evidence and artifact evidence are coherent:
+    - commit prefix indicates that prompt was executed, and
+    - prompt acceptance artifacts/tests for that prompt exist or were later validated.
+  - Select the earliest dependency-ready, uncompleted prompt as `Next Prompt`.
+  - If no prompt commit evidence exists, fall back to initial start at first system prompt.
+  - If all prompts are complete, stop and report "No pending prompts" plus optional follow-up prompt-generation suggestions.
+
+SECTION 5 - Subagent Roles
+- AGENT_MAIN
+  - Allowed actions: coordinate run order, choose execution mode, hand off to specialized agents, enforce stop conditions.
+  - Forbidden actions: bypass acceptance criteria, commit across multiple prompts in one batch.
+  - Required outputs: run status summary per prompt, next prompt decision, drift notes.
+  - Stop conditions: any gate failure in Sections 6-9.
+- AGENT_ARCHITECT
+  - Allowed actions: dependency analysis, artifact contract interpretation, prompt/track planning.
+  - Forbidden actions: speculative feature additions not requested by active prompt.
+  - Required outputs: dependency map, risk notes, execution justification.
+  - Stop conditions: unresolved contradictions in prompt contracts.
+- AGENT_BUILDER
+  - Allowed actions: implement requested artifacts, update code/docs/tests, run required checks.
+  - Forbidden actions: destructive cleanup not explicitly authorized, template overwrites, silent scope expansion.
+  - Required outputs: changed files list, command evidence, acceptance proof.
+  - Stop conditions: failing tests/smoke, missing required tools, destructive-action ambiguity.
+- AGENT_AUDITOR
+  - Allowed actions: verify artifacts/sections, validate command outcomes, audit smoke/test evidence, enforce commit prefix.
+  - Forbidden actions: approving unverifiable claims, waiving failing smoke checks.
+  - Required outputs: PASS/FAIL verdict for artifact gates and smoke gates.
+  - Stop conditions: any unverifiable acceptance claim or failed gate.
+- AGENT_REFACTOR (drift only)
+  - Allowed actions: minimal corrective edits to restore contract compliance after drift.
+  - Forbidden actions: broad refactors, architecture replacement, adding new stages.
+  - Required outputs: minimal patch set tied to explicit drift event.
+  - Stop conditions: drift cannot be resolved without human intent decision.
+
+SECTION 6 - Smoke Test Discipline
+- Runtime-bearing prompts are present, so smoke discipline is mandatory for affected prompts.
+- Reusable smoke checks must live under:
+  - `tests/smoke/`, or
+  - `scripts/smoke/`, or
+  - existing repo smoke CLI wrappers in `skills-foundry/bin/` that execute deterministic smoke checks.
+- Smoke checks must:
+  1) start required services (or validate already-running required services),
+  2) validate connectivity,
+  3) validate minimal functional path,
+  4) exit non-zero on failure,
+  5) be idempotent and non-destructive by default.
+- Prompt-specific requirement:
+  - If a prompt changes runtime-affecting behavior, smoke must pass before commit.
+  - If a prompt is docs-only and does not affect runtime behavior, smoke status can be `N/A` only with explicit auditor sign-off.
+- Auditor verification is required for smoke results before commit.
+
+SECTION 7 - Artifact Gates
+- For each prompt run, enforce:
+  - Declared output files exist.
+  - Required document sections/keys exist (when prompt defines required sections).
+  - Acceptance commands in the prompt have been run and verified.
+  - No template corruption (if template mode is active).
+  - No drift from declared anti-scope/guardrails.
+  - Smoke gate PASS for runtime-affecting prompts before commit.
+- If any required artifact is missing or malformed, pause and report exact gap and file path.
+
+SECTION 8 - Commit Discipline
+- After each prompt execution:
+  - use `git add -p`,
+  - create logical Tim Pope style grouped commits,
+  - do not batch unrelated prompts in one commit.
+- Every commit subject must start with:
+  - `[PROMPT_{num}, AGENT_{role}]`
+- Determine `{num}` from the executed filename in `.prompts/`:
+  - `PROMPT_09.txt` -> `09`
+  - `PROMPT_14_s.txt` -> `14`
+- Additional rules:
+  - no vague commit messages,
+  - skip commit if no file changes.
+
+SECTION 9 - Drift Stop Conditions
+- Pause execution immediately if any of the following occurs:
+  - missing promised artifacts,
+  - smoke test failure,
+  - template overwrite/corruption,
+  - prompt contradictions that block deterministic action,
+  - malformed commit prefix,
+  - Docker/runtime environment left inconsistent after run.
+
+SECTION 10 - Execution Loop
+Before loop start:
+1) Discover prompt files and dependency hints.
+2) Parse git commit prefixes and current artifact state.
+3) Determine `Next Prompt` via Resume mode rules in Section 4.
+4) If `Next Prompt` is null, report completion and stop.
+
+For each prompt:
+1) Announce prompt + agent.
+2) Execute prompt scope only.
+3) Validate artifacts against declared outputs and acceptance criteria.
+4) Run smoke tests if applicable.
+5) Auditor verification of artifacts, smoke status, and anti-scope compliance.
+6) Commit with required prefix and `git add -p`.
+7) Report:
+   - Files Created:
+   - Files Modified:
+   - Smoke Tests: PASS / FAIL / N/A
+   - Drift Events:
+   - Next Prompt:
+
+SECTION 11 - Start Procedure
+"Yes proceed using this prompt set and resume from the next required prompt based on current `.prompts/` files plus git commit-prefix evidence. After each prompt run is over, use `git add -p` to make a number of related Tim Pope style multi-line commit messages for the changes. The commit message(s) should each start with \"[PROMPT_{num}, AGENT_{role}]\" (where `{num}` corresponds to the prompt file's number in `.prompts/`). But before starting, make sure you can call some commands you will need. If exactly one missing tool is a Python package/tool that can be installed with `uv` (for example `pytest`), create `.venv_tools`, install it there, and retry tool verification once using the explicit relative tool path under `./.venv_tools/bin/` (without activating the venv). If tooling is still missing (or requires system-level install), stop and suggest fixes and/or installation instructions. Then run the earliest dependency-ready prompt that is not yet completed; only use PROMPT_00_s.txt when no prior prompt execution evidence exists."
