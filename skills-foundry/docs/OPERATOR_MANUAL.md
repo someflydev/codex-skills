@@ -227,6 +227,11 @@ For a full regression pass:
 
 Reference: `skills-foundry/docs/META_RUNNER_VERIFICATION.md`.
 
+Related Stage-3 operator docs:
+
+- `skills-foundry/docs/META_RUNNER_OPERATORS_GUIDE.md`
+- `skills-foundry/docs/META_RUNNER_PROMPT_MAPPING.md`
+
 ## Demo Repo Reset (Safe Cleanup)
 
 Use the helper below to clean known generated artifacts in `skills-foundry/demo-repo/`.

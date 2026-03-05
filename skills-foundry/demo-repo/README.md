@@ -17,6 +17,16 @@ This is a tiny practice repository for the `skills-foundry` prompt-first workflo
 3. Execute prompts in order and create `[PROMPT_XX]` commits with `git add -p`.
 4. Run postflight and generate a stage-2 plan only if you intentionally introduce issues.
 
+## Meta-Runner Practice Path
+
+When practicing the Stage-3 flow, map prompt steps to `meta-runner-*` skills:
+
+1. Bootstrap/refresh runner contract: `meta-runner-bootstrap`
+2. Preflight prompt batch: `meta-runner-preflight-inspector`
+3. Execute next prompt safely: `meta-runner-stage-runner`
+4. Verify contracts/smoke: `./skills-foundry/bin/smoke-check-meta-runner --check-only`
+5. Postflight score + next-step decision: `meta-runner-postflight-analyzer`
+
 ## Notes
 
 - Keep the demo small; the goal is to practice sequencing, verification, and commit hygiene.
