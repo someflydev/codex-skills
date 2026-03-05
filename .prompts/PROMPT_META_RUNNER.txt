@@ -95,6 +95,11 @@ SECTION 4 - Execution Modes
   - Activate only if prompt count exceeds 60.
   - Build thematic chunk groups and execute chunk-by-chunk with full gates between chunks.
   - Not active for current prompt inventory.
+- Skill-flow mode (recommended for large skill libraries):
+  - Use ordered flow manifests under `skills-foundry/flows/` with explicit `standard` and `alt` lanes per group.
+  - Keep skill IDs stable; ordering belongs in flow manifests and generated flow docs.
+  - Use `./skills-foundry/bin/skills-flow-next` to resolve the next step deterministically instead of relying on memory.
+  - Use `./skills-foundry/bin/skills-flow-render` to regenerate `skills-foundry/docs/SKILL_FLOWS.md`.
 - Resume mode (required start behavior):
   - Determine next prompt from repository state, not an unconditional "start at PROMPT_00_s".
   - Build candidate prompt list from actual `.prompts/PROMPT_*` files.
@@ -192,6 +197,7 @@ Before loop start:
 2) Parse git commit prefixes and current artifact state.
 3) Determine `Next Prompt` via Resume mode rules in Section 4.
 4) If `Next Prompt` is null, report completion and stop.
+5) If skill-flow manifests exist, print the active group/lane and next skill step using `skills-flow-next`.
 
 For each prompt:
 1) Announce prompt + agent.
@@ -206,6 +212,7 @@ For each prompt:
    - Smoke Tests: PASS / FAIL / N/A
    - Drift Events:
    - Next Prompt:
+   - Next Skill Step (if flow manifests present):
 
 SECTION 11 - Start Procedure
 "Yes proceed using this prompt set and resume from the next required prompt based on current `.prompts/` files plus git commit-prefix evidence. After each prompt run is over, use `git add -p` to make a number of related Tim Pope style multi-line commit messages for the changes. The commit message(s) should each start with \"[PROMPT_{num}, AGENT_{role}]\" (where `{num}` corresponds to the prompt file's number in `.prompts/`). But before starting, make sure you can call some commands you will need. If exactly one missing tool is a Python package/tool that can be installed with `uv` (for example `pytest`), create `.venv_tools`, install it there, and retry tool verification once using the explicit relative tool path under `./.venv_tools/bin/` (without activating the venv). If tooling is still missing (or requires system-level install), stop and suggest fixes and/or installation instructions. Then run the earliest dependency-ready prompt that is not yet completed; only use PROMPT_00_s.txt when no prior prompt execution evidence exists."

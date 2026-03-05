@@ -1,0 +1,81 @@
+Stage-3 Follow-up Prompt
+Title: Skill Flow Index + Next-Step CLI (Standard + ALT lanes)
+
+Objective
+Make skill invocation order explicit and easy to follow across all skill groups by adding ordered flow manifests, generated flow docs, and a small CLI that reports the next step so operators do not have to memorize sequences.
+
+Dependencies / Sequencing
+- Designed order: after `PROMPT_19.txt`
+- Depends on: Stage-3 meta-runner skills and docs already present
+- Runnable independently: yes (if Stage-3 is incomplete, this prompt should still build the flow index from current skills)
+
+Artifacts To Create / Modify (exact paths)
+- `skills-foundry/flows/` (new directory)
+- `skills-foundry/flows/*.json` (group flow manifests with `standard` and `alt` lanes)
+- `skills-foundry/bin/_skills_flows.py` (new helper module)
+- `skills-foundry/bin/skills-flow-next` (new CLI)
+- `skills-foundry/bin/skills-flow-render` (new CLI)
+- `skills-foundry/docs/SKILL_FLOWS.md` (generated/refreshable docs from manifests)
+- `skills-foundry/docs/OPERATOR_MANUAL.md` (add flow-index usage)
+- `skills-foundry/README.md` (quick reference to flow commands)
+- `skills-foundry/tests/test_skills_flow_next.py` (new tests)
+
+Required Scope
+1) Define ordered flow manifests per group (at minimum: `workflow`, `meta-runner`, `polyglot`, `storage-labs`, `core`):
+   - each group includes:
+     - metadata (`group_id`, `description`)
+     - `standard` lane (ordered steps)
+     - `alt` lane (ordered steps; can diverge where `_alt` skills exist)
+   - for groups without meaningful alternates, `alt` may mirror `standard`.
+2) Keep existing skill IDs stable (do NOT rename skills to numbered IDs).
+3) Implement `skills-flow-next`:
+   - list groups
+   - show ordered lane steps
+   - show next step from:
+     - explicit `--from-step`, or
+     - persisted local state file
+   - optional `--mark-done` to advance local state
+   - deterministic text output suitable for copy/paste workflow notes
+4) Implement `skills-flow-render`:
+   - generate/update `docs/SKILL_FLOWS.md` from manifest files
+   - include both standard and alt ordered sequences
+5) Add tests for flow parsing, ordering, and next-step resolution.
+6) Update docs with root-level command examples.
+
+Acceptance Criteria (commands + expected checks)
+1) Flow manifests and docs exist:
+```bash
+test -d skills-foundry/flows
+test -f skills-foundry/docs/SKILL_FLOWS.md
+```
+2) CLI usage and group listing work:
+```bash
+./skills-foundry/bin/skills-flow-next --help
+./skills-foundry/bin/skills-flow-next --list-groups
+./skills-foundry/bin/skills-flow-next --group meta-runner --lane standard
+./skills-foundry/bin/skills-flow-next --group meta-runner --lane alt
+./skills-foundry/bin/skills-flow-render
+```
+3) New tests pass:
+```bash
+.venv/bin/pytest -q skills-foundry/tests/test_skills_flow_next.py
+```
+4) Full foundry suite remains green:
+```bash
+.venv/bin/pytest -q skills-foundry
+```
+
+Anti-Scope (do NOT do)
+- Do NOT rename existing skill IDs to numbered names.
+- Do NOT add network-dependent behavior to `skills-flow-next`.
+- Do NOT add hidden background processes or daemons.
+
+Overengineering Guardrails
+- Prefer simple JSON manifests over introducing external parsing dependencies.
+- Keep CLI output concise, deterministic, and script-friendly.
+- Keep state handling local and opt-in (single state file, no databases/services).
+
+Evidence To Include In Diff
+- One manifest example showing standard vs alt lane divergence.
+- `skills-flow-next` sample output for a group.
+- Generated `SKILL_FLOWS.md` snippet for at least two groups.

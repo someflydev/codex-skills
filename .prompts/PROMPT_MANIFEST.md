@@ -40,6 +40,7 @@ See `.prompts/PROMPT_STAGE3_MANIFEST.md` for goals, DoD, and stop conditions.
 | `PROMPT_17.txt` | task | Add rigor harness (tests + smoke + safety contracts) | 3 | `PROMPT_16.txt` |
 | `PROMPT_18.txt` | task | Operator adoption docs + prompt-to-skill mapping | 4 | `PROMPT_16.txt`, `PROMPT_17.txt` |
 | `PROMPT_19.txt` | task | Meta-runner postflight audit + conditional next-prompt generation | 5 | `PROMPT_15`..`PROMPT_18` outputs |
+| `PROMPT_20.txt` | task | Skill flow index + next-step CLI (standard/alt lanes) | 6 | `PROMPT_19.txt` (or current skill inventory) |
 
 ## Execution Notes
 
