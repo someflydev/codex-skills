@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "group_id": "core",
+  "description": "Core utility skills and lightweight repo hygiene flow.",
+  "lanes": {
+    "standard": [
+      {
+        "step": 1,
+        "skill_id": "repo-tree-summarizer",
+        "why": "Inventory repository structure before modifications.",
+        "verify_cmd": "rg --files . | head -n 50"
+      },
+      {
+        "step": 2,
+        "skill_id": "changelog-drafter",
+        "why": "Draft meaningful change summaries once implementation stabilizes.",
+        "verify_cmd": "test -f skills-foundry/CHANGELOG.md"
+      },
+      {
+        "step": 3,
+        "skill_id": "smoke-check",
+        "why": "Run a bounded smoke pass before final commit recommendation.",
+        "verify_cmd": "./skills-foundry/bin/smoke-check-foundry --dry-run-only"
+      },
+      {
+        "step": 4,
+        "skill_id": "hello-skill",
+        "why": "Create or validate a simple baseline skill artifact.",
+        "verify_cmd": "./skills-foundry/bin/skills-validate --compact"
+      }
+    ],
+    "alt": [
+      {
+        "step": 1,
+        "skill_id": "repo-tree-summarizer",
+        "why": "Inventory repository structure before modifications.",
+        "verify_cmd": "rg --files . | head -n 50"
+      },
+      {
+        "step": 2,
+        "skill_id": "changelog-drafter",
+        "why": "Draft meaningful change summaries once implementation stabilizes.",
+        "verify_cmd": "test -f skills-foundry/CHANGELOG.md"
+      },
+      {
+        "step": 3,
+        "skill_id": "smoke-check",
+        "why": "Run a bounded smoke pass before final commit recommendation.",
+        "verify_cmd": "./skills-foundry/bin/smoke-check-foundry --dry-run-only"
+      },
+      {
+        "step": 4,
+        "skill_id": "hello-skill-alt",
+        "why": "Use alternate baseline skill style when testing variant wording.",
+        "verify_cmd": "./skills-foundry/bin/skills-validate --compact"
+      }
+    ]
+  }
+}

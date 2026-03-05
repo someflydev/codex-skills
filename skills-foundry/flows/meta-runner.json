@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "group_id": "meta-runner",
+  "description": "Resume-aware meta-runner flow from bootstrap through postflight closure.",
+  "lanes": {
+    "standard": [
+      {
+        "step": 1,
+        "skill_id": "meta-runner-bootstrap",
+        "why": "Generate or refresh the orchestration contract.",
+        "verify_cmd": "test -f .prompts/PROMPT_META_RUNNER.txt"
+      },
+      {
+        "step": 2,
+        "skill_id": "meta-runner-preflight-inspector",
+        "why": "Run dependency and acceptance feasibility checks.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 3,
+        "skill_id": "meta-runner-stage-runner",
+        "why": "Execute the next prompt with artifact/smoke gates.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage1-plan --help"
+      },
+      {
+        "step": 4,
+        "skill_id": "meta-runner-port-isolation",
+        "why": "Avoid runtime/test port collisions when stacks overlap.",
+        "verify_cmd": "docker ps --format '{{.Ports}}' | head -n 20"
+      },
+      {
+        "step": 5,
+        "skill_id": "meta-runner-test-stack-isolation",
+        "why": "Ensure integration tests do not mutate production-like local data.",
+        "verify_cmd": "docker compose version"
+      },
+      {
+        "step": 6,
+        "skill_id": "meta-runner-operators-guide-author",
+        "why": "Publish operator-grade runbook with root-level commands.",
+        "verify_cmd": "test -f skills-foundry/docs/OPERATOR_MANUAL.md"
+      },
+      {
+        "step": 7,
+        "skill_id": "meta-runner-ui-audit-playwright",
+        "why": "Run deterministic UI audit with trace/video evidence.",
+        "verify_cmd": ".venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py"
+      },
+      {
+        "step": 8,
+        "skill_id": "meta-runner-postflight-analyzer",
+        "why": "Close stage with evidence-backed scoring and DoD status.",
+        "verify_cmd": "test -f POST_FLIGHT_REPORT_META_RUNNER.md"
+      }
+    ],
+    "alt": [
+      {
+        "step": 1,
+        "skill_id": "meta-runner-bootstrap",
+        "why": "Generate or refresh the orchestration contract.",
+        "verify_cmd": "test -f .prompts/PROMPT_META_RUNNER.txt"
+      },
+      {
+        "step": 2,
+        "skill_id": "meta-runner-preflight-inspector-alt",
+        "why": "Apply strict/no-auto-fix preflight policy.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 3,
+        "skill_id": "meta-runner-stage-runner-alt",
+        "why": "Use checkpointed execution with explicit pause gates.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage1-plan --help"
+      },
+      {
+        "step": 4,
+        "skill_id": "meta-runner-port-isolation",
+        "why": "Avoid runtime/test port collisions when stacks overlap.",
+        "verify_cmd": "docker ps --format '{{.Ports}}' | head -n 20"
+      },
+      {
+        "step": 5,
+        "skill_id": "meta-runner-test-stack-isolation",
+        "why": "Ensure integration tests do not mutate production-like local data.",
+        "verify_cmd": "docker compose version"
+      },
+      {
+        "step": 6,
+        "skill_id": "meta-runner-operators-guide-author",
+        "why": "Publish operator-grade runbook with root-level commands.",
+        "verify_cmd": "test -f skills-foundry/docs/OPERATOR_MANUAL.md"
+      },
+      {
+        "step": 7,
+        "skill_id": "meta-runner-ui-audit-playwright",
+        "why": "Run deterministic UI audit with trace/video evidence.",
+        "verify_cmd": ".venv/bin/pytest -q skills-foundry/tests/test_meta_runner_skills.py"
+      },
+      {
+        "step": 8,
+        "skill_id": "meta-runner-postflight-analyzer-alt",
+        "why": "Use score-delta and drift-emphasis closure profile.",
+        "verify_cmd": "test -f POST_FLIGHT_REPORT_META_RUNNER.md"
+      }
+    ]
+  }
+}

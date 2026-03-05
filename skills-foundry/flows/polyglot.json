@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "group_id": "polyglot",
+  "description": "Backend language and architecture prompt generation flow.",
+  "lanes": {
+    "standard": [
+      {
+        "step": 1,
+        "skill_id": "backend-language-shortlister",
+        "why": "Narrow backend language candidates based on repo constraints.",
+        "verify_cmd": "test -f skills-foundry/docs/BACKEND_OPTIONS.md"
+      },
+      {
+        "step": 2,
+        "skill_id": "backend-choice-to-prompts",
+        "why": "Generate prompt sequence tailored to selected backend stack.",
+        "verify_cmd": "test -f skills-foundry/templates/packs/pack.md.tmpl"
+      }
+    ],
+    "alt": [
+      {
+        "step": 1,
+        "skill_id": "backend-language-shortlister-alt",
+        "why": "Use alternate weighting for language shortlist tradeoffs.",
+        "verify_cmd": "test -f skills-foundry/docs/BACKEND_OPTIONS.md"
+      },
+      {
+        "step": 2,
+        "skill_id": "backend-choice-to-prompts-alt",
+        "why": "Generate alternative prompt structure for backend implementation.",
+        "verify_cmd": "test -f skills-foundry/templates/packs/pack.md.tmpl"
+      }
+    ]
+  }
+}

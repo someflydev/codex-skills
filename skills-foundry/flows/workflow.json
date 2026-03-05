@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "group_id": "workflow",
+  "description": "Prompt-first workflow execution from preflight through Stage-2 postflight.",
+  "lanes": {
+    "standard": [
+      {
+        "step": 1,
+        "skill_id": "prompt-preflight-inspector",
+        "why": "Validate prompt ordering and dependency risks before execution.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 2,
+        "skill_id": "prompt-stage1-runner",
+        "why": "Run Stage-1 prompt sequence with bounded commit discipline.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage1-plan --help"
+      },
+      {
+        "step": 3,
+        "skill_id": "prompt-postflight-analyzer",
+        "why": "Generate Stage-1 postflight score and risk summary.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      },
+      {
+        "step": 4,
+        "skill_id": "stage2-plan-generator",
+        "why": "Generate focused Stage-2 prompt expansion from postflight output.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage2-theme-plan --help"
+      },
+      {
+        "step": 5,
+        "skill_id": "stage2-preflight-inspector",
+        "why": "Preflight-check new Stage-2 prompts before execution.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 6,
+        "skill_id": "stage2-runner",
+        "why": "Run Stage-2 prompt sequence with acceptance gates.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage2-run-plan --help"
+      },
+      {
+        "step": 7,
+        "skill_id": "stage2-postflight-analyzer",
+        "why": "Close Stage-2 loop and identify only high-leverage follow-ups.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      }
+    ],
+    "alt": [
+      {
+        "step": 1,
+        "skill_id": "prompt-preflight-inspector-alt",
+        "why": "Use stricter preflight scoring and fix gating.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 2,
+        "skill_id": "prompt-stage1-runner-alt",
+        "why": "Use checkpointed Stage-1 execution approach.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage1-plan --help"
+      },
+      {
+        "step": 3,
+        "skill_id": "prompt-postflight-analyzer-alt",
+        "why": "Use alternate postflight emphasis profile.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      },
+      {
+        "step": 4,
+        "skill_id": "stage2-plan-generator-alt",
+        "why": "Generate Stage-2 plans with alternate prioritization.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage2-theme-plan --help"
+      },
+      {
+        "step": 5,
+        "skill_id": "stage2-preflight-inspector-alt",
+        "why": "Apply stricter stage-specific preflight checks.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-preflight --help"
+      },
+      {
+        "step": 6,
+        "skill_id": "stage2-runner-alt",
+        "why": "Use alternate stage execution strategy.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-stage2-run-plan --help"
+      },
+      {
+        "step": 7,
+        "skill_id": "stage2-postflight-analyzer-alt",
+        "why": "Use alternate postflight scoring for Stage-2.",
+        "verify_cmd": "./skills-foundry/bin/repo-helper-postflight --help"
+      }
+    ]
+  }
+}

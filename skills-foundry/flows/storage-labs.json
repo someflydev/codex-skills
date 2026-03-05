@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "group_id": "storage-labs",
+  "description": "Storage planning and synthetic dataset design flow.",
+  "lanes": {
+    "standard": [
+      {
+        "step": 1,
+        "skill_id": "storage-zoo-planner",
+        "why": "Plan multi-store architecture and workload fit.",
+        "verify_cmd": "test -f skills-foundry/docs/STORAGE_ZOO_PLAN.md"
+      },
+      {
+        "step": 2,
+        "skill_id": "synthetic-data-spec-author",
+        "why": "Design deterministic synthetic datasets for storage experiments.",
+        "verify_cmd": "test -f skills-foundry/docs/DATASETS_CATALOG.md"
+      }
+    ],
+    "alt": [
+      {
+        "step": 1,
+        "skill_id": "storage-zoo-planner-alt",
+        "why": "Use alternate storage scoring and risk emphasis.",
+        "verify_cmd": "test -f skills-foundry/docs/STORAGE_ZOO_PLAN.md"
+      },
+      {
+        "step": 2,
+        "skill_id": "synthetic-data-spec-author-alt",
+        "why": "Use alternate data profile strategy for experiments.",
+        "verify_cmd": "test -f skills-foundry/docs/DATASETS_CATALOG.md"
+      }
+    ]
+  }
+}
